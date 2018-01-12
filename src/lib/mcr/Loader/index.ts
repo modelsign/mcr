@@ -47,7 +47,6 @@ class Loader {
 
         let loader = new THREE.GLTFLoader();
 
-
         return new Promise((resolve, reject) => {
             loader.load(
                 url,

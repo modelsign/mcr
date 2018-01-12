@@ -40,7 +40,7 @@
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
-  camera.position.set(500, 500, 500);
+  camera.position.set(2500, 2500, 2500);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -275,11 +275,31 @@
         if (meshInScene) {
           meshInScene.geometry = mesh.geometry;
         } else {
-          scene.add(mesh);
+          //          let meshBox  = new THREE.BoxHelper(mesh);
+          //          meshBox.name = mesh.name + '_box';
 
-          let meshBox  = new THREE.BoxHelper(mesh);
-          meshBox.name = mesh.name + '_box';
-          scene.add(meshBox);
+          /** ***********************************
+           * 模型需要添加载入的动画效果 使之更加美观
+           * 这里起草一个对其位置进行操作的动画
+           **************************************/
+          let p           = { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z };
+          mesh.position.x = (
+                                0.5 - Math.random()
+                            ) * 5000;
+          mesh.position.y = Math.random() * 1000;
+          mesh.position.z = (
+                                0.5 - Math.random()
+                            ) * 5000;
+
+          let tMesh = new TWEEN.Tween(mesh.position);
+          tMesh.easing(TWEEN.Easing.Quartic.Out)
+               .to(p, 1200)
+               .onUpdate(() => {})
+               .onComplete(() => {})
+               .start();
+
+          scene.add(mesh);
+          //          scene.add(meshBox);
         }
       },
       async createPoint () {
@@ -360,12 +380,12 @@
                * 设置文档中模型的偏移量
                */
               let { position } = option;
+
               meshs.forEach((mesh) => {
                 mesh.position.x = position.x;
                 mesh.position.y = position.y;
                 mesh.position.z = position.z;
               });
-
               break;
             default:
               //              console.log('模型加载, 类型没找到', type);
