@@ -7,7 +7,7 @@ export class SceneController {
     }
 
 
-    elementsFind(name: string): Promise<Element[]> {
+    async elementsFind(name: string): Promise<Element[]> {
 
     }
 
