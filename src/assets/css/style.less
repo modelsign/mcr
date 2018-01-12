@@ -1,0 +1,41 @@
+@base-color: #f1f1f1;
+@second-color: rgba(23, 250, 214, 0.2);
+@base-color-blue: #d3fdff;
+@base-size-micro: 4px;
+
+::-webkit-scrollbar {
+  background: none;
+}
+
+.bg-strip-blue {
+  border: none;
+  background: linear-gradient(
+          -45deg,
+          @base-color-blue 0, @base-color-blue 25%,
+          @second-color 0, @second-color 50%,
+          @base-color-blue 0, @base-color-blue 75%,
+          @second-color 0, @second-color 100%
+  );
+  background-size: @base-size-micro @base-size-micro;
+
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.page {
+  display: flex;;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

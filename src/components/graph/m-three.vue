@@ -1,0 +1,471 @@
+<template>
+    <div
+            @mouseover="onContainerMouseover"
+            @touchstart="onContainerMouseover"
+            @mouseout="onContainerMouseout"
+            @touchend="onContainerMouseout"
+            id="mcr-graph-three">
+        加载失败.
+    </div>
+</template>
+<script>
+  import Vue from 'vue';
+  import 'three';
+  import './js/controls/OrbitControls';
+
+  import TWEEN from '@tweenjs/tween.js';
+  /** ****************************************
+   *    导入自定义类
+   *******************************************/
+  import mcr from '../../lib/mcr/index.ts';
+  import Sandbox from './Sandbox';
+  import Option from './Option';
+  import Loader from '../../lib/mcr/Loader/index';
+
+  /** ****************************************
+   *    导入自定义组件
+   *******************************************/
+  import em from '../../lib/bus';
+
+  const wkFBuffergeoCode = require('../../lib/workers/cal-factor-mesh.worker');
+  const wkFBuffergeo     = new wkFBuffergeoCode();
+
+  const container = document.createElement('div');
+  const scene     = new THREE.Scene();
+  const camera    = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
+  const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
+
+  let helperGrid, helperLights = [], helperBoxs = [];
+  
+  //  scene.background = new THREE.Color(0xf0f0f0);
+  //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
+  camera.position.set(500, 500, 500);
+
+  renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
+  renderer.shadowMapSoft               = true;
+  renderer.shadowMap.renderSingleSided = false;
+  renderer.shadowMap.enabled           = true;
+  renderer.gammaInput                  = true;
+  renderer.gammaOutput                 = true;
+  renderer.sortObjects                 = true;
+  
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.localClippingEnabled = true;
+  container.appendChild(renderer.domElement);
+  
+  /** ******************************************************************************
+   *
+   *                                   灯光配置
+   *
+   *********************************************************************************/
+  /** **************************
+   * 环境光
+   *****************************/
+  let ambientLight  = new THREE.AmbientLight(0xf0f0f0);
+  ambientLight.name = 'h-light-ambient';
+  scene.add(ambientLight);
+  
+  /** **************************
+   * 聚集光
+   *****************************/
+  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
+  lightSpot.position.set(0, 1500, 200);
+  lightSpot.castShadow            = true;
+  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
+  lightSpot.shadow.bias           = -0.000222;
+  lightSpot.shadow.mapSize.width  = 1024;
+  lightSpot.shadow.mapSize.height = 1024;
+  lightSpot.name                  = 'h-light-spot';
+  scene.add(lightSpot);
+
+  /** **************************
+   * 渲染器渲染函数, 可配置渲染模式
+   * oprion.mode 为一个自然数.
+   * 值越大, 渲染间隔越大
+   *
+   * 为 0 时, 使用requestAnimationFrame() 函数, 以期望达到60Hz
+   * 非 i 时, 渲染间隔为 50 * i 毫秒
+   *****************************/
+  const render          = (time) => {
+    TWEEN.update(time);
+    /** ******************************
+     * 根据配置的模式控制刷新频率
+     *********************************/
+    if (option.mode < 1) {
+      requestAnimationFrame(render);
+    } else {
+      let frequency = 50 * Math.ceil(option.mode);
+      setTimeout(render, frequency);
+    }
+
+    /**
+     * 如果此时出于afk状态, 跳过渲染
+     */
+
+    if (option.afk) {
+      return;
+    }
+
+    renderer.render(scene, camera);
+    if (controls && typeof controls.update === 'function') {
+      let cameraLastPosition = JSON.parse(JSON.stringify(camera.position));
+      controls.update();
+      if (
+          cameraLastPosition.x !== camera.position.x ||
+          cameraLastPosition.y !== camera.position.y ||
+          cameraLastPosition.z !== camera.position.z
+      ) {
+        em.emit(
+            'event/log/trace',
+            { step: '相机位置更新', c: camera.position, fov: camera.fov, dir: camera.getWorldDirection() }
+        );
+        em.emit('scene/camera/update', camera);
+      }
+    }
+  };
+  const resetRenderSize = () => {
+    let container = document.getElementById('mcr-graph-three');
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  };
+  const init            = () => {
+    document.getElementById('mcr-graph-three').innerHTML = '';
+    document.getElementById('mcr-graph-three').appendChild(container);
+    resetRenderSize();
+    render();
+  };
+  
+  const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
+  planeGeometry.rotateX(-Math.PI / 2);
+  const planeMaterial       = new THREE.ShadowMaterial({ opacity: 0.2 });
+  const groundPlane         = new THREE.Mesh(planeGeometry, planeMaterial);
+  groundPlane.position.y    = -200;
+  groundPlane.receiveShadow = true;
+  groundPlane.name          = 'h-mesh-plan';
+  scene.add(groundPlane);
+
+  /** ******************************************************************************
+   *
+   *                                载入各类Helper
+   *
+   *********************************************************************************/
+  helperGrid = new THREE.GridHelper(20000, 1000);
+  helperGrid.position.y           = -199;
+  helperGrid.material.opacity     = 0.25;
+  helperGrid.material.transparent = true;
+  helperGrid.name                 = 'h-helper-grid';
+
+  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
+
+  scene.add(helperGrid);
+  //  helperLights.forEach((light) => {scene.add(light);});
+
+  /** ******************************************************************************
+   *
+   *                                   交互控制器
+   *
+   *********************************************************************************/
+  if (controls) {
+    //controls.enableDamping = true;
+    //controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+  }
+
+  /** ************************************************************
+   *
+   *
+   ***************************************************************/
+  let sandbox               = Sandbox;
+  let option                = Option;
+  let lastSandboxUpdateTime = 0;
+  export default {
+    data () {
+      return {
+        scene,
+        editor: {},
+        sandbox,
+        option
+      };
+    },
+    watch   : {
+      option: {
+        handler (curVal, oldVal) {
+          let { mode }               = curVal;
+          renderer.shadowMap.enabled = (
+              mode <= 2
+          );
+        },
+        deep: true
+      }
+    },
+    computer: {},
+    methods : {
+      onContainerMouseover (e) {
+        option.afk = false;
+        em.emit('event/log/trace', { step: '启动渲染' });
+      },
+      onContainerMouseout (e) {
+        option.afk = true;
+        em.emit('event/log/trace', { step: '终止渲染' });
+      },
+      async sceneRefush (names = [], type = '') {
+        let currt = Date.now();
+        //        console.log('sceneRefush-0', Date.now() - currt);
+
+        /** *****************************************************
+         *
+         *        刷新画布. 全擦掉, 从沙盘中读取数据重新画
+         *
+         *        如果传入参数names为空则全清空, 否则仅更新names
+         *
+         *
+         *
+         ********************************************************/
+        const { lines, faces, models } = this.sandbox;
+        //        console.log('sceneRefush-1', Date.now() - currt);
+
+        /** **********************************
+         *               清空画布
+         *     所有name以'h-'打头的对象会保留
+         *************************************/
+        //        scene.children = scene.children.filter(({ name }) => {
+        //          return name.indexOf('h-') === 0 &&
+        //                 names.indexOf(name) < 0;
+        //        });
+        /** **********************************
+         *               画线条
+         *************************************/
+        if (type === 'line') {
+          lines.forEach(({ title, vertices }) => {
+            console.log(title);
+            this.createLine(vertices, { name: title });
+          });
+        }
+        /** **********************************
+         *               画三角面
+         *************************************/
+        //        faces.forEach(({ title, vertices }) => {
+        //          this.createLine(vertices, { isClose: true });
+        //        });
+
+        //        console.log('sceneRefush-2', Date.now() - currt);
+        if (type === 'face') {
+          this.updateFaceBuffer(faces);
+        }
+        //        console.log('sceneRefush-3', Date.now() - currt);
+
+        /** **********************************
+         *               载入模型
+         *
+         *  1. 提取待载入模型列表
+         *  2. 识别模型资源类型
+         *  3. 调用对应的加载器, 等待加载器异步返回(buffer)geometry
+         *  4. 根据geometry生成mesh置入场景
+         *************************************/
+        if (type === 'model') {
+          this.updareModels(models, []);
+        }
+      },
+      async add2Scene (mesh, name = '') {
+        mesh.castShadow = true;
+        mesh.name       = name;
+        let meshInScene = scene.children.find(({ name: _name }) => {
+          return _name === name;
+        });
+        if (meshInScene) {
+          meshInScene.geometry = mesh.geometry;
+        } else {
+          scene.add(mesh);
+
+          let meshBox  = new THREE.BoxHelper(mesh);
+          meshBox.name = mesh.name + '_box';
+          scene.add(meshBox);
+        }
+      },
+      async createPoint () {
+
+      },
+      async createLine (
+          vertices  = [
+            { x: 0, y: 0, z: 0 },
+            { x: 0, y: 1, z: 0 }
+          ], option = {
+            name   : '',
+            isClose: false
+          }) {
+
+        if (option.isClose) {
+          vertices.push(vertices[0]);
+        }
+
+        let materialLine = new THREE.LineDashedMaterial({ color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 20 });
+        let geometryLine = new THREE.Geometry();
+        vertices.forEach((p) => {
+          geometryLine.vertices.push(p);
+        });
+
+        let line = new THREE.Line(geometryLine, materialLine);
+
+        this.add2Scene(line, option.name);
+      },
+      updateLineBuffer (lines = []) {
+
+      },
+      updateFaceBuffer (faces = []) {
+        wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
+          /** 该函数用于释放数组 */
+          function disposeArray () { this.array = null; }
+
+          let geometry = new THREE.BufferGeometry();
+          let currt    = Date.now();
+          geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
+          geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
+          geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
+          geometry.computeBoundingSphere();
+          let material = new THREE.MeshToonMaterial(
+              {
+                color       : 0x50b7c1,
+                specular    : 0xffffff,
+                shininess   : 250,
+                side        : THREE.DoubleSide,
+                vertexColors: THREE.VertexColors
+              }
+          );
+
+          let mesh = new THREE.Mesh(geometry, material);
+          this.add2Scene(mesh, 'faces');
+        });
+        wkFBuffergeo.postMessage(faces);
+
+      },
+      updareModels (addModels = []) {
+
+        /**
+         * 删除场景中有, 但是沙盒中已经没有的模型.
+         */
+        scene.children = scene.children.filter(({ name }) => {
+          return name.indexOf('model') !== 0;
+        });
+
+        addModels.forEach(async ({ type, urlGltf, option }) => {
+          let meshs = [];
+          switch (type) {
+            case 'gltf':
+              /**
+               * 从网络下载gltf文档
+               * @type {Promise<any>}
+               */
+              meshs = await Loader.loadModelGltf(urlGltf);
+              /**
+               * 设置文档中模型的偏移量
+               */
+              let { position } = option;
+              meshs.forEach((mesh) => {
+                mesh.position.x = position.x;
+                mesh.position.y = position.y;
+                mesh.position.z = position.z;
+              });
+
+              break;
+            default:
+              //              console.log('模型加载, 类型没找到', type);
+              em.emit('event/log/trace', { step: '模型加载, 类型没找到', type });
+          }
+          if (meshs.length) {
+            em.emit('event/log/trace', { step: '模型加载完毕' });
+            //            console.log('模型加载完毕', meshs);
+            meshs.forEach((mesh) => {
+              //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
+              let name = mesh.name || mesh.id || mesh.uuid || Math.random();
+              this.add2Scene(mesh, 'model_' + name);
+            });
+          }
+        });
+
+      },
+      createArcBuffer (arcs = [], option = {}) {
+
+      },
+      createCube (
+          {
+            x = 0, y = 0, z = 0,
+            wx = 10, wy = 10, wz = 10,
+            rx = 0, ry = 0, rz = 0
+          } = {}
+      ) {
+        let cube = new THREE.Mesh(
+            new THREE.CubeGeometry(wx, wy, wz),
+            new THREE.MeshPhongMaterial(
+                {
+                  color: new THREE.Color()
+                      .setHSL(0.5, 0.5, 0.5)
+                      .multiplyScalar(0.8)
+                }
+            )
+        );
+        this.add2Scene(cube);
+      }
+    },
+    mounted : function () {
+      init();
+
+      sandbox.refush = this.sceneRefush;
+      this.$watch(
+          'sandbox.isGroundVisible', function (curVal, oldVal) {
+            //            console.log({ curVal, oldVal });
+            if (curVal) {
+              scene.add(helperGrid);
+              scene.add(groundPlane);
+            } else {
+              scene.remove(helperGrid);
+              scene.remove(groundPlane);
+            }
+          }
+      );
+      this.$watch(
+          'sandbox.isHelperVisible', function (curVal, oldVal) {
+            //            console.log({ curVal, oldVal });
+            if (curVal) {
+              helperLights.forEach((light) => {scene.add(light);});
+              helperBoxs.forEach((box) => {scene.add(box);});
+            } else {
+              helperLights.forEach((light) => {scene.remove(light);});
+              helperBoxs.forEach((box) => {scene.remove(box);});
+            }
+          }
+      );
+      this.$watch(
+          'sandbox.lines', function (curVal, oldVal) {
+            let currentTime = Date.now();
+            if (currentTime - lastSandboxUpdateTime > 1000) {
+              this.sceneRefush([], 'line');
+              lastSandboxUpdateTime = currentTime;
+            }
+          }
+      );
+      this.$watch(
+          'sandbox.faces', function (curVal, oldVal) {
+            //            console.log({ curVal, oldVal });
+            //            sandbox._faces=curVal;
+            let currentTime = Date.now();
+            if (currentTime - lastSandboxUpdateTime > 1000) {
+              this.sceneRefush([], 'face');
+              lastSandboxUpdateTime = currentTime;
+            }
+          }
+      );
+      this.$watch(
+          'sandbox.models', function (curVal, oldVal) {
+            this.sceneRefush([], 'model');
+          }
+      );
+    }
+  };
+
+</script>
+<style>
+    #mcr-graph-three {
+        height: 100%;
+        width: 100%;
+    }
+</style>
