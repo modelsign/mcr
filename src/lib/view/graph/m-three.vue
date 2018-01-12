@@ -9,6 +9,8 @@
     </div>
 </template>
 <script>
+  const GROUND_WIDTH = 4000;
+
   import Vue from 'vue';
   import 'three';
   import './js/controls/OrbitControls';
@@ -31,11 +33,14 @@
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera    = new THREE.PerspectiveCamera(
+      30, window.innerWidth / window.innerHeight,
+      1, Math.min(GROUND_WIDTH * 10, 100000)
+  );
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   const controls  = new THREE.OrbitControls(camera, renderer.domElement);
 
-  let helperGrid, helperLights = [], helperBoxs = [];
+  let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
@@ -61,22 +66,39 @@
   /** **************************
    * 环境光
    *****************************/
-  let ambientLight  = new THREE.AmbientLight(0xf0f0f0);
+  let ambientLight  = new THREE.AmbientLight(0xffffff);
   ambientLight.name = 'h-light-ambient';
   scene.add(ambientLight);
-  
+
   /** **************************
-   * 聚集光
+   * 点光源
    *****************************/
-  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
-  lightSpot.position.set(0, 1500, 200);
-  lightSpot.castShadow            = true;
-  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
-  lightSpot.shadow.bias           = -0.000222;
-  lightSpot.shadow.mapSize.width  = 1024;
-  lightSpot.shadow.mapSize.height = 1024;
-  lightSpot.name                  = 'h-light-spot';
-  scene.add(lightSpot);
+  //  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
+  //  lightSpot.position.set(0, 1500, 200);
+  //  lightSpot.castShadow            = true;
+  //  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
+  //  lightSpot.shadow.bias           = -0.000222;
+  //  lightSpot.shadow.mapSize.width  = 1024;
+  //  lightSpot.shadow.mapSize.height = 1024;
+  //  lightSpot.name                  = 'h-light-spot';
+  //  scene.add(lightSpot);
+
+  /** **************************
+   * 方向光
+   *****************************/
+  let directionalLight  = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.name = 'h-light-directional';
+  directionalLight.position.set(0, GROUND_WIDTH / 2, 0); 			//default; light shining from top
+  directionalLight.castShadow            = true;            // default false
+  directionalLight.shadow.mapSize.width  = 512;  // default
+  directionalLight.shadow.mapSize.height = 512; // default
+  directionalLight.shadow.camera.left    = GROUND_WIDTH / -2;
+  directionalLight.shadow.camera.right   = GROUND_WIDTH / 2;
+  directionalLight.shadow.camera.top     = GROUND_WIDTH / 2;
+  directionalLight.shadow.camera.bottom  = GROUND_WIDTH / -2;
+  directionalLight.shadow.camera.far     = GROUND_WIDTH / 2 + 1;
+  directionalLight.shadow.camera.near    = 0;
+  scene.add(directionalLight);
 
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
@@ -134,11 +156,14 @@
     render();
   };
   
-  const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
+  const planeGeometry = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
+        planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 }),
+        groundPlane   = new THREE.Mesh(planeGeometry, planeMaterial);
   planeGeometry.rotateX(-Math.PI / 2);
-  const planeMaterial       = new THREE.ShadowMaterial({ opacity: 0.2 });
-  const groundPlane         = new THREE.Mesh(planeGeometry, planeMaterial);
-  groundPlane.position.y    = -200;
+  planeGeometry.translate(0, 0, 0);
+  groundPlane.position.y = 0;
+  //  groundPlane.position.x    = GROUND_WIDTH / -2;
+  //  groundPlane.position.z    = GROUND_WIDTH / -2;
   groundPlane.receiveShadow = true;
   groundPlane.name          = 'h-mesh-plan';
   scene.add(groundPlane);
@@ -148,16 +173,27 @@
    *                                载入各类Helper
    *
    *********************************************************************************/
-  helperGrid = new THREE.GridHelper(20000, 1000);
-  helperGrid.position.y           = -199;
+  /** **************
+   * 世界坐标
+   *****************/
+  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
+  scene.add(axisHelper);
+  /** **************
+   * 地面网格
+   *****************/
+  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 100);
+  helperGrid.position.y           = -1;
   helperGrid.material.opacity     = 0.25;
   helperGrid.material.transparent = true;
   helperGrid.name                 = 'h-helper-grid';
-
-  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
+  /** **************
+   * 灯光
+   *****************/
+  //  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
+  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
 
   scene.add(helperGrid);
-  //  helperLights.forEach((light) => {scene.add(light);});
+  helperLights.forEach((light) => {scene.add(light);});
 
   /** ******************************************************************************
    *
@@ -431,7 +467,6 @@
       sandbox.refush = this.sceneRefush;
       this.$watch(
           'sandbox.isGroundVisible', function (curVal, oldVal) {
-            //            console.log({ curVal, oldVal });
             if (curVal) {
               scene.add(helperGrid);
               scene.add(groundPlane);
@@ -443,7 +478,6 @@
       );
       this.$watch(
           'sandbox.isHelperVisible', function (curVal, oldVal) {
-            //            console.log({ curVal, oldVal });
             if (curVal) {
               helperLights.forEach((light) => {scene.add(light);});
               helperBoxs.forEach((box) => {scene.add(box);});
