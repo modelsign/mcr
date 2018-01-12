@@ -6,36 +6,28 @@
 <style scoped="">
     .com-con-direction {
         position: absolute;
-
         top: 0;
         right: 0;
-
         margin: 24px;
-
         display: block;
-
         width: 128px;
         height: 128px;
         background-color: transparent;
+        pointer-events: all;
 
         /*border-style: dashed;*/
         /*border-radius: 24px;*/
         /*border-color: #337ab7;*/
         /*border-width: 1px;*/
-
-        pointer-events: all;
     }
 
 </style>
 <script>
-  import em from '../../lib/bus';
+  import em from '../../bus';
   import '../graph/js/controls/TrackballControls';
   import TWEEN from '@tweenjs/tween.js';
 
-  var container, stats;
-  var camera, controls, scene, renderer, mesh;
-  var cross;
-  var isMoving = false, tMoving;
+  let container, camera, controls, scene, renderer, mesh, isMoving = false, tMoving;
 
   function init () {
     camera            = new THREE.PerspectiveCamera(45, 1, 1, 1000);
@@ -57,13 +49,10 @@
     // world
     scene = new THREE.Scene();
 
-    let loaderTexture = new THREE.TextureLoader();
-
-    var textureCube = loaderTexture
-        .load(require('./ComConDirection/box.jpg'));
-
-    var geometry = new THREE.BoxBufferGeometry(32, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0xf1f1f1, map: textureCube });
+    let loaderTexture = new THREE.TextureLoader(),
+        textureCube   = loaderTexture.load(require('./ComConDirection/box.jpg')),
+        geometry      = new THREE.BoxBufferGeometry(32, 32, 32),
+        material      = new THREE.MeshBasicMaterial({ color: 0xf1f1f1, map: textureCube });
 
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
@@ -102,7 +91,6 @@
     },
     methods   : {
       onCameraUpdate (c) {
-        //        console.log('direction', this.stateCurrentCamera.direction);
         let lookAt   = c.getWorldDirection().clone(),
             position = c.position.clone(),
             direct   = position.sub(lookAt).normalize()
@@ -111,18 +99,17 @@
           tMoving.stop();
         }
         isMoving = true;
-        tMoving = (
+        tMoving  = (
             tMoving || new TWEEN.Tween(camera.position)
                 .easing(TWEEN.Easing.Quadratic.Out)
-                .onUpdate(() => {
-
-                  camera.up.x = 0;
-                  camera.up.y = 1;
-                  camera.up.z = 0;
-                })
-                .onComplete(() => {
-                  isMoving = false;
-                })
+                .onUpdate(
+                    () => {
+                      camera.up.x = 0;
+                      camera.up.y = 1;
+                      camera.up.z = 0;
+                    }
+                )
+                .onComplete(() => {isMoving = false;})
         ).to({
                x: 100 * direct.x,
                y: 100 * direct.y,
@@ -132,10 +119,8 @@
       }
     },
     mounted   : function () {
-
       init();
       animate();
-
       em.on('scene/camera/update', this.onCameraUpdate);
     }
   };

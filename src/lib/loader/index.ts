@@ -1,10 +1,10 @@
-import {EventUIProgress} from "../../bus/Events/ui/progress";
+import {EventUIProgress} from "../bus/events/ui/progress";
 
 declare let THREE: { GLTFLoader };
-import '../../../components/graph/js/loaders/GLTFLoader.js'
-import Lang from '../Lang'
+import '../view/graph/js/loaders/GLTFLoader.js'
+import Lang from '../lang'
 
-import em from '../../bus';
+import em from '../bus';
 
 class Loader {
 

@@ -17,17 +17,16 @@
   /** ****************************************
    *    导入自定义类
    *******************************************/
-  import mcr from '../../lib/mcr/index.ts';
-  import Sandbox from './Sandbox';
+  import Sandbox from '../../sandbox/Sandbox';
   import Option from './Option';
-  import Loader from '../../lib/mcr/Loader/index';
+  import Loader from '../../loader/index';
 
   /** ****************************************
    *    导入自定义组件
    *******************************************/
-  import em from '../../lib/bus';
+  import em from '../../bus';
 
-  const wkFBuffergeoCode = require('../../lib/workers/cal-factor-mesh.worker');
+  const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
   const wkFBuffergeo     = new wkFBuffergeoCode();
 
   const container = document.createElement('div');

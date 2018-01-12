@@ -1,5 +1,5 @@
-import {Element} from "../Core/Element";
-import {Vector3} from "../Core/Vector3";
+import {Element} from "../core/Element";
+import {Vector3} from "../core/Vector3";
 
 export abstract class ModelElement extends Element {
 

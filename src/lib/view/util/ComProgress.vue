@@ -42,8 +42,7 @@
 </style>
 <script>
   import TWEEN from '@tweenjs/tween.js';
-
-  import em from '../../lib/bus';
+  import em from '../../bus';
 
   let tProgressMap = {};
   export default {

@@ -1,6 +1,6 @@
-import {LineElement} from "../../lib/mcr/Element/LineElement";
-import {FaceElement} from "../../lib/mcr/Element/FaceElement";
-import {ModelElement} from "../../lib/mcr/Element/ModelElement";
+import {LineElement} from "./LineElement";
+import {FaceElement} from "./FaceElement";
+import {ModelElement} from "./ModelElement";
 
 class MCRSandbox {
     lines: LineElement[] = [];

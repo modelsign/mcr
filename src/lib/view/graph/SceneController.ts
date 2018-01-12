@@ -1,4 +1,4 @@
-import instEventEmiter from "../../lib/bus";
+import instEventEmiter from "../../bus";
 
 class SceneControllerOption {
     scene: THREE.Scene;

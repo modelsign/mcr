@@ -46,74 +46,8 @@
     <div id="mcr"></div>
 </div>
 </body>
-<script id="computePreparefaces" type="javascript/worker">
-  self.addEventListener(
-      'message',
-      ({ data: { ilen, jlen, klen } }) => {
-      let fs=[];
-        for (let i = 0 ; i < ilen ; i++) {
-          for (let j = 0 ; j < jlen ; j++) {
-            for (let k = 0 ; k < klen ; k++) {
 
-              fs.push(
-                  {
-                    title   : '测试',
-                    vertices: [
-                      {
-                        x: (
-                               Math.random() + i
-                           ) * 10,
-                        y: (
-                               Math.random() + j
-                           ) * 10,
-                        z: (
-                               Math.random() + k
-                           ) * 10
-                      }, {
-                        x: (
-                               Math.random() + i
-                           ) * 10,
-                        y: (
-                               Math.random() + j
-                           ) * 10,
-                        z: (
-                               Math.random() + k
-                           ) * 10
-                      }, {
-                        x: (
-                               Math.random() + i
-                           ) * 10,
-                        y: (
-                               Math.random() + j
-                           ) * 10,
-                        z: (
-                               Math.random() + k
-                           ) * 10
-                      }
-                    ]
-                  }
-              );
-            }
-          }
-        }
-        postMessage(fs);
-      }
-  );
-
-
-
-
-
-
-
-
-
-
-</script>
 <script>
-  var blobComputePreparefaces   = new Blob([document.querySelector('#computePreparefaces').textContent]),
-      workerComputePreparefaces = new Worker(URL.createObjectURL(blobComputePreparefaces));
-  
   window.onload = async function () {
     if (window.MCR) {
       MCR = await MCR.create('#mcr');
@@ -122,31 +56,6 @@
   };
   
   async function drawSth () {
-    let i  = 0;
-    let fs = [];
-    
-    //    console.log('0', new Date());
-    workerComputePreparefaces.addEventListener('message', ({ data: fs }) => {
-      //      console.log('1', new Date());
-      let nlen   = fs.length;
-      let push1k = (fs) => {
-        setTimeout(() => {
-          let fs1k          = fs.slice(0, 100),
-              fsrst         = fs.slice(100);
-          //          console.log('分批导入', fs1k);
-          MCR.sandbox.faces = MCR.sandbox.faces.concat(fs1k);
-          if (fsrst.length) {
-            push1k(fsrst);
-          }
-        }, 100);
-      };
-      push1k(fs);
-      //      MCR.sandbox.faces = fs;
-      MCR.option.mode = 0;
-      //      console.log('2', new Date());
-    });
-    workerComputePreparefaces.postMessage({ ilen: 10, jlen: 2, klen: 10 });
-
     for (let i = -3 ; i < 3 ; i++)
       setTimeout(() => {
         MCR.sandbox.models.push(
@@ -163,13 +72,6 @@
             }
         );
       }, i * 1000)
-
-    //    MCR.sandbox.models.push(
-    //        {
-    //          type   : 'gltf',
-    //          urlGltf: 'https://threejs.org/examples/models/gltf/OutlinedBox/OutlinedBox.gltf'
-    //        }
-    //    );
   }
 </script>
 </html>

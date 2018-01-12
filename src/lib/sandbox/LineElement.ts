@@ -1,4 +1,4 @@
-import {Element} from "../Core/Element";
+import {Element} from "../core/Element";
 
 export class LineElement extends Element {
 

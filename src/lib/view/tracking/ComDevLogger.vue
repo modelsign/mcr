@@ -25,8 +25,8 @@
     }
 </style>
 <script>
-  import em from '../../lib/bus';
-  import lang from '../../lib/mcr/Lang';
+  import em from '../../bus';
+  import lang from '../../lang';
 
   em.on('event/log/trace', (msg) => {
     if (vm.ctxs.length > 10) {

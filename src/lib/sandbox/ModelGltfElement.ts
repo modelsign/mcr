@@ -1,5 +1,5 @@
 import {ModelElement} from "./ModelElement";
-import {Vector3} from "../Core/Vector3";
+import {Vector3} from "../core/Vector3";
 
 export class ModelGltfElementConstructOption {
     urlGltf: string;

@@ -14,8 +14,8 @@ Vue.use(stores);
 /** ************************************
  * 注册全局组件
  ***************************************/
-import ComIconSvg from './components/util/ComIconSvg.vue';
-import ComIconFont from './components/util/ComIconFont.vue';
+import ComIconSvg from './lib/view/util/ComIconSvg.vue';
+import ComIconFont from './lib/view/util/ComIconFont.vue';
 
 Vue.component('ComIconSvg', ComIconSvg);
 Vue.component('ComIconFont', ComIconFont);

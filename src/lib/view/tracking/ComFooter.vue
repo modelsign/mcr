@@ -104,7 +104,7 @@
     }
 </style>
 <script>
-  import em from '../../lib/bus';
+  import em from '../../bus';
 
   import ComProgress from '../util/ComProgress.vue';
 

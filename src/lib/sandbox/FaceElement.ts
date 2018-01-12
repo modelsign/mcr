@@ -1,5 +1,5 @@
-import {Element, ElementConstructOption} from "../Core/Element";
-import {Vector3} from "../Core/Vector3";
+import {Element, ElementConstructOption} from "../core/Element";
+import {Vector3} from "../core/Vector3";
 
 class FaceElementConstructOption extends ElementConstructOption {
     constructor() {
