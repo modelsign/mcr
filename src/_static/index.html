@@ -108,6 +108,7 @@
 
 
 
+
 </script>
 <script>
   var blobComputePreparefaces   = new Blob([document.querySelector('#computePreparefaces').textContent]),
@@ -146,12 +147,12 @@
     });
     workerComputePreparefaces.postMessage({ ilen: 10, jlen: 2, klen: 10 });
 
-    for (let i = 0 ; i < 4 ; i++)
+    for (let i = -3 ; i < 3 ; i++)
       setTimeout(() => {
         MCR.sandbox.models.push(
             {
               type   : 'gltf',
-              urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
+              urlGltf: '/testModels/gltf/test0804.gltf?_i=' + i,
               option : {
                 position: {
                   x: 0,
