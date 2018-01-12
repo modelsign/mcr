@@ -1,17 +1,24 @@
 <template>
-    <div
-            @mouseover="onContainerMouseover"
-            @touchstart="onContainerMouseover"
-            @mouseout="onContainerMouseout"
-            @touchend="onContainerMouseout"
-            id="mcr-graph-three">
-        加载失败.
+    <div>
+        <div
+                @mouseover="onContainerMouseover"
+                @touchstart="onContainerMouseover"
+                @mouseout="onContainerMouseout"
+                @touchend="onContainerMouseout"
+                id="mcr-graph-three">
+            加载失败.
+        </div>
+        <resize-observer @notify="onContainerResize"/>
     </div>
 </template>
 <script>
   const GROUND_WIDTH = 4000;
 
   import Vue from 'vue';
+  import VueResize from 'vue-resize';
+
+  Vue.use(VueResize);
+
   import 'three';
   import './js/controls/OrbitControls';
 
@@ -23,6 +30,8 @@
   import Option from './Option';
   import Loader from '../../loader/index';
 
+  import { EventResetsize } from '../../bus/events/ui/resetsize';
+
   /** ****************************************
    *    导入自定义组件
    *******************************************/
@@ -33,10 +42,7 @@
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(
-      30, window.innerWidth / window.innerHeight,
-      1, Math.min(GROUND_WIDTH * 10, 100000)
-  );
+  const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   const controls  = new THREE.OrbitControls(camera, renderer.domElement);
 
@@ -90,8 +96,8 @@
   directionalLight.name = 'h-light-directional';
   directionalLight.position.set(0, GROUND_WIDTH / 2, 0); 			//default; light shining from top
   directionalLight.castShadow            = true;            // default false
-  directionalLight.shadow.mapSize.width  = 512;  // default
-  directionalLight.shadow.mapSize.height = 512; // default
+  directionalLight.shadow.mapSize.width  = GROUND_WIDTH / 10;  // default
+  directionalLight.shadow.mapSize.height = GROUND_WIDTH / 10; // default
   directionalLight.shadow.camera.left    = GROUND_WIDTH / -2;
   directionalLight.shadow.camera.right   = GROUND_WIDTH / 2;
   directionalLight.shadow.camera.top     = GROUND_WIDTH / 2;
@@ -147,7 +153,15 @@
   };
   const resetRenderSize = () => {
     let container = document.getElementById('mcr-graph-three');
+
+    /** *******************************
+     * 改变渲染器尺寸 以及相机横纵比
+     **********************************/
     renderer.setSize(container.clientWidth, container.clientHeight);
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+
+    em.emit('ui/resetsize', new EventResetsize(container.clientWidth, container.clientHeight));
   };
   const init            = () => {
     document.getElementById('mcr-graph-three').innerHTML = '';
@@ -235,6 +249,10 @@
     },
     computer: {},
     methods : {
+      onContainerResize (e) {
+        em.emit('event/log/trace', { step: '窗体改变大小' });
+        resetRenderSize();
+      },
       onContainerMouseover (e) {
         option.afk = false;
         em.emit('event/log/trace', { step: '启动渲染' });
@@ -303,6 +321,7 @@
       },
       async add2Scene (mesh, name = '') {
         mesh.castShadow = true;
+        //        mesh.receiveShadow = true;
         mesh.name       = name;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
@@ -516,7 +535,7 @@
   };
 
 </script>
-<style>
+<style scoped="">
     #mcr-graph-three {
         height: 100%;
         width: 100%;
