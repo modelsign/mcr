@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server",
-    "build": "NODE_ENV=prod webpack",
-    "jsdoc": "jsdoc ./src/main.js -r -c /path/to/my/conf.json -d docs"
+    "build": "typedoc -out docs/ src && NODE_ENV=prod webpack",
+    "docs": "typedoc -out docs/ src"
   },
   "author": "",
   "license": "ISC",
