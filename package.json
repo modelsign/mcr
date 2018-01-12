@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "@tweenjs/tween.js": "^17.1.1",
-    "@types/three": "^0.84.34",
     "better-scroll": "^1.3.1",
     "buckets-js": "^1.98.2",
     "events": "^1.1.1",
@@ -31,6 +30,8 @@
     "vuex": "^2.4.0"
   },
   "devDependencies": {
+    "@types/three": "^0.84.34",
+    "@types/tween.js": "^16.9.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-loader": "^7.1.1",
