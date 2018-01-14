@@ -8,11 +8,8 @@ enum MCRModeEnum {
 }
 
 class MCROption {
-    mode: MCRModeEnum;
-
-    constructor() {
-        this.mode = MCRModeEnum.LOWSPEED
-    }
+    mode: MCRModeEnum = MCRModeEnum.LOWSPEED;
+    afk: boolean = false;
 }
 
 export default new MCROption()

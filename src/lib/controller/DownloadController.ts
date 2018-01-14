@@ -5,7 +5,7 @@ export class DownloadTask {
 }
 
 
-export class DownloadController {
+export  class DownloadController {
     _tasks: DownloadTask[];
 
     add(task: DownloadTask) {

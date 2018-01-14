@@ -12,5 +12,7 @@ export class EventRequestCamera {
     action: EventRequestCameraActionEnum;
     arg: EventRequestCameraActionMoveArg;
 
-    constructor(action: EventRequestCameraActionEnum, arg: EventRequestCameraActionMoveArg)
+    constructor(action: EventRequestCameraActionEnum, arg: EventRequestCameraActionMoveArg) {
+
+    }
 }

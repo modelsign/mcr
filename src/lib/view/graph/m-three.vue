@@ -12,7 +12,10 @@
     </div>
 </template>
 <script>
-  const GROUND_WIDTH = 4000;
+  import { CameraController } from '../../../lib/controller/CameraController';
+
+  const GROUND_WIDTH = 4000,
+        TIME_SECONDS = 5000;
 
   import Vue from 'vue';
   import VueResize from 'vue-resize';
@@ -50,7 +53,18 @@
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
-  camera.position.set(2500, 2500, 2500);
+
+  /** ***********************
+   * 初始化若干控制器
+   **************************/
+  let conCamera = new CameraController(camera);
+
+  /** ***********************
+   * 使用控制器操控对象初始化
+   **************************/
+//  camera.position.set(2500, 2500, 2500);
+  camera.position.set(100, 0, 0);
+  conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -414,9 +428,9 @@
       },
       updareModels (addModels = []) {
 
-        /**
+        /** *************************************
          * 删除场景中有, 但是沙盒中已经没有的模型.
-         */
+         ****************************************/
         scene.children = scene.children.filter(({ name }) => {
           return name.indexOf('model') !== 0;
         });
@@ -434,7 +448,6 @@
                * 设置文档中模型的偏移量
                */
               let { position } = option;
-
               meshs.forEach((mesh) => {
                 mesh.position.x = position.x;
                 mesh.position.y = position.y;
