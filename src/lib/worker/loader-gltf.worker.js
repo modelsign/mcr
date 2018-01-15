@@ -22,6 +22,10 @@ self.addEventListener(
       loader.load(
           url,
           (gltf) => {
+            /** ************************************
+             * 并不能工作, 应为worker线程不能传对象.
+             * 得想办法把gltf对象序列化.
+             ***************************************/
             postMessage(
                 {
                   url,
