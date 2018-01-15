@@ -4,7 +4,8 @@
 
             <button
                     v-for="menu in stateMenuBase"
-                    class="tool-btn btn btn-lg btn-success"
+                    class="tool-btn btn btn-lg"
+                    :class="{'btn-info':menu.isToggle,'btn-success':!menu.isToggle}"
                     v-tooltip.top="menu.title"
                     @click="onMenuClick(menu)"
             >
@@ -82,10 +83,15 @@
     methods   : {
       onMenuClick (menu) {
         em.emit('event/log/trace', { step: `按钮[${menu.title}]被点击.` });
-
         if (menu.isToggle) {
-
+          // toggle类型的开关按钮
+          if (!menu.isActive && typeof menu.callbackOn === 'function') {
+            menu.callbackOn(this);
+          } else if (menu.isActive && typeof menu.callbackOff === 'function') {
+            menu.callbackOff(this);
+          }
         } else {
+          // 普通触发按钮
           if (typeof menu.callbackClick === 'function') {
             menu.callbackClick(this);
           }

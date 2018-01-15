@@ -54,6 +54,7 @@ if (window) {
                         title        : '相机归位',
                         icon         : 'msign-home',
                         isToggle     : false,
+                        isActive     : false,
                         callbackClick: function () {
                           em.emit(
                               'request/camera',
@@ -63,6 +64,30 @@ if (window) {
                         },
                         callbackOn   : null,
                         callbackOff  : null
+                      }, {
+                        title        : '全屏',
+                        icon         : 'msign-zoomout',
+                        isToggle     : true,
+                        isActive     : false,
+                        callbackClick: null,
+                        callbackOn   : function () {
+                          this.isActive = true;
+                          this.icon     = 'msign-zoomin';
+                          em.emit(
+                              'request/container',
+                              { action: 'zoomout', arg: {} }
+                          );
+                          em.emit('event/log/trace', { step: `请求全屏` });
+                        },
+                        callbackOff  : function () {
+                          this.isActive = false;
+                          this.icon     = 'msign-zoomout';
+                          em.emit(
+                              'request/container',
+                              { action: 'zoomin', arg: {} }
+                          );
+                          em.emit('event/log/trace', { step: `请求取消全屏` });
+                        }
                       }
                     ],
                     primary: [
