@@ -1,11 +1,6 @@
 <template>
     <div>
-        <div
-                @mouseover="onContainerMouseover"
-                @touchstart="onContainerMouseover"
-                @mouseout="onContainerMouseout"
-                @touchend="onContainerMouseout"
-                id="mcr-graph-three">
+        <div id="mcr-graph-three">
             加载失败.
         </div>
         <resize-observer @notify="onContainerResize"/>
@@ -62,7 +57,7 @@
   /** ***********************
    * 使用控制器操控对象初始化
    **************************/
-//  camera.position.set(2500, 2500, 2500);
+  //  camera.position.set(2500, 2500, 2500);
   camera.position.set(100, 0, 0);
   conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
@@ -266,14 +261,6 @@
       onContainerResize (e) {
         em.emit('event/log/trace', { step: '窗体改变大小' });
         resetRenderSize();
-      },
-      onContainerMouseover (e) {
-        option.afk = false;
-        em.emit('event/log/trace', { step: '启动渲染' });
-      },
-      onContainerMouseout (e) {
-        option.afk = true;
-        em.emit('event/log/trace', { step: '终止渲染' });
       },
       async sceneRefush (names = [], type = '') {
         let currt = Date.now();
@@ -544,6 +531,20 @@
             this.sceneRefush([], 'model');
           }
       );
+
+      /** **********************************
+       * 这是一个处理`请求消息`的代码
+       * 工程中随处可以发出某些想要控制场景的请求,
+       * 比如说设置 option 的成员值
+       *************************************/
+      em.on('request/scene', ({ action, arg }) => {
+        if (action === 'set') {
+          console.log(arg);
+          for (let key in arg) {
+            option[key] = arg[key];
+          }
+        }
+      });
     }
   };
 

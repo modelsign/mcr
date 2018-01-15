@@ -24,9 +24,11 @@
 </template>
 <style scoped="">
 
-    .tool {
-        pointer-events: all;
+    .tool:hover {
+        opacity: 1;
+    }
 
+    .tool {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -41,9 +43,14 @@
         /*border-style: double;*/
 
         /*background-color: rgba(58, 103, 140, 0.45);*/
+
+        opacity: 0.4;
+        transition: all 0.1s ease-in-out;
     }
 
     .tool-btn {
+        pointer-events: all;
+
         width: 48px;
         height: 48px;
         margin: 0;

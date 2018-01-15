@@ -1,5 +1,10 @@
 <template>
-    <div class="mcr">
+    <div
+            @mouseover="onContainerMouseover"
+            @touchstart="onContainerMouseover"
+            @mouseleave="onContainerMouseout"
+            @touchend="onContainerMouseout"
+            class="mcr">
         <transition name="fade">
             <layer-graph></layer-graph>
         </transition>
@@ -25,6 +30,7 @@
 </style>
 
 <script type="text/javascript">
+  import em from './lib/bus';
   import { mapState } from 'vuex';
 
   /** **********************
@@ -64,7 +70,16 @@
     mounted () {
     },
     computed  : mapState({ onelist: state => state.onelist }),
-    methods   : {}
+    methods   : {
+      onContainerMouseout (e) {
+        em.emit('request/scene', { action: 'set', arg: { afk: true } });
+        em.emit('event/log/trace', { step: `请求终止渲染` });
+      },
+      onContainerMouseover (e) {
+        em.emit('request/scene', { action: 'set', arg: { afk: false } });
+        em.emit('event/log/trace', { step: `请求启动渲染` });
+      }
+    }
   };
 
 </script>

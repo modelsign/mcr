@@ -51,20 +51,6 @@ if (window) {
                   menu   : {
                     base   : [
                       {
-                        title        : '相机归位',
-                        icon         : 'msign-home',
-                        isToggle     : false,
-                        isActive     : false,
-                        callbackClick: function () {
-                          em.emit(
-                              'request/camera',
-                              { action: 'reset', arg: {} }
-                          );
-                          em.emit('event/log/trace', { step: `请求相机归位` });
-                        },
-                        callbackOn   : null,
-                        callbackOff  : null
-                      }, {
                         title        : '全屏',
                         icon         : 'msign-zoomout',
                         isToggle     : true,
@@ -83,11 +69,41 @@ if (window) {
                           this.isActive = false;
                           this.icon     = 'msign-zoomout';
                           em.emit(
-                              'request/container',
+                              'request/tool',
                               { action: 'zoomin', arg: {} }
                           );
                           em.emit('event/log/trace', { step: `请求取消全屏` });
                         }
+                      },
+                      {
+                        title        : '相机归位',
+                        icon         : 'msign-home',
+                        isToggle     : false,
+                        isActive     : false,
+                        callbackClick: function () {
+                          em.emit(
+                              'request/camera',
+                              { action: 'reset', arg: {} }
+                          );
+                          em.emit('event/log/trace', { step: `请求相机归位` });
+                        },
+                        callbackOn   : null,
+                        callbackOff  : null
+                      },
+                      {
+                        title        : '截图',
+                        icon         : 'msign-camera',
+                        isToggle     : false,
+                        isActive     : false,
+                        callbackClick: function () {
+                          em.emit(
+                              'request/tool',
+                              { action: 'prtscn', arg: {} }
+                          );
+                          em.emit('event/log/trace', { step: `请求截屏` });
+                        },
+                        callbackOn   : null,
+                        callbackOff  : null
                       }
                     ],
                     primary: [
