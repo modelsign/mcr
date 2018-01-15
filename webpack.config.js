@@ -127,7 +127,7 @@ module.exports = {
           {
             loader : 'url-loader',
             options: {
-              limit: 8192,
+              limit: 5120,
               name : `static/[hash:6].[ext]`
             }
           }

@@ -2,7 +2,6 @@ const TWEEN = require('@tweenjs/tween.js');
 
 const TIME_SECEND = 1000;
 
-
 export class CameraController {
     _isMoving: Boolean = false;
     _tCamera: TWEEN.Tween = null;
@@ -74,8 +73,7 @@ export class CameraController {
                 .start();
         });
     }
-
-
+    
     async fly(positions: THREE.Vector3[], timeout: number = positions.length): Promise<THREE.PerspectiveCamera> {
         let camera = this.camera;
 

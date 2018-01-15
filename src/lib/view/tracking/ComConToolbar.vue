@@ -1,9 +1,19 @@
 <template>
     <div class="tool">
         <div class="btn-group">
+
             <button
-                    v-for="menu in menus"
-                    class="tool-btn btn btn-primary"
+                    v-for="menu in stateMenuBase"
+                    class="tool-btn btn btn-lg btn-success"
+                    v-tooltip.top="menu.title"
+                    @click="onMenuClick(menu)"
+            >
+                <com-icon-svg :icon="menu.icon"></com-icon-svg>
+            </button>
+
+            <button
+                    v-for="menu in stateMenuPrimary"
+                    class="tool-btn btn btn-lg btn-primary"
                     v-tooltip.top="menu.title"
             >
                 <com-icon-svg :icon="menu.icon"></com-icon-svg>
@@ -14,7 +24,6 @@
 <style scoped="">
 
     .tool {
-
         pointer-events: all;
 
         display: flex;
@@ -34,66 +43,55 @@
     }
 
     .tool-btn {
-        width: 42px;
-        height: 42px;
+        width: 48px;
+        height: 48px;
         margin: 0;
         padding: 0;
+
+        font-size: 32px;
 
         border-radius: 4px;
     }
 
-    .tooltip-custom {
-        background-color: transparent;
-    }
 </style>
 <script>
   import Vue from 'vue';
   import Tooltip from 'vue-directive-tooltip';
   import '!style-loader!css-loader!vue-directive-tooltip/css/index.css';
 
+  import em from '../../bus';
+
   Vue.use(Tooltip, {
     delay    : 0,
     placement: 'auto',
-    class    : 'tooltip-custom', // ex: 'tooltip-custom tooltip-other-custom'
     triggers : ['hover', 'focus'],
     offset   : 5
   });
 
-  const vm = {
-
-    menus: [
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      },
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      },
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      },
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      },
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      },
-      {
-        title: '按钮名称',
-        icon : 'icon-copyright'
-      }
-    ]
-  };
+  const vm = {};
   export default {
     components: {},
     data () {
       return vm;
     },
-    methods   : {},
+    stores    : {
+      stateMenuBase   : 'state.menu.base',
+      stateMenuPrimary: 'state.menu.primary',
+      stateMenuAdvance: 'state.menu.advance'
+    },
+    methods   : {
+      onMenuClick (menu) {
+        em.emit('event/log/trace', { step: `按钮[${menu.title}]被点击.` });
+
+        if (menu.isToggle) {
+
+        } else {
+          if (typeof menu.callbackClick === 'function') {
+            menu.callbackClick(this);
+          }
+        }
+      }
+    },
     mounted   : function () {
       console.log('icon-copyright');
     }

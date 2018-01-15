@@ -19,7 +19,7 @@
             </div>
             <div class="col-xs-3">
                 <!--<i class="fa fa-fw fa-copyright"></i>&nbsp;-->
-                <com-icon-font icon="icon-copyright" class="pull-left"></com-icon-font>&nbsp;
+                <com-icon-font icon="msign-copyright" class="pull-left"></com-icon-font>&nbsp;
                 <span>budblack@qq.com</span>&nbsp;
                 <!--<span>2018</span>-->
             </div>

@@ -5,6 +5,13 @@ import em from './lib/bus';
 
 import(/* webpackChunkName: "trace" */'./lib/trace/index');
 
+/** ************************************************
+ *
+ *          引用一些自动完成自我初始化的模块
+ *
+ ***************************************************/
+import ('./lib/listener/index.ts');
+
 // require('babel-core/register');
 // require('babel-polyfill');
 
@@ -40,6 +47,31 @@ if (window) {
                       direction: { x: 0, y: 0, z: 0 }
                     },
                     point : { x: 0, y: 0, z: 0 }
+                  },
+                  menu   : {
+                    base   : [
+                      {
+                        title        : '相机归位',
+                        icon         : 'msign-home',
+                        isToggle     : false,
+                        callbackClick: function () {
+                          em.emit(
+                              'request/camera',
+                              { action: 'reset', arg: {} }
+                          );
+                          em.emit('event/log/trace', { step: `请求相机归位` });
+                        },
+                        callbackOn   : null,
+                        callbackOff  : null
+                      }
+                    ],
+                    primary: [
+                      {
+                        title: '默认按钮',
+                        icon : 'msign-copyright'
+                      }
+                    ],
+                    advance: []
                   },
                   setting: {
                     isDebug: false
