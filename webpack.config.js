@@ -46,7 +46,7 @@ module.exports = {
     filename     : `${outputname}/mcr.js`,
     path         : __dirname + '/dist',
     publicPath   : __webpack_public_path__,
-    chunkFilename: `chunk/[name]/[chunkhash:4].js`
+    chunkFilename: `chunk/[name]/[chunkhash:8].js`
   },
   resolve  : {
     extensions: [
@@ -92,7 +92,7 @@ module.exports = {
         test: /\.worker\.js$/,
         use : {
           loader : __dirname + '/vender/worker-loader',
-          options: { name: `worker/[hash:6].js` }
+          options: { name: `worker/[hash:8].js` }
         }
       },
       {
@@ -128,7 +128,7 @@ module.exports = {
             loader : 'url-loader',
             options: {
               limit: 5120,
-              name : `static/[hash:6].[ext]`
+              name : `static/[hash:8].[ext]`
             }
           }
         ]
