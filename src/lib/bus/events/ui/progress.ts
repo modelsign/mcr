@@ -2,7 +2,6 @@
  *
  *
  */
-
 export class EventUIProgress {
     id: any;
     progress: number;
@@ -17,3 +16,4 @@ export class EventUIProgress {
         this.progress = progress;
     }
 }
+

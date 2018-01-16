@@ -16,7 +16,7 @@ const scope = 'mcr';
  *************************************************************/
 if (process.env.NODE_ENV === 'prod') {
   // __webpack_public_path__ = '/Public/mcr/';
-  __webpack_public_path__ = 'http://mcr.tool.budblack.me/';
+  __webpack_public_path__ = '//mcr.tool.budblack.me/';
 } else {
   __webpack_public_path__ = '/';
 }
@@ -127,7 +127,7 @@ module.exports = {
           {
             loader : 'url-loader',
             options: {
-              limit: 8192,
+              limit: 5120,
               name : `static/[hash:6].[ext]`
             }
           }

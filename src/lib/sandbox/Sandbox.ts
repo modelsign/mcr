@@ -8,7 +8,7 @@ class MCRSandbox {
     models: ModelElement[] = [];
 
     isGroundVisible: boolean = true;
-    isHelperVisible: boolean = false;
+    isHelperVisible: boolean = true;
 
     constructor() {
     }

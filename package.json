@@ -6,14 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server",
-    "build": "typedoc -out docs/ src && NODE_ENV=prod webpack",
+    "build": "NODE_ENV=prod webpack",
     "docs": "typedoc -out docs/ src"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@tweenjs/tween.js": "^17.1.1",
-    "@types/three": "^0.84.34",
     "better-scroll": "^1.3.1",
     "buckets-js": "^1.98.2",
     "events": "^1.1.1",
@@ -24,12 +23,15 @@
     "typedoc": "^0.9.0",
     "typescript": "^2.6.2",
     "vue": "^2.4.2",
+    "vue-resize": "^0.4.3",
     "vue-router": "^2.7.0",
     "vue-spinner": "^1.0.3",
     "vue-stores": "^1.0.3",
     "vuex": "^2.4.0"
   },
   "devDependencies": {
+    "@types/three": "^0.84.34",
+    "@types/tween.js": "^16.9.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-loader": "^7.1.1",
@@ -73,9 +75,11 @@
     "typedoc-webpack-plugin": "^1.1.4",
     "url-loader": "^0.5.8",
     "vue-attr-scope-loader": "^0.1.0",
+    "vue-directive-tooltip": "^1.4.2",
     "vue-loader": "^13.0.4",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.4.2",
+    "vue-tooltips": "^1.0.2",
     "webpack": "^3.10.0",
     "webpack-bundle-analyzer": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0",

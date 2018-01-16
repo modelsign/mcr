@@ -1,15 +1,22 @@
 <template>
-    <div
-            @mouseover="onContainerMouseover"
-            @touchstart="onContainerMouseover"
-            @mouseout="onContainerMouseout"
-            @touchend="onContainerMouseout"
-            id="mcr-graph-three">
-        加载失败.
+    <div>
+        <div id="mcr-graph-three">
+            加载失败.
+        </div>
+        <resize-observer @notify="onContainerResize"/>
     </div>
 </template>
 <script>
+  import { CameraController } from '../../../lib/controller/CameraController';
+
+  const GROUND_WIDTH = 4000,
+        TIME_SECONDS = 5000;
+
   import Vue from 'vue';
+  import VueResize from 'vue-resize';
+
+  Vue.use(VueResize);
+
   import 'three';
   import './js/controls/OrbitControls';
 
@@ -21,6 +28,8 @@
   import Option from './Option';
   import Loader from '../../loader/index';
 
+  import { EventResetsize } from '../../bus/events/ui/resetsize';
+
   /** ****************************************
    *    导入自定义组件
    *******************************************/
@@ -31,15 +40,26 @@
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
+  const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   const controls  = new THREE.OrbitControls(camera, renderer.domElement);
 
-  let helperGrid, helperLights = [], helperBoxs = [];
+  let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
-  camera.position.set(2500, 2500, 2500);
+
+  /** ***********************
+   * 初始化若干控制器
+   **************************/
+  let conCamera = new CameraController(camera);
+
+  /** ***********************
+   * 使用控制器操控对象初始化
+   **************************/
+  //  camera.position.set(2500, 2500, 2500);
+  camera.position.set(100, 0, 0);
+  conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -61,22 +81,39 @@
   /** **************************
    * 环境光
    *****************************/
-  let ambientLight  = new THREE.AmbientLight(0xf0f0f0);
+  let ambientLight  = new THREE.AmbientLight(0xffffff);
   ambientLight.name = 'h-light-ambient';
   scene.add(ambientLight);
-  
+
   /** **************************
-   * 聚集光
+   * 点光源
    *****************************/
-  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
-  lightSpot.position.set(0, 1500, 200);
-  lightSpot.castShadow            = true;
-  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
-  lightSpot.shadow.bias           = -0.000222;
-  lightSpot.shadow.mapSize.width  = 1024;
-  lightSpot.shadow.mapSize.height = 1024;
-  lightSpot.name                  = 'h-light-spot';
-  scene.add(lightSpot);
+  //  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
+  //  lightSpot.position.set(0, 1500, 200);
+  //  lightSpot.castShadow            = true;
+  //  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
+  //  lightSpot.shadow.bias           = -0.000222;
+  //  lightSpot.shadow.mapSize.width  = 1024;
+  //  lightSpot.shadow.mapSize.height = 1024;
+  //  lightSpot.name                  = 'h-light-spot';
+  //  scene.add(lightSpot);
+
+  /** **************************
+   * 方向光
+   *****************************/
+  let directionalLight  = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.name = 'h-light-directional';
+  directionalLight.position.set(0, GROUND_WIDTH / 2, 0); 			//default; light shining from top
+  directionalLight.castShadow            = true;            // default false
+  directionalLight.shadow.mapSize.width  = GROUND_WIDTH / 10;  // default
+  directionalLight.shadow.mapSize.height = GROUND_WIDTH / 10; // default
+  directionalLight.shadow.camera.left    = GROUND_WIDTH / -2;
+  directionalLight.shadow.camera.right   = GROUND_WIDTH / 2;
+  directionalLight.shadow.camera.top     = GROUND_WIDTH / 2;
+  directionalLight.shadow.camera.bottom  = GROUND_WIDTH / -2;
+  directionalLight.shadow.camera.far     = GROUND_WIDTH / 2 + 1;
+  directionalLight.shadow.camera.near    = 0;
+  scene.add(directionalLight);
 
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
@@ -125,7 +162,15 @@
   };
   const resetRenderSize = () => {
     let container = document.getElementById('mcr-graph-three');
+
+    /** *******************************
+     * 改变渲染器尺寸 以及相机横纵比
+     **********************************/
     renderer.setSize(container.clientWidth, container.clientHeight);
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+
+    em.emit('ui/resetsize', new EventResetsize(container.clientWidth, container.clientHeight));
   };
   const init            = () => {
     document.getElementById('mcr-graph-three').innerHTML = '';
@@ -134,11 +179,14 @@
     render();
   };
   
-  const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
+  const planeGeometry = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
+        planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 }),
+        groundPlane   = new THREE.Mesh(planeGeometry, planeMaterial);
   planeGeometry.rotateX(-Math.PI / 2);
-  const planeMaterial       = new THREE.ShadowMaterial({ opacity: 0.2 });
-  const groundPlane         = new THREE.Mesh(planeGeometry, planeMaterial);
-  groundPlane.position.y    = -200;
+  planeGeometry.translate(0, 0, 0);
+  groundPlane.position.y = 0;
+  //  groundPlane.position.x    = GROUND_WIDTH / -2;
+  //  groundPlane.position.z    = GROUND_WIDTH / -2;
   groundPlane.receiveShadow = true;
   groundPlane.name          = 'h-mesh-plan';
   scene.add(groundPlane);
@@ -148,16 +196,27 @@
    *                                载入各类Helper
    *
    *********************************************************************************/
-  helperGrid = new THREE.GridHelper(20000, 1000);
-  helperGrid.position.y           = -199;
+  /** **************
+   * 世界坐标
+   *****************/
+  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
+  scene.add(axisHelper);
+  /** **************
+   * 地面网格
+   *****************/
+  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 100);
+  helperGrid.position.y           = -1;
   helperGrid.material.opacity     = 0.25;
   helperGrid.material.transparent = true;
   helperGrid.name                 = 'h-helper-grid';
-
-  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
+  /** **************
+   * 灯光
+   *****************/
+  //  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
+  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
 
   scene.add(helperGrid);
-  //  helperLights.forEach((light) => {scene.add(light);});
+  helperLights.forEach((light) => {scene.add(light);});
 
   /** ******************************************************************************
    *
@@ -199,13 +258,9 @@
     },
     computer: {},
     methods : {
-      onContainerMouseover (e) {
-        option.afk = false;
-        em.emit('event/log/trace', { step: '启动渲染' });
-      },
-      onContainerMouseout (e) {
-        option.afk = true;
-        em.emit('event/log/trace', { step: '终止渲染' });
+      onContainerResize (e) {
+        em.emit('event/log/trace', { step: '窗体改变大小' });
+        resetRenderSize();
       },
       async sceneRefush (names = [], type = '') {
         let currt = Date.now();
@@ -267,6 +322,7 @@
       },
       async add2Scene (mesh, name = '') {
         mesh.castShadow = true;
+        //        mesh.receiveShadow = true;
         mesh.name       = name;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
@@ -359,9 +415,9 @@
       },
       updareModels (addModels = []) {
 
-        /**
+        /** *************************************
          * 删除场景中有, 但是沙盒中已经没有的模型.
-         */
+         ****************************************/
         scene.children = scene.children.filter(({ name }) => {
           return name.indexOf('model') !== 0;
         });
@@ -379,7 +435,6 @@
                * 设置文档中模型的偏移量
                */
               let { position } = option;
-
               meshs.forEach((mesh) => {
                 mesh.position.x = position.x;
                 mesh.position.y = position.y;
@@ -431,7 +486,6 @@
       sandbox.refush = this.sceneRefush;
       this.$watch(
           'sandbox.isGroundVisible', function (curVal, oldVal) {
-            //            console.log({ curVal, oldVal });
             if (curVal) {
               scene.add(helperGrid);
               scene.add(groundPlane);
@@ -443,7 +497,6 @@
       );
       this.$watch(
           'sandbox.isHelperVisible', function (curVal, oldVal) {
-            //            console.log({ curVal, oldVal });
             if (curVal) {
               helperLights.forEach((light) => {scene.add(light);});
               helperBoxs.forEach((box) => {scene.add(box);});
@@ -478,11 +531,24 @@
             this.sceneRefush([], 'model');
           }
       );
+
+      /** **********************************
+       * 这是一个处理`请求消息`的代码
+       * 工程中随处可以发出某些想要控制场景的请求,
+       * 比如说设置 option 的成员值
+       *************************************/
+      em.on('request/scene', ({ action, arg }) => {
+        if (action === 'set') {
+          for (let key in arg) {
+            option[key] = arg[key];
+          }
+        }
+      });
     }
   };
 
 </script>
-<style>
+<style scoped="">
     #mcr-graph-three {
         height: 100%;
         width: 100%;

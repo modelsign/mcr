@@ -51,13 +51,16 @@
   window.onload = async function () {
     if (window.MCR) {
       MCR = await MCR.create('#mcr');
-      setTimeout(drawSth, 1000);
+      setTimeout(drawSth, 4000);
     }
   };
   
   async function drawSth () {
-    for (let i = -3 ; i < 3 ; i++)
+    for (let i = 0 ; i < 1 ; i++)
       setTimeout(() => {
+        MCR.option.mode = 0;
+        MCR.option.afk  = false;
+
         MCR.sandbox.models.push(
             {
               type   : 'gltf',
@@ -65,7 +68,7 @@
               option : {
                 position: {
                   x: 0,
-                  y: -2200,
+                  y: -2000,
                   z: 1000 * i
                 }
               }
