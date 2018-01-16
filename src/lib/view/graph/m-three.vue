@@ -10,7 +10,7 @@
   import { CameraController } from '../../../lib/controller/CameraController';
 
   const GROUND_WIDTH = 4000,
-        TIME_SECONDS = 5000;
+        TIME_SECONDS = 2000;
 
   import Vue from 'vue';
   import VueResize from 'vue-resize';
@@ -58,7 +58,7 @@
    * 使用控制器操控对象初始化
    **************************/
   //  camera.position.set(2500, 2500, 2500);
-  camera.position.set(100, 0, 0);
+  //  camera.position.set(100, 0, 0);
   conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
@@ -243,6 +243,11 @@
    *
    *  注意确认好该段代码执行时候目标对象已准备就绪.
    *
+   *  需要初始化的对象有
+   *
+   *    camera, scene, renderer
+   *    sandbox
+   *
    ***************************************************************/
   import _comInst from '../../../lib/_common/instance';
   import { ToolController } from '../../../lib/controller/ToolController.ts';
@@ -250,6 +255,8 @@
   _comInst.graph.camera   = camera;
   _comInst.graph.scene    = scene;
   _comInst.graph.renderer = renderer;
+  _comInst.graph.control  = controls;
+  _comInst.sandbox        = sandbox;
 
   export default {
     data () {
@@ -332,7 +339,7 @@
          *  4. 根据geometry生成mesh置入场景
          *************************************/
         if (type === 'model') {
-          this.updareModels(models, []);
+          await this.updareModels(models, []);
         }
       },
       async add2Scene (mesh, name = '') {
@@ -428,7 +435,7 @@
         wkFBuffergeo.postMessage(faces);
 
       },
-      updareModels (addModels = []) {
+      async updareModels (addModels = []) {
 
         /** *************************************
          * 删除场景中有, 但是沙盒中已经没有的模型.
@@ -463,10 +470,10 @@
           if (meshs.length) {
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
-            meshs.forEach((mesh) => {
+            await meshs.forEach(async (mesh) => {
               //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
               let name = mesh.name || mesh.id || mesh.uuid || Math.random();
-              this.add2Scene(mesh, 'model_' + name);
+              await this.add2Scene(mesh, 'model_' + name);
             });
           }
         });
@@ -542,8 +549,11 @@
           }
       );
       this.$watch(
-          'sandbox.models', function (curVal, oldVal) {
-            this.sceneRefush([], 'model');
+          'sandbox.models', async function (curVal, oldVal) {
+            await  this.sceneRefush([], 'model');
+            setTimeout(() => {
+              em.emit('request/camera', { action: 'reset', arg: {} });
+            }, TIME_SECONDS);
           }
       );
 

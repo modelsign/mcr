@@ -31,10 +31,18 @@ export class ToolController {
     async prtScn(isIncludeBorder: boolean, isFullScreen: boolean = false) {
         em.emit('event/log/trace', {step: '截图'});
         if (isUndefined(isIncludeBorder)) {
-            layer.confirm(
+            layer.msg(
                 '选择输出样式',
                 {
-                    icon: 3, title: '截图确认', btn: ['含边框', '无边框', '全网页'],
+                    btn: ['含边框', '无边框', '全网页'],
+                    btn1: (index) => {
+                        this.prtScn(true);
+                        layer.close(index);
+                    },
+                    btn2: (index) => {
+                        this.prtScn(false);
+                        layer.close(index);
+                    },
                     btn3: (index) => {
                         setTimeout(() => {
                             this.prtScn(true, true);
@@ -43,12 +51,10 @@ export class ToolController {
                     }
                 },
                 (index) => {
-                    this.prtScn(true);
-                    layer.close(index);
+
                 },
                 (index) => {
-                    this.prtScn(false);
-                    layer.close(index);
+
                 });
         } else {
             let imgData;

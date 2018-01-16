@@ -8,13 +8,7 @@ import {SceneController} from "../controller/SceneController";
 import {EventEmitter} from "events";
 import {PlatformController} from "../controller/PlatformController";
 import {ToolController} from "../controller/ToolController";
-
-class Sandbox {
-    faces: FaceElement[] = [];
-    lines: LineElement[] = [];
-    labels: LabelElement[] = [];
-    models: ModelElement[] = [];
-}
+import {Sandbox} from "../sandbox/Sandbox";
 
 class Option {
     mode: number = 0;
@@ -38,6 +32,7 @@ class Graph {
     scene: THREE.Scene;
     camera: THREE.PerspectiveCamera;
     renderer: THREE.Renderer;
+    control: THREE.OrbitControls;
 }
 
 class Event {

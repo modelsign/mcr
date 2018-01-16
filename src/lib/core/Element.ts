@@ -5,6 +5,8 @@ import {EventMap} from "typedoc/dist/lib/utils/events";
 
 export class Element implements IEvent {
 
+    primaryObject: THREE.Object3D;
+
     addEventListener<K extends keyof EventMap>(type: K, listener: (this: HTMLElement, ev: EventMap[K]) => any, useCapture?: boolean): void {
 
     }
@@ -19,4 +21,5 @@ export abstract class ElementConstructOption {
 
     id: String;
     position: Vector3;
+
 }

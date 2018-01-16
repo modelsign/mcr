@@ -47,10 +47,13 @@
 </body>
 
 <script>
+
+  const TIME_SECONDS = 2000;
+
   window.onload = async function () {
     if (window.MCR) {
       MCR = await MCR.create('#mcr');
-      setTimeout(drawSth, 4000);
+      setTimeout(drawSth, TIME_SECONDS);
     }
   };
   
@@ -73,7 +76,7 @@
               }
             }
         );
-      }, i * 1000)
+      }, i * TIME_SECONDS)
   }
 </script>
 </html>
