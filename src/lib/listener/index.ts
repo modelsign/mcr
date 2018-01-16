@@ -16,7 +16,6 @@ let _sceneListener: _SceneListener,
 
 function init() {
     if (em && scene && camera) {
-
         _sceneListener = new _SceneListener(scene);
         _cameraListerer = new _CameraListener(camera)
 

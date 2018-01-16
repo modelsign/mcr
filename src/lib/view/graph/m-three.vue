@@ -539,7 +539,6 @@
        *************************************/
       em.on('request/scene', ({ action, arg }) => {
         if (action === 'set') {
-          console.log(arg);
           for (let key in arg) {
             option[key] = arg[key];
           }
