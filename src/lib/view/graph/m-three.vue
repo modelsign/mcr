@@ -372,7 +372,9 @@
           tMesh.easing(TWEEN.Easing.Quartic.Out)
                .to(p, 1200)
                .onUpdate(() => {})
-               .onComplete(() => {})
+               .onComplete(() => {
+                 em.emit('request/camera', { action: 'reset', arg: {} });
+               })
                .start();
 
           scene.add(mesh);
@@ -551,9 +553,6 @@
       this.$watch(
           'sandbox.models', async function (curVal, oldVal) {
             await  this.sceneRefush([], 'model');
-            setTimeout(() => {
-              em.emit('request/camera', { action: 'reset', arg: {} });
-            }, TIME_SECONDS);
           }
       );
 
