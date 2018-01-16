@@ -41,7 +41,7 @@
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
-  const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
   const controls  = new THREE.OrbitControls(camera, renderer.domElement);
 
   let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
@@ -236,6 +236,21 @@
   let sandbox               = Sandbox;
   let option                = Option;
   let lastSandboxUpdateTime = 0;
+
+  /** ************************************************************
+   *
+   *              提交一部分涉及到三维组件的全局实例引用
+   *
+   *  注意确认好该段代码执行时候目标对象已准备就绪.
+   *
+   ***************************************************************/
+  import _comInst from '../../../lib/_common/instance';
+  import { ToolController } from '../../../lib/controller/ToolController.ts';
+
+  _comInst.graph.camera   = camera;
+  _comInst.graph.scene    = scene;
+  _comInst.graph.renderer = renderer;
+
   export default {
     data () {
       return {

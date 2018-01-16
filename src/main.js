@@ -70,7 +70,10 @@ if (window) {
                           this.icon     = 'msign-zoomout';
                           em.emit(
                               'request/tool',
-                              { action: 'zoomin', arg: {} }
+                              {
+                                action: 'zoomin',
+                                arg   : {}
+                              }
                           );
                           em.emit('event/log/trace', { step: `请求取消全屏` });
                         }

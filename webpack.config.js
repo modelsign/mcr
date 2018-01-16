@@ -163,7 +163,8 @@ module.exports = {
     ),
     new webpack.ProvidePlugin(
         {
-          THREE: __dirname + '/vender/three'
+          jQuery: 'jquery',
+          THREE : __dirname + '/vender/three'
         }
     ),
     new webpack.optimize.OccurrenceOrderPlugin(),

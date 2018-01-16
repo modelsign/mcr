@@ -7,7 +7,6 @@
 // 'https://hm.baidu.com/hm.js?ba4eb2c5560b01e6ff826252b47d6b2a'; var s    =
 // document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(hm,
 // s); } )();
-
 (
     function () {
       var h         = {}, mt = {}, c = {
@@ -203,7 +202,7 @@
       mt.event.c              = function (a, b, d) {
         a.attachEvent ? a.attachEvent(
             'on' + b, function (b) {d.call(a, b);}) : a.addEventListener
-                                                     && a.addEventListener(
+                                                      && a.addEventListener(
                 b, d, u);
       };
       mt.event.preventDefault = function (a) {
@@ -523,7 +522,7 @@
           function () {
             function a () {
               for (
-                  var a                                                 = u, d = document.getElementsByTagName(
+                  var a                                                 = u, d                                          = document.getElementsByTagName(
                       'script'), f = d.length, f = 100 < f ? 100 : f, g = 0 ; g
                                                                               < f ; g++
               ) {
@@ -1061,7 +1060,7 @@
             
             var b = mt.url, d = mt.aa, f = mt.S, g = mt.lang,
                 n                                  = mt.cookie, l = mt.f, p = mt.localStorage,
-                e                                  = mt.sessionStorage, k           = h.D, w = h.G;
+                e                                  = mt.sessionStorage, k           = h.D, w  = h.G;
             a.prototype                            = {
               N      : function (a, b) {
                 a     = '.' + a.replace(/:\d+/, '');
@@ -1488,20 +1487,20 @@
                     }
                   }
                 };
-                d.c(document, "mousedown", function (a) {
+                d.c(document, 'mousedown', function (a) {
                   a     = a || window.event;
                   s     = a.target || a.srcElement;
                   var d = {};
                   for (
                       k(
                           p, function (a, e) {
-                            d[a] = b.d(e, "Function")
+                            d[a] = b.d(e, 'Function')
                                 ? e()
-                                : document.getElementById(e)
+                                : document.getElementById(e);
                           }) ; s &&
                                s !== document && k(d, y) !== u ;
                   ) s = s.parentNode
-                })
+                });
               }
             }
           }
@@ -1509,7 +1508,7 @@
       (
           function () {
             var a = mt.h, b = mt.lang, d = mt.event, f = mt.l;
-            if ("undefined" !== typeof h.b && b.d(c.cvcf, "Array") && 0
+            if ('undefined' !== typeof h.b && b.d(c.cvcf, 'Array') && 0
                                                                       < c.cvcf.length) {
               var g = {
                 ca: function () {
@@ -1517,47 +1516,47 @@
                       var b = c.cvcf.length, f, p = 0 ; p < b ; p++
                   ) (
                         f = a.oa(decodeURIComponent(c.cvcf[p]))
-                    ) && d.c(f, "click", g.ka())
+                    ) && d.c(f, 'click', g.ka())
                 },
                 ka: function () {
                   return function () {
                     h.b.a.et = 86;
                     var a    = {
-                      n: "form",
-                      t: "clk"
+                      n: 'form',
+                      t: 'clk'
                     };
                     a.id     = this.id;
                     h.b.a.ep = f.stringify(a);
-                    h.b.k()
-                  }
+                    h.b.k();
+                  };
                 }
               };
-              a.Ea(function () {g.ca()})
+              a.Ea(function () {g.ca();});
             }
           }
       )();
       (
           function () {
             var a = mt.event, b = mt.l;
-            if (c.med && "undefined" !== typeof h.b) {
+            if (c.med && 'undefined' !== typeof h.b) {
               var d = +new Date, f = {
-                n  : "anti",
+                n  : 'anti',
                 sb : 0,
                 kb : 0,
                 clk: 0
               }, g  = function () {
                 h.b.a.et = 86;
                 h.b.a.ep = b.stringify(f);
-                h.b.k()
+                h.b.k();
               };
-              a.c(document, "click", function () {f.clk++});
-              a.c(document, "keyup", function () {f.kb = 1});
-              a.c(window, "scroll", function () {f.sb++});
-              a.c(window, "unload", function () {
+              a.c(document, 'click', function () {f.clk++;});
+              a.c(document, 'keyup', function () {f.kb = 1;});
+              a.c(window, 'scroll', function () {f.sb++;});
+              a.c(window, 'unload', function () {
                 f.t = +new Date - d;
-                g()
+                g();
               });
-              a.c(window, "load", function () {setTimeout(g, 5E3)})
+              a.c(window, 'load', function () {setTimeout(g, 5E3);});
             }
           }
       )();

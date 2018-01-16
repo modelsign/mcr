@@ -67,7 +67,7 @@ export class CameraController {
                     _target.x = _tCameraOpt.tx;
                     _target.y = _tCameraOpt.ty;
                     _target.z = _tCameraOpt.tz;
-                    console.log(_tCameraOpt)
+                    // console.log(_tCameraOpt)
                     camera.lookAt(_target)
                 })
                 .start();
