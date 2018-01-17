@@ -25,7 +25,6 @@
    *    导入自定义类
    *******************************************/
   import Sandbox from '../../sandbox/Sandbox';
-  import Option from './Option';
   import Loader from '../../loader/index';
 
   import { EventResetsize } from '../../bus/events/ui/resetsize';
@@ -234,7 +233,6 @@
    *
    ***************************************************************/
   let sandbox               = Sandbox;
-  let option                = Option;
   let lastSandboxUpdateTime = 0;
 
   /** ************************************************************
@@ -257,6 +255,8 @@
   _comInst.graph.renderer = renderer;
   _comInst.graph.control  = controls;
   _comInst.sandbox        = sandbox;
+
+  let option = _comInst.option;
 
   export default {
     data () {

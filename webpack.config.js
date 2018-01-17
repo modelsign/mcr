@@ -1,10 +1,11 @@
-const webpack              = require('webpack');
-const path                 = require('path');
-const HtmlWebpackPlugin    = require('html-webpack-plugin');
-const CleanPlugin          = require('clean-webpack-plugin');
-const CopyPlugin           = require('copy-webpack-plugin');
-const BabiliPlugin         = require('babili-webpack-plugin');
-const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+const webpack                  = require('webpack');
+const path                     = require('path');
+const HtmlWebpackPlugin        = require('html-webpack-plugin');
+const CleanPlugin              = require('clean-webpack-plugin');
+const CopyPlugin               = require('copy-webpack-plugin');
+const BabiliPlugin             = require('babili-webpack-plugin');
+const TypedocWebpackPlugin     = require('typedoc-webpack-plugin');
+const AutoRequireWebpackPlugin = require('auto-require-webpack-plugin');
 
 // 如果预先定义过环境变量，就将其赋值给`ASSET_PATH`变量，否则赋值为根目录
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -43,10 +44,12 @@ module.exports = {
   },
   entry    : __dirname + '/src/main.js',
   output   : {
-    filename     : `${outputname}/mcr.js`,
+    filename     : `${outputname}/msign.js`,
     path         : __dirname + '/dist',
     publicPath   : __webpack_public_path__,
-    chunkFilename: `chunk/[name]/[chunkhash:8].js`
+    chunkFilename: process.env.NODE_ENV === 'prod'
+        ? `chunk/[name]/[chunkhash:8].js`
+        : 'chunk/[chunkhash:8]/[name].js'
   },
   resolve  : {
     extensions: [
@@ -168,6 +171,7 @@ module.exports = {
         }
     ),
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new AutoRequireWebpackPlugin('/src/lib/view/'),
     new CleanPlugin('dist/*'),
     new HtmlWebpackPlugin(
         {

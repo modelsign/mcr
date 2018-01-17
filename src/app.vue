@@ -53,9 +53,9 @@
   /** **********************
    * 统一使用异步组件
    *************************/
-  const promiseLayerGraph    = import(/* webpackChunkName: "ui" */'./lib/view/graph/m-three.vue'),
-        promiseMEmpty        = import(/* webpackChunkName: "ui" */'./lib/view/util/ComEmpty.vue'),
-        promiseLayerTracking = import(/* webpackChunkName: "ui" */'./lib/view/tracking/LayerTracking.vue')
+  const promiseLayerGraph    = import(/* webpackChunkName: "core" */'./lib/view/graph/m-three.vue'),
+        promiseMEmpty        = import(/* webpackChunkName: "core" */'./lib/view/util/ComEmpty.vue'),
+        promiseLayerTracking = import(/* webpackChunkName: "core" */'./lib/view/tracking/LayerTracking.vue')
   ;
 
   /** ************************************************************

@@ -51,8 +51,8 @@
   const TIME_SECONDS = 2000;
 
   window.onload = async function () {
-    if (window.MCR) {
-      MCR = await MCR.create('#mcr');
+    if (window.msign) {
+      msign = await msign.create('#mcr');
       setTimeout(drawSth, TIME_SECONDS);
     }
   };
@@ -60,10 +60,10 @@
   async function drawSth () {
     for (let i = 0 ; i < 1 ; i++)
       setTimeout(() => {
-        MCR.option.mode = 0;
-        MCR.option.afk  = false;
+        msign.option.mode = 0;
+        msign.option.afk  = false;
 
-        MCR.sandbox.models.push(
+        msign.sandbox.models.push(
             {
               type   : 'gltf',
               urlGltf: '/testModels/gltf/test0804.gltf?_i=' + i,

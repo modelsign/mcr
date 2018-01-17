@@ -19,13 +19,13 @@ export class _CustomizeListener {
                     case 'right':
                     case 'center':
                         let region = option.action.toLowerCase(),
-                            view = arg.context;
+                            view = option.arg.context;
                         await _customizeContrller.switchCustomizeRegion(region, view);
                         break;
                     default:
                         em.emit('event/log/trace', {step: '仅支持"right","center".'});
                         break;
                 }
-            })
+            });
     }
 }

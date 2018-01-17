@@ -54,7 +54,4 @@ inst.controller = new Controller();
 inst.graph = new Graph();
 inst.event = new Event();
 
-
-window['mcr'] = inst;
-
 export default inst;
