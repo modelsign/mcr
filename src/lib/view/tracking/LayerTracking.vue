@@ -1,7 +1,5 @@
 <template>
     <div class="layer-tracking full-width full-height">
-
-
         <!--放置控件-->
         <div class="con">
             <div class="layer-tracking-grid-row-1 col-xs-12">
@@ -11,10 +9,14 @@
                     <com-con-direction></com-con-direction>
                 </div>
             </div>
-            <div class="layer-tracking-grid-row-0 col-xs-12">
-                <div class="layer-tracking-grid-col-1 col-xs-1"></div>
-                <div class="layer-tracking-grid-col-2 col-xs-10"></div>
-                <div class="layer-tracking-grid-col-3 col-xs-1"></div>
+            <div class="layer-tracking-grid-row-2 col-xs-12">
+                <div class="layer-tracking-grid-col-1 col-xs-2"></div>
+                <div class="layer-tracking-grid-col-2 col-xs-8"></div>
+                <div class="layer-tracking-grid-col-3 col-xs-2">
+                    <div>
+                        <com-customize-right></com-customize-right>
+                    </div>
+                </div>
             </div>
             <div class="layer-tracking-grid-row-3 col-xs-12">
                 <div class="layer-tracking-grid-col-1 col-xs-1"></div>
@@ -69,8 +71,16 @@
         height: 64px;
     }
 
-    .layer-tracking-grid-row-1 {
+    .layer-tracking-grid-row-1, .layer-tracking-grid-row-3 {
+        height: 20%;
+    }
 
+    .layer-tracking-grid-row-2 {
+        height: 60%;
+    }
+
+    .layer-tracking-grid-col-1, .layer-tracking-grid-col-2, .layer-tracking-grid-col-3 {
+        height: 100%;
     }
 
     .dev {
@@ -82,6 +92,7 @@
 <script>
 
   import ComFooter from './ComFooter.vue';
+  import ComCustomizeRight from './ComCustomizeRight.vue';
   import ComDevLooger from './ComDevLogger.vue';
   import ComConDirection from './ComConDirection.vue';
   import ComConToolbar from './ComConToolbar.vue';
@@ -89,6 +100,7 @@
   export default {
     components: {
       ComFooter,
+      ComCustomizeRight,
       ComDevLooger,
       ComConToolbar,
       ComConDirection

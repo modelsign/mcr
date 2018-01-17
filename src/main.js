@@ -40,7 +40,7 @@ if (window) {
               el        : element,
               data      : {
                 state: {
-                  current: {
+                  current  : {
                     status: '全局状态提示',
                     camera: {
                       position : { x: 0, y: 0, z: 0 },
@@ -48,7 +48,7 @@ if (window) {
                     },
                     point : { x: 0, y: 0, z: 0 }
                   },
-                  menu   : {
+                  menu     : {
                     base   : [
                       {
                         title        : '全屏',
@@ -117,10 +117,13 @@ if (window) {
                     ],
                     advance: []
                   },
-                  setting: {
+                  customize: {
+                    right: null
+                  },
+                  setting  : {
                     isDebug: false
                   },
-                  ui     : {}
+                  ui       : {}
                 }
               },
               template  : '<m-app/>',
