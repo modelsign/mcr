@@ -5,21 +5,14 @@ import em from './lib/bus';
 
 import _comInst from './lib/_common/instance';
 
-/** ************************************
- * 注册全局组件
- ***************************************/
-import ComIconSvg from './lib/view/util/ComIconSvg.vue';
-import ComIconFont from './lib/view/util/ComIconFont.vue';
-
 (
-    function () {
-      
+    () => {
       /** ************************************************
        *
        *          引用一些自动完成自我初始化的模块
        *
        ***************************************************/
-      import(/* webpackChunkName: "trace" */'./lib/trace/index');
+      import (/* webpackChunkName: "trace" */'./lib/trace/index');
       import (/* webpackChunkName: "listener" */'./lib/listener/index.ts');
       
       // require('babel-core/register');
@@ -27,15 +20,11 @@ import ComIconFont from './lib/view/util/ComIconFont.vue';
       
       Vue.config.productionTip = false;
       Vue.use(stores);
-      
-      Vue.component('ComIconSvg', ComIconSvg);
-      Vue.component('ComIconFont', ComIconFont);
-      
       em.emit('event/log/trace', { step: '程序启动' });
       
       // import App from './app.vue';
       const promiseLauncher = import(/* webpackChunkName: "launcher" */'./launcher.vue');
-      const promiseApp = import(/* webpackChunkName: "app" */'./app.vue');
+      const promiseApp      = import(/* webpackChunkName: "app" */'./app.vue');
       
       window['msign'] = {
         create (domElement) {

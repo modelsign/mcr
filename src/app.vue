@@ -32,6 +32,7 @@
 
 <script type="text/javascript">
   const TIME_SECONDS = 5000;
+  import Vue from 'vue';
   import em from './lib/bus';
   import { mapState } from 'vuex';
 
@@ -51,12 +52,20 @@
    *************************/
 
   /** **********************
+   * 载入组件
    * 统一使用异步组件
+   *
+   * 其中一部分是全局组件
    *************************/
   const promiseLayerGraph    = import(/* webpackChunkName: "core" */'./lib/view/graph/m-three.vue'),
         promiseMEmpty        = import(/* webpackChunkName: "core" */'./lib/view/util/ComEmpty.vue'),
-        promiseLayerTracking = import(/* webpackChunkName: "core" */'./lib/view/tracking/LayerTracking.vue')
+        promiseLayerTracking = import(/* webpackChunkName: "core" */'./lib/view/tracking/LayerTracking.vue'),
+        promiseComIconSvg    = import(/* webpackChunkName: "core" */'./lib/view/util/ComIconSvg.vue'),
+        promiseComIconFont   = import(/* webpackChunkName: "core" */'./lib/view/util/ComIconFont.vue')
   ;
+
+  Vue.component('ComIconSvg', () => promiseComIconSvg);
+  Vue.component('ComIconFont', () => promiseComIconFont);
 
   /** ************************************************************
    *
