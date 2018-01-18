@@ -13,6 +13,7 @@ import {Sandbox} from "../sandbox/Sandbox";
 class Option {
     mode: number = 0;
     afk: boolean = false;
+    isWireframe:false;
 }
 
 class Controller {
