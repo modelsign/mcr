@@ -90,7 +90,7 @@
     }
 </style>
 <script>
-  import ComExtModules from '../modules/main';
+  import ComExtModules from '../../modules/main';
 
   import ComFooter from './ComFooter.vue';
   import ComCustomizeRight from './ComCustomizeRight.vue';

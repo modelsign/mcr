@@ -154,6 +154,18 @@ module.exports = {
             to  : '.'
           },
           {
+            from: __dirname + '/src/_static/iframe.html',
+            to  : '.'
+          },
+          {
+            from: __dirname + '/src/_static/iframe-double.html',
+            to  : '.'
+          },
+          {
+            from: __dirname + '/src/_static/iframe-many.html',
+            to  : '.'
+          },
+          {
             from: __dirname + '/src/_static/testModels/',
             to  : 'testModels'
           }
