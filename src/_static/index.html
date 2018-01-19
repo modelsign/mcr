@@ -43,6 +43,7 @@
 </div>
 <div class="fram">
     <div id="mcr"></div>
+    <button onclick="full();"></button>
 </div>
 </body>
 
@@ -66,17 +67,41 @@
         msign.sandbox.models.push(
             {
               type   : 'gltf',
-              urlGltf: '/testModels/gltf/test0804.gltf?_i=' + i,
+              urlGltf: '/testModels/gltf/test0118.gltf?_i=' + i,
               option : {
                 position: {
                   x: 0,
-                  y: -2000,
-                  z: 1000 * i
+                  y: 0,
+                  z: 0
                 }
               }
             }
         );
       }, i * TIME_SECONDS)
   }
+
+  setParentsIframeAllowFull = function (_window) {
+    let parent = _window.parent;
+    if (parent) {
+      // 需要递归
+      setParentsIframeAllowFull(parent);
+    }
+    let iframes = document.getElementsByTagName('iframe');
+    console.log('本级', iframes);
+  };
+
+  full = function () {
+//    setParentsIframeAllowFull(window);
+    console.log(parent.parent.parent)
+
+    let element = document.getElementById('mcr-platform');
+    if (element.requestFullScreen) {
+      element.requestFullScreen();
+    } else if (element.webkitRequestFullScreen) {
+      element.webkitRequestFullScreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    }
+  };
 </script>
 </html>

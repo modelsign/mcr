@@ -13,6 +13,7 @@ import {Sandbox} from "../sandbox/Sandbox";
 class Option {
     mode: number = 0;
     afk: boolean = false;
+    isWireframe: false;
 }
 
 class Controller {
@@ -45,6 +46,8 @@ class InstClass {
     controller: Controller;
     graph: Graph = new Graph();
     event: Event;
+
+    modules: any = {};
 }
 
 let inst: InstClass = new InstClass();
@@ -53,5 +56,6 @@ inst.option = new Option();
 inst.controller = new Controller();
 inst.graph = new Graph();
 inst.event = new Event();
+
 
 export default inst;

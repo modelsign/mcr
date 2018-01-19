@@ -58,7 +58,14 @@
     scene.add(mesh);
 
     // renderer
-    renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, precision: 'highp' });
+    renderer = new THREE.WebGLRenderer(
+        {
+          antialias            : false,
+          alpha                : true,
+          precision            : 'highp',
+          preserveDrawingBuffer: true
+        }
+    );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(128, 128);
     container = document.getElementById('com-con-direction-c');

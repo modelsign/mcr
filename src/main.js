@@ -5,6 +5,7 @@ import em from './lib/bus';
 
 import _comInst from './lib/_common/instance';
 
+const TIME_SECONDS = 2000;
 (
     () => {
       /** ************************************************
