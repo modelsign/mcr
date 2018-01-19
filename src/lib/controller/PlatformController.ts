@@ -76,10 +76,14 @@ export class PlatformController {
         }
     }
 
-    setFatherFrameFullScreen(containerWindow: any) {
-        if(containerWindow.frameElement){
-            containerWindow.frameElement.setAttribute('allowFullScreen', 'true');
-            let fatherWindow = containerWindow.parent;
+    /**
+     * 递归设置所有父级iframe ‘allowFullScreen’属性为true
+     * @param {any} cuurentWindow 当前window
+     */
+    setFatherFrameFullScreen(cuurentWindow: any) {
+        if (cuurentWindow.frameElement) {
+            cuurentWindow.frameElement.setAttribute('allowFullScreen', 'true');
+            let fatherWindow = cuurentWindow.parent;
             this.setFatherFrameFullScreen(fatherWindow);
         }
         return;
