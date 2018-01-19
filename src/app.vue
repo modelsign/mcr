@@ -18,6 +18,8 @@
 <style type="text/css" scoped="">
     .mcr {
         position: relative;
+        width: 100%;
+        height: 100%;
     }
 
     .fade-enter-active, .fade-leave-active {

@@ -54,7 +54,10 @@ import _comInst from './lib/_common/instance';
                             this.icon     = 'msign-zoomin';
                             em.emit(
                                 'request/container',
-                                { action: 'zoomout', arg: {} }
+                                {
+                                  action: 'zoomout',
+                                  arg: { isFullScreen: true }
+                                }
                             );
                             em.emit('event/log/trace', { step: `请求全屏` });
                           },
@@ -62,10 +65,10 @@ import _comInst from './lib/_common/instance';
                             this.isActive = false;
                             this.icon     = 'msign-zoomout';
                             em.emit(
-                                'request/tool',
+                                'request/container',
                                 {
                                   action: 'zoomin',
-                                  arg   : {}
+                                  arg   : { isFullScreen: false }
                                 }
                             );
                             em.emit('event/log/trace', { step: `请求取消全屏` });
