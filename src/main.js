@@ -55,7 +55,10 @@ const TIME_SECONDS = 2000;
                             this.icon     = 'msign-zoomin';
                             em.emit(
                                 'request/container',
-                                { action: 'zoomout', arg: {} }
+                                {
+                                  action: 'zoomout',
+                                  arg: { isFullScreen: true }
+                                }
                             );
                             em.emit('event/log/trace', { step: `请求全屏` });
                           },
@@ -63,10 +66,10 @@ const TIME_SECONDS = 2000;
                             this.isActive = false;
                             this.icon     = 'msign-zoomout';
                             em.emit(
-                                'request/tool',
+                                'request/container',
                                 {
                                   action: 'zoomin',
-                                  arg   : {}
+                                  arg   : { isFullScreen: false }
                                 }
                             );
                             em.emit('event/log/trace', { step: `请求取消全屏` });

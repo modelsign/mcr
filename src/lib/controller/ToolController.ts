@@ -3,12 +3,14 @@ import em from '../bus'
 import {isUndefined} from "util";
 
 const layer = require('layui-layer');
-require('!style-loader!css-loader!layui-layer/layer.css')
+require('!style-loader!css-loader!layui-layer/layer.css');
 const html2canvas = require('html2canvas');
 
 export class ToolController {
 
     _initEventHandlers() {
+
+        /**截图**/
         em.on('request/tool', (e: { action: string, arg: { isIncludeBorder: boolean } } = {
             action: '',
             arg: {isIncludeBorder: true}
@@ -20,7 +22,7 @@ export class ToolController {
                 default:
                     break;
             }
-        })
+        });
     }
 
     /**
