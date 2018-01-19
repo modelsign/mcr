@@ -19,7 +19,6 @@
 
   import 'three';
   import './js/controls/OrbitControls';
-  import './js/controls/DragControls';
 
   import TWEEN from '@tweenjs/tween.js';
   /** ****************************************
@@ -258,36 +257,6 @@
   _comInst.sandbox        = sandbox;
 
   let option = _comInst.option;
-
-
-
-  /** ***************************************************
-   *  拖拽控制器
-   ******************************************************/
-
-  let dragcontrols = new THREE.DragControls( splineHelperObjects, camera, renderer.domElement ); //
-  dragcontrols.enabled = false;
-  dragcontrols.addEventListener( 'hoveron', function ( event ) {
-    transformControl.attach( event.object );
-    cancelHideTransorm();
-  } );
-  dragcontrols.addEventListener( 'hoveroff', function ( event ) {
-    delayHideTransform();
-  } );
-  var hiding;
-  function delayHideTransform() {
-    cancelHideTransorm();
-    hideTransform();
-  }
-  function hideTransform() {
-    hiding = setTimeout( function() {
-      transformControl.detach( transformControl.object );
-    }, 2500 )
-  }
-  function cancelHideTransorm() {
-    if ( hiding ) clearTimeout( hiding );
-  }
-
 
   export default {
     data () {
