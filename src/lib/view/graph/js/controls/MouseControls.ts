@@ -132,6 +132,8 @@ export default class MouseControls extends EventDispatcher {
         this.zoom0 = this.camera.zoom;
 
         domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+
+        domElement.addEventListener('dblclick', this.onDblclick.bind(this), false);
         domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
         domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
         domElement.addEventListener('wheel', this.onMouseWheel.bind(this), false);
@@ -577,14 +579,12 @@ export default class MouseControls extends EventDispatcher {
      *     Events
      ******************/
 
-    private onMouseDown(event) {
-        // this.target = this.cursor;
-        // this.updateTraget(event);
+    private onDblclick(event) {
         this.tCursor && this.tCursor.stop();
         let t0 = this.target.clone(),
             t1 = this.target.clone();
         this.tCursor = new Tween(t1);
-        this.tCursor.easing(Easing.Quartic.In)
+        this.tCursor.easing(Easing.Quartic.Out)
             .to(this.cursor.clone(), 400)
             .onUpdate(() => {
                 this.camera.position.x += t1.x - t0.x;
@@ -597,8 +597,10 @@ export default class MouseControls extends EventDispatcher {
                 t0 = t1.clone();
             })
             .start();
+    }
 
-
+    private onMouseDown(event) {
+        // this.updateTraget(event);
         if (!this.enable) return;
         // 阻止浏览器默认行为
         event.preventDefault();
