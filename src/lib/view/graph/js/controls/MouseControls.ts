@@ -22,6 +22,7 @@ const changeEvent = {type: 'change'},
     endEvent = {type: 'end'};
 
 export default class MouseControls extends EventDispatcher {
+    public scene: THREE.Scene;
     public camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
 
     public enable: boolean = true;
@@ -109,10 +110,11 @@ export default class MouseControls extends EventDispatcher {
 
     private domElement: Element;
 
-    constructor(camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
+    constructor(scene: THREE.Scene, camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
                 domElement: Element) {
         super();
 
+        this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
 

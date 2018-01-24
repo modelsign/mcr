@@ -43,9 +43,9 @@
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  const controls  = new MouseControls(camera, renderer.domElement);
+  const controls  = new MouseControls(scene, camera, renderer.domElement);
 
-  let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
+  let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
@@ -160,6 +160,41 @@
         em.emit('scene/camera/update', camera);
       }
     }
+
+    /** ********************************************************
+     *
+     *                  更新一系列附加的东西
+     *
+     ***********************************************************/
+
+    /** *********************************************************
+     * 地面
+     *
+     * 地面包含三层可见元素
+     * 1. 大网格
+     * 2. 小网格
+     * 3. 阴影投射面
+     ************************************************************/
+    helperGridBase.position.x = Math.floor(controls.target.x / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
+    helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
+    let pGrid0                = helperGrid.position,
+        pGrid1                = {
+          x: Math.floor(controls.target.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
+          z: Math.floor(controls.target.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
+        };
+    tGrid || (
+        tGrid = new TWEEN.Tween(pGrid0)
+    );
+    tGrid.stop();
+    tGrid.easing(TWEEN.Easing.Linear.None)
+         .to(pGrid1, 20)
+         .onUpdate(() => {
+           groundPlane.position.x = pGrid1.x;
+           groundPlane.position.z = pGrid1.z;
+         })
+         .onComplete(() => {})
+         .start();
+
   };
   const resetRenderSize = () => {
     let container = document.getElementById('mcr-graph-three');
@@ -205,18 +240,25 @@
   /** **************
    * 地面网格
    *****************/
-  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 100);
-  helperGrid.position.y           = -1;
-  helperGrid.material.opacity     = 0.25;
+  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 50);
+  helperGrid.position.y           = -2;
+  helperGrid.material.opacity     = 0.75;
   helperGrid.material.transparent = true;
   helperGrid.name                 = 'h-helper-grid';
+  scene.add(helperGrid);
+
+  helperGridBase                      = new THREE.GridHelper(GROUND_WIDTH * 10, 100);
+  helperGridBase.position.y           = -4;
+  helperGridBase.material.opacity     = 0.5;
+  helperGridBase.material.transparent = true;
+  helperGridBase.name                 = 'h-helper-grid-base';
+  scene.add(helperGridBase);
+
   /** **************
    * 灯光
    *****************/
   //  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
-  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
-
-  scene.add(helperGrid);
+  //  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
   helperLights.forEach((light) => {scene.add(light);});
 
   /** ******************************************************************************
@@ -259,6 +301,7 @@
   _comInst.sandbox        = sandbox;
 
   let option = _comInst.option;
+  let tGrid  = null;
 
   export default {
     data () {
