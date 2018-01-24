@@ -117,21 +117,22 @@
   directionalLight.shadow.camera.near    = 0;
   scene.add(directionalLight);
 
-  /***
+  /** ****************************************
    * 鼠标指针跟踪点
-   */
+   * 并不需要真正画进去, 记录点位即可
+   *******************************************/
   let meshMouseTrackerGeo = new Geometry();
   meshMouseTrackerGeo.vertices.push(cursor);
-  let meshMouseTrackerMtl = new THREE.PointsMaterial(
-      {
-        size           : 4,
-        sizeAttenuation: false,
-        color          : 0xf8ac59
-      }
-  );
-  let meshMouseTracker    = new Points(meshMouseTrackerGeo, meshMouseTrackerMtl);
-  meshMouseTracker.name   = 'h-tracker-mouse';
-  scene.add(meshMouseTracker);
+  //  let meshMouseTrackerMtl = new THREE.PointsMaterial(
+  //      {
+  //        size           : 0,
+  //        sizeAttenuation: false,
+  //        color          : 0xffffff
+  //      }
+  //  );
+  //  let meshMouseTracker    = new Points(meshMouseTrackerGeo, meshMouseTrackerMtl);
+  //  meshMouseTracker.name   = 'h-tracker-mouse';
+//  scene.add(meshMouseTracker);
   _comInst.graph.cursor = cursor;
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
@@ -159,7 +160,6 @@
       return;
     }
 
-    meshMouseTrackerGeo.verticesNeedUpdate = true;
     renderer.render(scene, camera);
     if (controls && typeof controls.update === 'function') {
       let cameraLastPosition = JSON.parse(JSON.stringify(camera.position));

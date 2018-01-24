@@ -114,6 +114,7 @@ export default class MouseControls extends EventDispatcher {
     private cursor: THREE.Vector3;
     private raycaster: THREE.Raycaster = new THREE.Raycaster();
     private tCursor: Tween;
+    private isRaying: boolean = false;
 
     constructor(scene: THREE.Scene,
                 camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
@@ -753,6 +754,8 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
+        if (this.isRaying) return;
+        this.isRaying = true;
         let layerX = 0, layerY = 0,
             raycaster = this.raycaster,
             scene = this.scene,
@@ -768,7 +771,9 @@ export default class MouseControls extends EventDispatcher {
         raycaster.setFromCamera(p2, this.camera);
         let meshs: THREE.Mesh[] = <THREE.Mesh[]>scene.children
             .filter((object3d: THREE.Object3D) => {
-                return object3d instanceof THREE.Mesh;
+                return object3d.name.indexOf('h-helper-grid') > -1
+                    || object3d.name.indexOf('hitable') > -1
+                    ;
             });
         let intersects = raycaster.intersectObjects(meshs);
         if (intersects.length > 0) {
@@ -778,6 +783,7 @@ export default class MouseControls extends EventDispatcher {
             this.cursor.y = cursor.y;
             this.cursor.z = cursor.z;
         }
+        this.isRaying = false;
     }
 }
 
