@@ -19,6 +19,7 @@
 
   import 'three';
   import './js/controls/OrbitControls';
+  import MouseControls from './js/controls/MouseControls.ts';
 
   import TWEEN from '@tweenjs/tween.js';
   /** ****************************************
@@ -41,7 +42,8 @@
   const scene     = new THREE.Scene();
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
+  //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls  = new MouseControls(camera, renderer.domElement);
 
   let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
   
