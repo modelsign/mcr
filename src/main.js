@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import Vue from 'vue';
 import stores from 'vue-stores';
 import './lib';
@@ -57,7 +59,7 @@ const TIME_SECONDS = 2000;
                                 'request/container',
                                 {
                                   action: 'zoomout',
-                                  arg: { isFullScreen: true }
+                                  arg   : { isFullScreen: true }
                                 }
                             );
                             em.emit('event/log/trace', { step: `请求全屏` });
@@ -132,9 +134,7 @@ const TIME_SECONDS = 2000;
                 }
               }
           );
-          
         }
       };
-      
     }
 )();

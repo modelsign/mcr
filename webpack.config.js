@@ -1,5 +1,6 @@
-const webpack                  = require('webpack');
-const path                     = require('path');
+const webpack = require('webpack');
+const path    = require('path');
+
 const HtmlWebpackPlugin        = require('html-webpack-plugin');
 const CleanPlugin              = require('clean-webpack-plugin');
 const CopyPlugin               = require('copy-webpack-plugin');
@@ -42,7 +43,7 @@ module.exports = {
   node     : {
     fs: 'empty'
   },
-  entry    : __dirname + '/src/main.js',
+  entry    : ['babel-polyfill', __dirname + '/src/main.js'],
   output   : {
     filename     : `${outputname}/msign.js`,
     path         : __dirname + '/dist',
@@ -104,7 +105,7 @@ module.exports = {
       },
       {
         test  : /\.css$/,
-        loader: `style-loader!css-loader!css-attr-scope-loader-mcr-fix?scope=${scope}`
+        loader: `style-loader!css-loader?${JSON.stringify({ discardComments: { removeAll: true } })}!css-attr-scope-loader-mcr-fix?scope=${scope}`
       },
       {
         test: /\.less$/,

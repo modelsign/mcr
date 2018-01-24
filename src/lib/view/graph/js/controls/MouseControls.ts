@@ -1,7 +1,8 @@
 const THREE = require('../../../../../../vender/three');
 import em from '../../../../bus'
+import {Tween, Easing} from '@tweenjs/tween.js';
 import {start} from "repl";
-import {EventDispatcher, Quaternion} from "three";
+import {EventDispatcher, Quaternion, Vector2} from "three";
 
 function log(txt) {
     em.emit('event/log/trace', {step: txt});
@@ -22,7 +23,6 @@ const changeEvent = {type: 'change'},
     endEvent = {type: 'end'};
 
 export default class MouseControls extends EventDispatcher {
-    public scene: THREE.Scene;
     public camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
 
     public enable: boolean = true;
@@ -110,13 +110,22 @@ export default class MouseControls extends EventDispatcher {
 
     private domElement: Element;
 
-    constructor(scene: THREE.Scene, camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
-                domElement: Element) {
+    private scene: THREE.Scene;
+    private cursor: THREE.Vector3;
+    private raycaster: THREE.Raycaster = new THREE.Raycaster();
+    private tCursor: Tween;
+
+    constructor(scene: THREE.Scene,
+                camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
+                domElement: Element,
+                cursor: THREE.Vector3) {
         super();
 
         this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
+        this.cursor = cursor;
+        // console.log(cursor)
 
         this.target0 = this.target.clone();
         this.postition0 = this.camera.position.clone();
@@ -124,6 +133,7 @@ export default class MouseControls extends EventDispatcher {
 
         domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
         domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+        domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
         domElement.addEventListener('wheel', this.onMouseWheel.bind(this), false);
         domElement.addEventListener('touchstart', this.onTouchStart.bind(this), false);
         domElement.addEventListener('touchend', this.onTouchEnd.bind(this), false);
@@ -264,8 +274,8 @@ export default class MouseControls extends EventDispatcher {
         this.domElement.removeEventListener('touchend', this.onTouchEnd.bind(this), false);
         this.domElement.removeEventListener('touchmove', this.onTouchMove.bind(this), false);
 
-        document.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
-        document.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
+        this.domElement.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
+        this.domElement.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
 
         window.removeEventListener('keydown', this.onKeyDown.bind(this), false);
     }
@@ -568,6 +578,27 @@ export default class MouseControls extends EventDispatcher {
      ******************/
 
     private onMouseDown(event) {
+        // this.target = this.cursor;
+        // this.updateTraget(event);
+        this.tCursor && this.tCursor.stop();
+        let t0 = this.target.clone(),
+            t1 = this.target.clone();
+        this.tCursor = new Tween(t1);
+        this.tCursor.easing(Easing.Quartic.In)
+            .to(this.cursor.clone(), 400)
+            .onUpdate(() => {
+                this.camera.position.x += t1.x - t0.x;
+                this.camera.position.y += t1.y - t0.y;
+                this.camera.position.z += t1.z - t0.z;
+
+                this.target.x += t1.x - t0.x;
+                this.target.y += t1.y - t0.y;
+                this.target.z += t1.z - t0.z;
+                t0 = t1.clone();
+            })
+            .start();
+
+
         if (!this.enable) return;
         // 阻止浏览器默认行为
         event.preventDefault();
@@ -587,13 +618,14 @@ export default class MouseControls extends EventDispatcher {
         }
 
         if (this.state !== STATE.NONE) {
-            document.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-            document.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+            // this.domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+            this.domElement.addEventListener('mouseup', this.onMouseUp.bind(this), false);
             this.dispatchEvent(startEvent);
         }
     }
 
     private onMouseMove(event) {
+        this.updateTraget(event);
         if (!this.enable) return;
         event.preventDefault();
         if (this.state === STATE.ROTATE) {
@@ -609,8 +641,8 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private onMouseUp(event) {
-        document.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
-        document.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
+        // this.domElement.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
+        this.domElement.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
 
         if (!this.enable) return;
         this.handleMouseUp(event);
@@ -716,6 +748,34 @@ export default class MouseControls extends EventDispatcher {
 
     private onContextMenu(event) {
         event.preventDefault();
+    }
+
+    private updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
+        let layerX = 0, layerY = 0,
+            raycaster = this.raycaster,
+            scene = this.scene,
+            domElement = this.domElement;
+        if (event instanceof MouseEvent) {
+            let eventMouse = <MouseEvent>event;
+            layerX = eventMouse.layerX;
+            layerY = eventMouse.layerY;
+        }
+        let p2 = new Vector2(0, 0);
+        p2.x = layerX / domElement.clientWidth * 2 - 1;
+        p2.y = layerY / domElement.clientHeight * -2 + 1;
+        raycaster.setFromCamera(p2, this.camera);
+        let meshs: THREE.Mesh[] = <THREE.Mesh[]>scene.children
+            .filter((object3d: THREE.Object3D) => {
+                return object3d instanceof THREE.Mesh;
+            });
+        let intersects = raycaster.intersectObjects(meshs);
+        if (intersects.length > 0) {
+            let cursor = intersects[0].point;
+            this.cursor = cursor;
+            this.cursor.x = cursor.x;
+            this.cursor.y = cursor.y;
+            this.cursor.z = cursor.z;
+        }
     }
 }
 

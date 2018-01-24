@@ -43,7 +43,8 @@
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  const controls  = new MouseControls(scene, camera, renderer.domElement);
+  let cursor      = new THREE.Vector3(0, 0, 0);
+  const controls  = new MouseControls(scene, camera, renderer.domElement, cursor);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
   
@@ -116,6 +117,22 @@
   directionalLight.shadow.camera.near    = 0;
   scene.add(directionalLight);
 
+  /***
+   * 鼠标指针跟踪点
+   */
+  let meshMouseTrackerGeo = new Geometry();
+  meshMouseTrackerGeo.vertices.push(cursor);
+  let meshMouseTrackerMtl = new THREE.PointsMaterial(
+      {
+        size           : 4,
+        sizeAttenuation: false,
+        color          : 0xf8ac59
+      }
+  );
+  let meshMouseTracker    = new Points(meshMouseTrackerGeo, meshMouseTrackerMtl);
+  meshMouseTracker.name   = 'h-tracker-mouse';
+  scene.add(meshMouseTracker);
+  _comInst.graph.cursor = cursor;
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
    * oprion.mode 为一个自然数.
@@ -135,15 +152,14 @@
       let frequency = 50 * Math.ceil(option.mode);
       setTimeout(render, frequency);
     }
-
-    /**
+    /** **************************
      * 如果此时出于afk状态, 跳过渲染
-     */
-
+     *****************************/
     if (option.afk) {
       return;
     }
 
+    meshMouseTrackerGeo.verticesNeedUpdate = true;
     renderer.render(scene, camera);
     if (controls && typeof controls.update === 'function') {
       let cameraLastPosition = JSON.parse(JSON.stringify(camera.position));
@@ -293,6 +309,7 @@
    ***************************************************************/
   import _comInst from '../../../lib/_common/instance';
   import { ToolController } from '../../../lib/controller/ToolController.ts';
+  import { Geometry, Points } from '../../../../vender/three';
 
   _comInst.graph.camera   = camera;
   _comInst.graph.scene    = scene;
@@ -358,7 +375,7 @@
          *************************************/
         if (type === 'line') {
           lines.forEach(({ title, vertices }) => {
-            console.log(title);
+            //            console.log(title);
             this.createLine(vertices, { name: title });
           });
         }
