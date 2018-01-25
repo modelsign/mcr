@@ -338,6 +338,9 @@
         option
       };
     },
+    stores  : {
+      stateCurrentIsProcessing: 'state.current.isProcessing'
+    },
     watch   : {
       option: {
         handler (curVal, oldVal) {
@@ -541,6 +544,7 @@
               em.emit('event/log/trace', { step: '模型加载, 类型没找到', type });
           }
           if (meshs.length) {
+            this.stateCurrentIsProcessing = false;
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
             await meshs.forEach(async (mesh) => {

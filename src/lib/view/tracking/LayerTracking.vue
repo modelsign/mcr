@@ -58,10 +58,10 @@
         top: 0;
         width: 100%;
         height: 100%;
-        border-color: red;
-        border-width: 1px;
-        border-style: dashed;
-        border-radius: 2px;
+        /*border-color: red;*/
+        /*border-width: 1px;*/
+        /*border-style: dashed;*/
+        /*border-radius: 2px;*/
     }
 
     .con {

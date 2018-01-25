@@ -37,10 +37,10 @@
         margin: 2px;
         width: calc(100% - 4px);
         height: calc(100% - 4px);
-        border-color: lightskyblue;
-        border-width: 1px;
-        border-style: dashed;
-        border-radius: 2px;
+        /*border-color: lightskyblue;*/
+        /*border-width: 1px;*/
+        /*border-style: dashed;*/
+        /*border-radius: 2px;*/
     }
 
     .selected-item {
