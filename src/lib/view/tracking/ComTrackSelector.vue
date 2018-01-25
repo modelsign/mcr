@@ -44,6 +44,7 @@
     }
 
     .selected-item {
+        pointer-events: none;
         position: absolute;
         width: 4px;
         height: 4px;
