@@ -132,16 +132,16 @@ export default class MouseControls extends EventDispatcher {
         this.postition0 = this.camera.position.clone();
         this.zoom0 = this.camera.zoom;
 
-        domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+        domElement.addEventListener('contextmenu', this._onContextMenu, false);
 
-        domElement.addEventListener('dblclick', this.onDblclick.bind(this), false);
-        domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
-        domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-        domElement.addEventListener('wheel', this.onMouseWheel.bind(this), false);
-        domElement.addEventListener('touchstart', this.onTouchStart.bind(this), false);
-        domElement.addEventListener('touchend', this.onTouchEnd.bind(this), false);
-        domElement.addEventListener('touchmove', this.onTouchMove.bind(this), false);
-        window.addEventListener('keydown', this.onKeyDown.bind(this), false);
+        domElement.addEventListener('dblclick', this._onDblclick, false);
+        domElement.addEventListener('mousedown', this._onMouseDown, false);
+        domElement.addEventListener('mousemove', this._onMouseMove, false);
+        domElement.addEventListener('wheel', this._onMouseWheel, false);
+        domElement.addEventListener('touchstart', this._onTouchStart, false);
+        domElement.addEventListener('touchend', this._onTouchEnd, false);
+        domElement.addEventListener('touchmove', this._onTouchMove, false);
+        window.addEventListener('keydown', this._onKeyDown, false);
 
         this.update();
     }
@@ -268,18 +268,18 @@ export default class MouseControls extends EventDispatcher {
     }
 
     public dispose() {
-        this.domElement.removeEventListener('contextmenu', this.onContextMenu.bind(this), false);
-        this.domElement.removeEventListener('mousedown', this.onMouseDown.bind(this), false);
-        this.domElement.removeEventListener('wheel', this.onMouseWheel.bind(this), false);
+        this.domElement.removeEventListener('contextmenu', this._onContextMenu, false);
+        this.domElement.removeEventListener('mousedown', this._onMouseDown, false);
+        this.domElement.removeEventListener('wheel', this._onMouseWheel, false);
 
-        this.domElement.removeEventListener('touchstart', this.onTouchStart.bind(this), false);
-        this.domElement.removeEventListener('touchend', this.onTouchEnd.bind(this), false);
-        this.domElement.removeEventListener('touchmove', this.onTouchMove.bind(this), false);
+        this.domElement.removeEventListener('touchstart', this._onTouchStart, false);
+        this.domElement.removeEventListener('touchend', this._onTouchEnd, false);
+        this.domElement.removeEventListener('touchmove', this._onTouchMove, false);
 
-        this.domElement.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
-        this.domElement.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
+        this.domElement.removeEventListener('mousemove', this._onMouseMove, false);
+        this.domElement.removeEventListener('mouseup', this._onMouseUp, false);
 
-        window.removeEventListener('keydown', this.onKeyDown.bind(this), false);
+        window.removeEventListener('keydown', this._onKeyDown, false);
     }
 
 
@@ -620,8 +620,8 @@ export default class MouseControls extends EventDispatcher {
         }
 
         if (this.state !== STATE.NONE) {
-            // this.domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-            this.domElement.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+            // this.domElement.addEventListener('mousemove', this._onMouseMove, false);
+            this.domElement.addEventListener('mouseup', this._onMouseUp, false);
             this.dispatchEvent(startEvent);
         }
     }
@@ -643,8 +643,8 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private onMouseUp(event) {
-        // this.domElement.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
-        this.domElement.removeEventListener('mouseup', this.onMouseUp.bind(this), false);
+        // this.domElement.removeEventListener('mousemove', this._onMouseMove, false);
+        this.domElement.removeEventListener('mouseup', this._onMouseUp, false);
 
         if (!this.enable) return;
         this.handleMouseUp(event);
@@ -751,6 +751,17 @@ export default class MouseControls extends EventDispatcher {
     private onContextMenu(event) {
         event.preventDefault();
     }
+
+    private _onDblclick = this.onDblclick.bind(this);
+    private _onMouseDown = this.onMouseDown.bind(this);
+    private _onMouseMove = this.onMouseMove.bind(this);
+    private _onMouseUp = this.onMouseUp.bind(this);
+    private _onMouseWheel = this.onMouseWheel.bind(this);
+    private _onKeyDown = this.onKeyDown.bind(this);
+    private _onTouchStart = this.onTouchStart.bind(this);
+    private _onTouchMove = this.onTouchMove.bind(this);
+    private _onTouchEnd = this.onTouchEnd.bind(this);
+    private _onContextMenu = this.onContextMenu.bind(this);
 
     private updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
         if (this.isRaying) return;
