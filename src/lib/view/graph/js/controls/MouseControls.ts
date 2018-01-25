@@ -146,7 +146,6 @@ export default class MouseControls extends EventDispatcher {
         this.update();
     }
 
-
     /**
      * 获取当前相机所在位置的极角
      * @return {number}

@@ -47,7 +47,7 @@ class InstClass {
     controller: Controller;
     graph: Graph = new Graph();
     event: Event;
-
+    state: any = null;
     modules: any = {};
 }
 

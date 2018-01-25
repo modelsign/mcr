@@ -237,7 +237,7 @@
         planeGeometryBase = new THREE.PlaneGeometry(GROUND_WIDTH * 10, GROUND_WIDTH * 10),
         planeMaterial     = new THREE.ShadowMaterial({ opacity: 0.2 }),
         groundPlane       = new THREE.Mesh(planeGeometry, planeMaterial),
-        groundPlaneBase   = new THREE.Mesh(planeGeometryBase, planeMaterial);
+        groundPlaneBase   = new THREE.Mesh(planeGeometryBase, new THREE.ShadowMaterial({}));
   planeGeometry.rotateX(-Math.PI / 2);
   planeGeometry.translate(0, 0, 0);
   groundPlane.position.y = 0;

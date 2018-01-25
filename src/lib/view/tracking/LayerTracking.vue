@@ -30,6 +30,9 @@
             </div>
         </div>
 
+        <div class="tracking">
+            <com-track-selector></com-track-selector>
+        </div>
         <!--调试控件-->
         <div class="dev" v-show="stateSettingISDebug">
             <com-dev-looger></com-dev-looger>
@@ -44,6 +47,17 @@
         padding: 0;
 
         pointer-events: none;
+    }
+
+    .tracking {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border-color: red;
+        border-width: 1px;
+        border-style: dashed;
+        border-radius: 2px;
     }
 
     .con {
@@ -97,6 +111,7 @@
   import ComDevLooger from './ComDevLogger.vue';
   import ComConDirection from './ComConDirection.vue';
   import ComConToolbar from './ComConToolbar.vue';
+  import ComTrackSelector from './ComTrackSelector.vue';
 
   export default {
     components: {
@@ -104,7 +119,8 @@
       ComCustomizeRight,
       ComDevLooger,
       ComConToolbar,
-      ComConDirection
+      ComConDirection,
+      ComTrackSelector
     },
     data () {
       return {};
