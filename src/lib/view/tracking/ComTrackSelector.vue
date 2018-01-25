@@ -132,9 +132,15 @@
       },
       select () {
         let { camera, scene, renderer } = _comInst.graph;
-        let meshs                       = scene.children.filter((object3d) => {
-          return object3d instanceof THREE.Mesh;
-        });
+        let meshs                       = scene
+            .children
+            .filter(
+                (object3d) => {
+                  return object3d instanceof THREE.Mesh &&
+                         object3d.name.indexOf('h-') !== 0
+                      ;
+                }
+            );
 
         let halfW = renderer.domElement.getBoundingClientRect().width / 2,
             halfH = renderer.domElement.getBoundingClientRect().height / 2;
