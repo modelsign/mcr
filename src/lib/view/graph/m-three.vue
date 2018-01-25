@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%;width: 100%">
         <div id="mcr-graph-three">
             加载失败.
         </div>
