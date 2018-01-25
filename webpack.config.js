@@ -187,7 +187,7 @@ module.exports = {
           filename: 'index.html',
           template: __dirname + '/src/_static/index.html',
           inject  : true,
-          hash    : true,
+          hash    : false,
           minify  : {
             removeComments    : true,
             collapseWhitespace: true
