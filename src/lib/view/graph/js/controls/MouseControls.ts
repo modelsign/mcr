@@ -27,6 +27,7 @@ export default class MouseControls extends EventDispatcher {
 
     public enable: boolean = true;
     public target: THREE.Vector3 = new THREE.Vector3();
+    public cursor: THREE.Vector3;
 
     // 移动时候允许相机和目标点的最大最小距离;
     // 对于圆锥投影类型的相机有效
@@ -111,7 +112,6 @@ export default class MouseControls extends EventDispatcher {
     private domElement: Element;
 
     private scene: THREE.Scene;
-    private cursor: THREE.Vector3;
     private raycaster: THREE.Raycaster = new THREE.Raycaster();
     private tCursor: Tween;
     private isRaying: boolean = false;
@@ -771,7 +771,7 @@ export default class MouseControls extends EventDispatcher {
         raycaster.setFromCamera(p2, this.camera);
         let meshs: THREE.Mesh[] = <THREE.Mesh[]>scene.children
             .filter((object3d: THREE.Object3D) => {
-                return object3d.name.indexOf('h-helper-grid') > -1
+                return object3d.name.indexOf('h-') > -1
                     || object3d.name.indexOf('hitable') > -1
                     ;
             });

@@ -132,7 +132,7 @@
   //  );
   //  let meshMouseTracker    = new Points(meshMouseTrackerGeo, meshMouseTrackerMtl);
   //  meshMouseTracker.name   = 'h-tracker-mouse';
-//  scene.add(meshMouseTracker);
+  //  scene.add(meshMouseTracker);
   _comInst.graph.cursor = cursor;
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
@@ -195,8 +195,8 @@
     helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
     let pGrid0                = helperGrid.position,
         pGrid1                = {
-          x: Math.floor(controls.target.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
-          z: Math.floor(controls.target.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
+          x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
+          z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
         };
     tGrid || (
         tGrid = new TWEEN.Tween(pGrid0)
@@ -205,8 +205,10 @@
     tGrid.easing(TWEEN.Easing.Linear.None)
          .to(pGrid1, 20)
          .onUpdate(() => {
-           groundPlane.position.x = pGrid1.x;
-           groundPlane.position.z = pGrid1.z;
+           groundPlane.position.x     = pGrid1.x;
+           groundPlane.position.z     = pGrid1.z;
+           groundPlaneBase.position.x = pGrid1.x;
+           groundPlaneBase.position.z = pGrid1.z;
          })
          .onComplete(() => {})
          .start();
@@ -231,17 +233,24 @@
     render();
   };
   
-  const planeGeometry = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
-        planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 }),
-        groundPlane   = new THREE.Mesh(planeGeometry, planeMaterial);
+  const planeGeometry     = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
+        planeGeometryBase = new THREE.PlaneGeometry(GROUND_WIDTH * 10, GROUND_WIDTH * 10),
+        planeMaterial     = new THREE.ShadowMaterial({ opacity: 0.2 }),
+        groundPlane       = new THREE.Mesh(planeGeometry, planeMaterial),
+        groundPlaneBase   = new THREE.Mesh(planeGeometryBase, planeMaterial);
   planeGeometry.rotateX(-Math.PI / 2);
   planeGeometry.translate(0, 0, 0);
   groundPlane.position.y = 0;
+  planeGeometryBase.rotateX(-Math.PI / 2);
+  planeGeometryBase.translate(0, 0, 0);
+  groundPlaneBase.position.y = -5;
   //  groundPlane.position.x    = GROUND_WIDTH / -2;
   //  groundPlane.position.z    = GROUND_WIDTH / -2;
   groundPlane.receiveShadow = true;
   groundPlane.name          = 'h-mesh-plan';
+  groundPlaneBase.name      = 'h-mesh-plan-base';
   scene.add(groundPlane);
+  scene.add(groundPlaneBase);
 
   /** ******************************************************************************
    *
