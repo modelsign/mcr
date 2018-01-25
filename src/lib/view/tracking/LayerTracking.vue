@@ -23,7 +23,11 @@
                 <div class="layer-tracking-grid-col-2 col-xs-10">
                     <com-con-toolbar></com-con-toolbar>
                 </div>
-                <div class="layer-tracking-grid-col-3 col-xs-1"></div>
+                <div class="layer-tracking-grid-col-3 col-xs-1">
+                    <transition name="fade">
+                        <com-loader-rotate v-if="stateCurrentIsProcessing"></com-loader-rotate>
+                    </transition>
+                </div>
             </div>
             <div>
                 <com-footer></com-footer>
@@ -102,6 +106,15 @@
         top: 0;
         z-index: 10;
     }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+
 </style>
 <script>
   import ComExtModules from '../../modules/main';
@@ -113,6 +126,8 @@
   import ComConToolbar from './ComConToolbar.vue';
   import ComTrackSelector from './ComTrackSelector.vue';
 
+  import { RotateLoader as ComLoaderRotate } from 'vue-spinner/dist/vue-spinner';
+
   export default {
     components: {
       ComFooter,
@@ -120,13 +135,15 @@
       ComDevLooger,
       ComConToolbar,
       ComConDirection,
-      ComTrackSelector
+      ComTrackSelector,
+      ComLoaderRotate
     },
     data () {
       return {};
     },
     stores    : {
-      stateSettingISDebug: 'state.setting.isDebug'
+      stateSettingISDebug     : 'state.setting.isDebug',
+      stateCurrentIsProcessing: 'state.current.isProcessing'
     },
     methods   : {},
     mounted   : function () {

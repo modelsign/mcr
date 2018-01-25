@@ -33,18 +33,19 @@ const TIME_SECONDS = 2000;
         create (domElement) {
           let state      = {
             current  : {
-              status     : '全局状态提示',
-              camera     : {
+              isProcessing: false,
+              status      : '全局状态提示',
+              camera      : {
                 position : { x: 0, y: 0, z: 0 },
                 direction: { x: 0, y: 0, z: 0 }
               },
-              point      : { x: 0, y: 0, z: 0 },
+              point       : { x: 0, y: 0, z: 0 },
               /**
                * orbit.   鼠标交互拖拽交互模式, 该模式下鼠标拖拽控制相机移动
                * select.  鼠标交互框选模式, 该模式下鼠标左键框选模型
                */
-              interaction: 'orbit',
-              selects    : []
+              interaction : 'orbit',
+              selects     : []
             },
             menu     : {
               base   : [
