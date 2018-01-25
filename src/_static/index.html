@@ -50,16 +50,21 @@
 
   const TIME_SECONDS = 2000;
 
-  window.onload = async function () {
+  window.onload = function () {
     if (window.msign) {
-      msign = await msign.create('#mcr');
-      setTimeout(drawSth, TIME_SECONDS);
+      window.msign
+            .create('#mcr')
+            .then(function (_msign) {
+                    msign = _msign;
+                    setTimeout(drawSth, TIME_SECONDS);
+                  }
+            );
     }
   };
   
-  async function drawSth () {
+  function drawSth () {
     for (let i = 0 ; i < 1 ; i++)
-      setTimeout(() => {
+      setTimeout(function () {
         msign.option.mode = 0;
         msign.option.afk  = false;
 

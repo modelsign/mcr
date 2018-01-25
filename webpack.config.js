@@ -1,6 +1,5 @@
-const webpack = require('webpack');
-const path    = require('path');
-
+const webpack                  = require('webpack');
+const path                     = require('path');
 const HtmlWebpackPlugin        = require('html-webpack-plugin');
 const CleanPlugin              = require('clean-webpack-plugin');
 const CopyPlugin               = require('copy-webpack-plugin');
@@ -94,10 +93,17 @@ module.exports = {
       },
       {
         test: /\.worker\.js$/,
-        use : {
-          loader : __dirname + '/vender/worker-loader',
-          options: { name: `worker/[hash:8].js` }
-        }
+        use : [
+          {
+            loader : __dirname + '/vender/worker-loader',
+            options: { name: `worker/[hash:8].js` }
+          }, {
+            loader : 'babel-loader',
+            options: {
+              presets: [['es2015', { modules: false }]]
+            }
+          }
+        ]
       },
       {
         test  : /\.ts$/,
@@ -105,7 +111,8 @@ module.exports = {
       },
       {
         test  : /\.css$/,
-        loader: `style-loader!css-loader?${JSON.stringify({ discardComments: { removeAll: true } })}!css-attr-scope-loader-mcr-fix?scope=${scope}`
+        loader: `style-loader!css-loader?${JSON.stringify(
+            { discardComments: { removeAll: true } })}!css-attr-scope-loader-mcr-fix?scope=${scope}`
       },
       {
         test: /\.less$/,

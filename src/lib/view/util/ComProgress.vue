@@ -4,7 +4,7 @@
             <div
                     v-if="p.progress<1"
                     v-for="p in progressList"
-                    :key="p.id"
+                    :key="p.id||Date.now()"
                     class="progress-item" :style="{'width':`${p.progress*100}%`}">
             </div>
         </transition-group>

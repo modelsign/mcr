@@ -4,15 +4,6 @@
     "stage-0"
   ],
   "plugins": [
-    "syntax-dynamic-import",
-    [
-      "component",
-      [
-        {
-          "libraryName": "element-ui",
-          "styleLibraryName": "theme-default"
-        }
-      ]
-    ]
+    "transform-runtime"
   ]
 }

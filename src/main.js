@@ -1,5 +1,3 @@
-// import 'babel-polyfill';
-
 import Vue from 'vue';
 import stores from 'vue-stores';
 import './lib';
@@ -30,7 +28,7 @@ const TIME_SECONDS = 2000;
       const promiseApp      = import(/* webpackChunkName: "app" */'./app.vue');
       
       window['msign'] = {
-        create (domElement) {
+        async create (domElement) {
           let state      = {
             current  : {
               isProcessing: false,
@@ -50,7 +48,7 @@ const TIME_SECONDS = 2000;
             menu     : {
               base   : [
                 {
-                  title        : '拖拽模式',
+                  title        : `拖拽模式`,
                   icon         : 'msign-orbit',
                   isToggle     : false,
                   isActive     : false,
@@ -65,10 +63,10 @@ const TIME_SECONDS = 2000;
                     
                     switch (mode) {
                       case 'orbit':
-                        this.title = '拖拽模式';
+                        this.title = `拖拽模式`;
                         break;
                       case 'select':
-                        this.title = '框选模式';
+                        this.title = `框选模式`;
                         break;
                     }
                     em.emit('request/tool', { action: 'inter', arg: { mode } });
@@ -109,7 +107,7 @@ const TIME_SECONDS = 2000;
                   }
                 },
                 {
-                  title        : '相机归位',
+                  title        : `相机归位`,
                   icon         : 'msign-home',
                   isToggle     : false,
                   isActive     : false,
@@ -124,7 +122,7 @@ const TIME_SECONDS = 2000;
                   callbackOff  : null
                 },
                 {
-                  title        : '截图',
+                  title        : `截图`,
                   icon         : 'msign-camera',
                   isToggle     : false,
                   isActive     : false,
