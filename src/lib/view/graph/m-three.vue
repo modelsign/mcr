@@ -41,10 +41,17 @@
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
-  const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  const renderer  = new THREE.WebGLRenderer(
+      {
+        antialias            : true,
+        alpha                : true,
+        preserveDrawingBuffer: true
+      }
+  );
+
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  let cursor      = new THREE.Vector3(0, 0, 0);
-  const controls  = new MouseControls(scene, camera, renderer.domElement, cursor);
+  let cursor     = new THREE.Vector3(0, 0, 0);
+  const controls = new MouseControls(scene, camera, renderer.domElement, cursor);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
   

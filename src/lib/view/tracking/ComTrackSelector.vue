@@ -136,8 +136,8 @@
           return object3d instanceof THREE.Mesh;
         });
 
-        let halfW = renderer.domElement.width / 2,
-            halfH = renderer.domElement.height / 2;
+        let halfW = renderer.domElement.getBoundingClientRect().width / 2,
+            halfH = renderer.domElement.getBoundingClientRect().height / 2;
 
         this.selected = [];
         meshs.forEach((mesh, index) => {
