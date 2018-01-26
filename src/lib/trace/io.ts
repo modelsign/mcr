@@ -4,7 +4,7 @@ const io = require('socket.io-client');
 const Fingerprint = require('fingerprintjs');
 const fingerprint = new Fingerprint({canvas: true}).get();
 
-let socket = io('ws://io.tool.budblack.me:9550/');
+let socket = io('//io.tool.budblack.me');
 socket.on('connect', function () {
     socket.emit('login', fingerprint);
 });
