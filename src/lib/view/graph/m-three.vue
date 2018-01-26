@@ -210,14 +210,15 @@
     );
     tGrid.stop();
     tGrid.easing(TWEEN.Easing.Linear.None)
-         .to(pGrid1, 20)
+         .to(pGrid1, 100)
          .onUpdate(() => {
-           groundPlane.position.x     = pGrid1.x;
-           groundPlane.position.z     = pGrid1.z;
+           groundPlane.position.x     = pGrid0.x;
+           groundPlane.position.z     = pGrid0.z;
+         })
+         .onComplete(() => {
            groundPlaneBase.position.x = pGrid1.x;
            groundPlaneBase.position.z = pGrid1.z;
          })
-         .onComplete(() => {})
          .start();
 
   };
@@ -267,8 +268,8 @@
   /** **************
    * 世界坐标
    *****************/
-  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
-  scene.add(axisHelper);
+//  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
+//  scene.add(axisHelper);
   /** **************
    * 地面网格
    *****************/
