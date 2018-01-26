@@ -4,7 +4,7 @@
 import {ToolController} from "../controller/ToolController";
 import em from '../bus'
 
-export class _ToolLitener {
+export class _ToolListener {
     toolController: ToolController;
 
     constructor(toolController: ToolController) {

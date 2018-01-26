@@ -8,10 +8,10 @@
         width: 100%;
         height: 100%;
         background-color: transparent;
-        border-radius: 4px;
-        border-style: dashed;
-        border-width: 1px;
-        border-color: #0c86ff;
+        /*border-radius: 4px;*/
+        /*border-style: dashed;*/
+        /*border-width: 1px;*/
+        /*border-color: #0c86ff;*/
     }
 
 </style>

@@ -23,13 +23,20 @@
                 <div class="layer-tracking-grid-col-2 col-xs-10">
                     <com-con-toolbar></com-con-toolbar>
                 </div>
-                <div class="layer-tracking-grid-col-3 col-xs-1"></div>
+                <div class="layer-tracking-grid-col-3 col-xs-1">
+                    <transition name="fade">
+                        <com-loader-rotate v-if="stateCurrentIsProcessing"></com-loader-rotate>
+                    </transition>
+                </div>
             </div>
             <div>
                 <com-footer></com-footer>
             </div>
         </div>
 
+        <div class="tracking">
+            <com-track-selector></com-track-selector>
+        </div>
         <!--调试控件-->
         <div class="dev" v-show="stateSettingISDebug">
             <com-dev-looger></com-dev-looger>
@@ -44,6 +51,17 @@
         padding: 0;
 
         pointer-events: none;
+    }
+
+    .tracking {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        /*border-color: red;*/
+        /*border-width: 1px;*/
+        /*border-style: dashed;*/
+        /*border-radius: 2px;*/
     }
 
     .con {
@@ -88,6 +106,15 @@
         top: 0;
         z-index: 10;
     }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+
 </style>
 <script>
   import ComExtModules from '../../modules/main';
@@ -97,6 +124,9 @@
   import ComDevLooger from './ComDevLogger.vue';
   import ComConDirection from './ComConDirection.vue';
   import ComConToolbar from './ComConToolbar.vue';
+  import ComTrackSelector from './ComTrackSelector.vue';
+
+  import { RotateLoader as ComLoaderRotate } from 'vue-spinner/dist/vue-spinner';
 
   export default {
     components: {
@@ -104,13 +134,16 @@
       ComCustomizeRight,
       ComDevLooger,
       ComConToolbar,
-      ComConDirection
+      ComConDirection,
+      ComTrackSelector,
+      ComLoaderRotate
     },
     data () {
       return {};
     },
     stores    : {
-      stateSettingISDebug: 'state.setting.isDebug'
+      stateSettingISDebug     : 'state.setting.isDebug',
+      stateCurrentIsProcessing: 'state.current.isProcessing'
     },
     methods   : {},
     mounted   : function () {

@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
     <style>
-
         body {
             position: fixed;
             width: 100%;
@@ -43,7 +43,6 @@
 </div>
 <div class="fram">
     <div id="mcr"></div>
-    <button onclick="full();"></button>
 </div>
 </body>
 
@@ -51,23 +50,28 @@
 
   const TIME_SECONDS = 2000;
 
-  window.onload = async function () {
+  window.onload = function () {
     if (window.msign) {
-      msign = await msign.create('#mcr');
-      setTimeout(drawSth, TIME_SECONDS);
+      window.msign
+            .create('#mcr')
+            .then(function (_msign) {
+                    msign = _msign;
+                    setTimeout(drawSth, TIME_SECONDS);
+                  }
+            );
     }
   };
   
-  async function drawSth () {
+  function drawSth () {
     for (let i = 0 ; i < 1 ; i++)
-      setTimeout(() => {
+      setTimeout(function () {
         msign.option.mode = 0;
         msign.option.afk  = false;
 
         msign.sandbox.models.push(
             {
               type   : 'gltf',
-              urlGltf: '/testModels/gltf/test0804.gltf?_i=' + i,
+              urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
               option : {
                 position: {
                   x: 0,

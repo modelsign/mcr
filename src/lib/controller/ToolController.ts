@@ -11,13 +11,16 @@ export class ToolController {
     _initEventHandlers() {
 
         /**截图**/
-        em.on('request/tool', (e: { action: string, arg: { isIncludeBorder: boolean } } = {
+        em.on('request/tool', (e: { action: string, arg: any } = {
             action: '',
-            arg: {isIncludeBorder: true}
+            arg: {}
         }) => {
             switch (e.action) {
                 case 'prtscn':
                     this.prtScn(e.arg.isIncludeBorder);
+                    break;
+                case 'inter':
+                    this.interSwitch(e.arg.mode);
                     break;
                 default:
                     break;
@@ -90,6 +93,17 @@ export class ToolController {
         }
     }
 
+    async interSwitch(mode: string) {
+        switch (mode) {
+            case 'orbit':
+            case 'select':
+                _comInst.state.current.interaction = mode;
+                break;
+            default:
+                _comInst.state.current.interaction = 'orbit';
+                break;
+        }
+    }
 
     constructor() {
         this._initEventHandlers();

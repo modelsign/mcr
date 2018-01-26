@@ -42,7 +42,7 @@ module.exports = {
   node     : {
     fs: 'empty'
   },
-  entry    : __dirname + '/src/main.js',
+  entry    : ['babel-polyfill', __dirname + '/src/main.js'],
   output   : {
     filename     : `${outputname}/msign.js`,
     path         : __dirname + '/dist',
@@ -93,10 +93,17 @@ module.exports = {
       },
       {
         test: /\.worker\.js$/,
-        use : {
-          loader : __dirname + '/vender/worker-loader',
-          options: { name: `worker/[hash:8].js` }
-        }
+        use : [
+          {
+            loader : __dirname + '/vender/worker-loader',
+            options: { name: `worker/[hash:8].js` }
+          }, {
+            loader : 'babel-loader',
+            options: {
+              presets: [['es2015', { modules: false }]]
+            }
+          }
+        ]
       },
       {
         test  : /\.ts$/,
@@ -104,7 +111,8 @@ module.exports = {
       },
       {
         test  : /\.css$/,
-        loader: `style-loader!css-loader!css-attr-scope-loader-mcr-fix?scope=${scope}`
+        loader: `style-loader!css-loader?${JSON.stringify(
+            { discardComments: { removeAll: true } })}!css-attr-scope-loader-mcr-fix?scope=${scope}`
       },
       {
         test: /\.less$/,
@@ -179,7 +187,7 @@ module.exports = {
           filename: 'index.html',
           template: __dirname + '/src/_static/index.html',
           inject  : true,
-          hash    : true,
+          hash    : false,
           minify  : {
             removeComments    : true,
             collapseWhitespace: true

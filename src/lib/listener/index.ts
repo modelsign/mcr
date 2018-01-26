@@ -1,7 +1,8 @@
 import inst from '../_common/instance'
 import {_SceneListener} from "./_SceneListener";
 import {_CameraListener} from "./_CameraListener";
-import {_ToolLitener} from "./_ToolLitener";
+import {_ToolListener} from "./_ToolListener";
+import {_MouseListener} from "./_MouseListener";
 
 const TIME_SECONDS = 5000;
 
@@ -14,7 +15,8 @@ let em = inst.event.Emiter,
 
 let _sceneListener: _SceneListener,
     _cameraListerer: _CameraListener,
-    _toolListener: _ToolLitener;
+    _toolListener: _ToolListener,
+    _mouseListener: _MouseListener;
 
 
 function init() {
@@ -26,7 +28,8 @@ function init() {
     if (em && scene && camera && toolCon) {
         _sceneListener = new _SceneListener(scene);
         _cameraListerer = new _CameraListener(camera);
-        _toolListener = new _ToolLitener(toolCon);
+        _toolListener = new _ToolListener(toolCon);
+        _mouseListener = new _MouseListener(scene, null);
     } else {
         setTimeout(init, TIME_SECONDS);
     }

@@ -34,6 +34,7 @@ class Graph {
     camera: THREE.PerspectiveCamera;
     renderer: THREE.Renderer;
     control: THREE.OrbitControls;
+    cursor: THREE.Vector3
 }
 
 class Event {
@@ -46,7 +47,7 @@ class InstClass {
     controller: Controller;
     graph: Graph = new Graph();
     event: Event;
-
+    state: any = null;
     modules: any = {};
 }
 

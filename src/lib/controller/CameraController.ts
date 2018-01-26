@@ -155,7 +155,8 @@ export class CameraController {
          *****************************************/
         let meshs = scene.children
             .filter((obj) => {
-                return (obj instanceof THREE.Mesh)
+                return (obj instanceof THREE.Mesh) &&
+                    obj.name.indexOf('h-') != 0
             });
 
         let pBoxMax = new Vector3(-Infinity, -Infinity, -Infinity),
@@ -177,10 +178,12 @@ export class CameraController {
             .reduce((previous, current) => current.clone().add(previous))
             .multiplyScalar(1 / meshs.length);
 
-
-        let direct = pBoxMax.sub(pBoxMin).multiplyScalar(0.5);
+        /** ***********************************
+         * sqrt(3)/2/tan(35/180*PI)=1.236
+         * 这个缩放因子, 用于显示完整的纵向对角线
+         **************************************/
+        let direct = pBoxMax.sub(pBoxMin).multiplyScalar(1.3);
         let pCamera: Vector3 = direct.add(pCenter);
-
         await this.moveTo(pCamera, pCenter);
 
         return this.camera;

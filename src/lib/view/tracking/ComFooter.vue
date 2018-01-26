@@ -2,31 +2,32 @@
     <div class="row footer">
         <div class="title full-width">
             <com-progress></com-progress>
-            <div class="col-xs-2">
+            <div class="col-md-2">
                 <div>
                     {{stateCurrentStatus}}
                 </div>
             </div>
-            <div class="col-xs-7">
+            <div class="col-md-7">
                 <div>
-                <span>
-                    <h4>
-                    C({{`${stateCurrentCamera.position.x},\t${stateCurrentCamera.position.y},\t${stateCurrentCamera.position.z}\t`}})&nbsp;
-                    D({{`${stateCurrentCamera.direction.x},\t${stateCurrentCamera.direction.y},\t${stateCurrentCamera.direction.z}\t`}})
-                    </h4>
-                </span>
+                    <span>
+                        <small>
+                        C({{`${stateCurrentCamera.position.x},\t${stateCurrentCamera.position.y},\t${stateCurrentCamera.position.z}\t`}})&nbsp;
+                        D({{`${stateCurrentCamera.direction.x},\t${stateCurrentCamera.direction.y},\t${stateCurrentCamera.direction.z}\t`}})
+                        </small>
+                    </span>
                 </div>
             </div>
-            <div class="col-xs-3">
-                <!--<i class="fa fa-fw fa-copyright"></i>&nbsp;-->
-                <com-icon-font icon="msign-copyright" class="pull-left"></com-icon-font>&nbsp;
-                <span>budblack@qq.com</span>&nbsp;
+            <div class="col-md-3">
+                <div style="white-space:nowrap;text-align: right">
+                    <!--<com-icon-svg icon="msign-copyright" class="pull-left"></com-icon-svg>&nbsp;-->
+                    budblack@qq.com
+                </div>
                 <!--<span>2018</span>-->
             </div>
         </div>
         <div class="row ext full-width">
             <div>
-                <table class="table ">
+                <table class="table">
                     <thead>
                     <tr>
                         <td>调试模式</td>

@@ -4,7 +4,7 @@
             <div
                     v-if="p.progress<1"
                     v-for="p in progressList"
-                    :key="p.id"
+                    :key="p.id||Date.now()"
                     class="progress-item" :style="{'width':`${p.progress*100}%`}">
             </div>
         </transition-group>
@@ -52,8 +52,12 @@
         progressList: []
       };
     },
+    stores    : {
+      stateCurrentIsProcessing: 'state.current.isProcessing'
+    },
     methods   : {
       onProgressUpdate ({ id, progress }) {
+        this.stateCurrentIsProcessing = progress < 1;
 
         let p         = this.progressList.find(({ id: _id }) => {return id === _id;}) ||
                         this.progressList[this.progressList.push({ id, progress }) - 1];
