@@ -194,5 +194,9 @@ module.exports = {
           }
         }
     )
-  ].concat(process.env.NODE_ENV === 'prod' ? new BabiliPlugin() : [])
+  ].concat(
+      process.env.NODE_ENV === 'prod'
+          ? new BabiliPlugin({}, { comments: false })
+          : []
+  )
 };
