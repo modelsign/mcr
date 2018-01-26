@@ -9,10 +9,11 @@
             </div>
             <div class="col-md-7">
                 <div>
+                    <span>{{stateGlobalOnline}}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
                     <span>
                         <small>
                         C({{`${stateCurrentCamera.position.x},\t${stateCurrentCamera.position.y},\t${stateCurrentCamera.position.z}\t`}})&nbsp;
-                        D({{`${stateCurrentCamera.direction.x},\t${stateCurrentCamera.direction.y},\t${stateCurrentCamera.direction.z}\t`}})
                         </small>
                     </span>
                 </div>
@@ -121,6 +122,7 @@
       stateCurrentStatus : 'state.current.status',
       stateCurrentCamera : 'state.current.camera',
       stateCurrentPoint  : 'state.current.point',
+      stateGlobalOnline  : 'state.global.online',
       stateSettingIsDebug: 'state.setting.isDebug'
     },
     methods   : {},

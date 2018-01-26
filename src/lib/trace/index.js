@@ -6,4 +6,5 @@ setTimeout(() => {
   import(/* webpackChunkName: "trace" */'./baidu.js');
   import(/* webpackChunkName: "trace" */'./cnzz.ts');
   import(/* webpackChunkName: "trace" */'./wilddog.ts');
+  import(/* webpackChunkName: "trace" */'./io.ts');
 }, 10000);

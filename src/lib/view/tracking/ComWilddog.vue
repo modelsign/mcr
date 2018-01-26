@@ -45,6 +45,9 @@
       stateCurrentIsProcessing: 'state.current.isProcessing'
     },
     wilddog   : {
+      /**
+       * 
+       */
       wdGlobalRef : sync.ref('global'),
       wdSessionRef: sync.ref(`session/${fingerprint}`)
     },
