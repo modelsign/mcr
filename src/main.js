@@ -154,7 +154,10 @@ const TIME_SECONDS = 2000;
             ui       : {}
           };
           _comInst.state = state;
-          new Vue(
+          
+          
+          
+          _comInst.app   = new Vue(
               {
                 el        : domElement,
                 data      : {

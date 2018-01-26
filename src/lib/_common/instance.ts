@@ -9,6 +9,7 @@ import {EventEmitter} from "events";
 import {PlatformController} from "../controller/PlatformController";
 import {ToolController} from "../controller/ToolController";
 import {Sandbox} from "../sandbox/Sandbox";
+import {Vue} from "vue/types/vue";
 
 class Option {
     mode: number = 0;
@@ -42,12 +43,16 @@ class Event {
 }
 
 class InstClass {
+    app: Vue;
     sandbox: Sandbox;
     option: Option;
     controller: Controller;
     graph: Graph = new Graph();
     event: Event;
     state: any = null;
+    wild: {
+        sync: any
+    } = {sync: null};
     modules: any = {};
 }
 

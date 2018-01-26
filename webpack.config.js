@@ -6,6 +6,7 @@ const CopyPlugin               = require('copy-webpack-plugin');
 const BabiliPlugin             = require('babili-webpack-plugin');
 const TypedocWebpackPlugin     = require('typedoc-webpack-plugin');
 const AutoRequireWebpackPlugin = require('auto-require-webpack-plugin');
+const { WebpackClearConsole }  = require('webpack-clear-console');
 
 // 如果预先定义过环境变量，就将其赋值给`ASSET_PATH`变量，否则赋值为根目录
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -196,7 +197,10 @@ module.exports = {
     )
   ].concat(
       process.env.NODE_ENV === 'prod'
-          ? new BabiliPlugin({}, { comments: false })
+          ? [
+            new BabiliPlugin({}, { comments: false }),
+            // new WebpackClearConsole()
+          ]
           : []
   )
 };

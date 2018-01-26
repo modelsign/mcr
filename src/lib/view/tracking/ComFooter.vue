@@ -38,10 +38,12 @@
                     <tr>
                         <td>
                             <button @click="()=>{stateSettingIsDebug=!stateSettingIsDebug}"
-                                    class="btn btn-sm">{{stateSettingIsDebug}}
+                                    class="btn btn-sm btn-warning">{{stateSettingIsDebug}}
                             </button>
                         </td>
-                        <td></td>
+                        <td>
+                            <com-wilddog></com-wilddog>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -108,9 +110,10 @@
   import em from '../../bus';
 
   import ComProgress from '../util/ComProgress.vue';
+  import ComWilddog from './ComWilddog.vue';
 
   export default {
-    components: { ComProgress },
+    components: { ComProgress, ComWilddog },
     data () {
       return {};
     },
