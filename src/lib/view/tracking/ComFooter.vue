@@ -9,19 +9,22 @@
             </div>
             <div class="col-md-7">
                 <div>
-                    <span>{{stateGlobalOnline}}</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
                     <span>
                         <small>
-                        C({{`${stateCurrentCamera.position.x},\t${stateCurrentCamera.position.y},\t${stateCurrentCamera.position.z}\t`}})&nbsp;
+                        C({{`${stateCurrentCamera.position.x.toFixed(0)},
+                        \t${stateCurrentCamera.position.y.toFixed(0)},
+                        \t${stateCurrentCamera.position.z.toFixed(0)}\t`}})&nbsp;
                         </small>
                     </span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
-                    <!--<com-icon-svg icon="msign-copyright" class="pull-left"></com-icon-svg>&nbsp;-->
-                    budblack@qq.com
+                    <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
+                    <a :href="`mailto:budblack@qq.com?subject=[feedback]in[mSign-mcr]from[${stateCurrentFingerprint}]&body=来源: mSign-mcr;
+客户识别码: ${stateCurrentFingerprint};`">BUDBLACK@QQ.COM</a>&nbsp;
+                    <!--<com-icon-svg icon="msign-copyright" class=""></com-icon-svg>&nbsp;-->
+                    <!--2018&nbsp;-->
                 </div>
                 <!--<span>2018</span>-->
             </div>
@@ -106,6 +109,26 @@
         justify-content: flex-start;
         align-items: flex-start;
     }
+
+    a:link {
+        color: #434343;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: #434343;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #537a62;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: #434343;
+        text-decoration: none;
+    }
 </style>
 <script>
   import em from '../../bus';
@@ -119,11 +142,12 @@
       return {};
     },
     stores    : {
-      stateCurrentStatus : 'state.current.status',
-      stateCurrentCamera : 'state.current.camera',
-      stateCurrentPoint  : 'state.current.point',
-      stateGlobalOnline  : 'state.global.online',
-      stateSettingIsDebug: 'state.setting.isDebug'
+      stateCurrentStatus     : 'state.current.status',
+      stateCurrentCamera     : 'state.current.camera',
+      stateCurrentPoint      : 'state.current.point',
+      stateCurrentFingerprint: 'state.current.fingerprint',
+      stateGlobalOnline      : 'state.global.online',
+      stateSettingIsDebug    : 'state.setting.isDebug'
     },
     methods   : {},
     mounted   : function () {

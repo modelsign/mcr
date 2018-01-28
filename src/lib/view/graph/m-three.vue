@@ -210,7 +210,7 @@
     );
     tGrid.stop();
     tGrid.easing(TWEEN.Easing.Linear.None)
-         .to(pGrid1, 100)
+         .to(pGrid1, 50)
          .onUpdate(() => {
            groundPlane.position.x     = pGrid0.x;
            groundPlane.position.z     = pGrid0.z;

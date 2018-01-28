@@ -42,11 +42,12 @@
     },
     stores    : {
       stateSettingISDebug     : 'state.setting.isDebug',
-      stateCurrentIsProcessing: 'state.current.isProcessing'
+      stateCurrentIsProcessing: 'state.current.isProcessing',
+      stateCurrentFingerprint : 'state.current.fingerprint'
     },
     wilddog   : {
       /**
-       * 
+       *
        */
       wdGlobalRef : sync.ref('global'),
       wdSessionRef: sync.ref(`session/${fingerprint}`)
@@ -68,6 +69,7 @@
               .set(step);
         }
       });
+      this.stateCurrentFingerprint = fingerprint;
     }
   };
 </script>

@@ -12,13 +12,13 @@ import {Sandbox} from "../sandbox/Sandbox";
 import {Vue} from "vue/types/vue";
 import em from '../bus';
 
-class Option {
+export class Option {
     mode: number = 0;
     afk: boolean = false;
     isWireframe: false;
 }
 
-class Controller {
+export class Controller {
     CameraController: CameraController = null;
     DownloadController: DownloadController = null;
     SceneController: SceneController = null;
@@ -31,7 +31,7 @@ class Controller {
     }
 }
 
-class Graph {
+export class Graph {
     scene: THREE.Scene;
     camera: THREE.PerspectiveCamera;
     renderer: THREE.Renderer;
@@ -39,17 +39,23 @@ class Graph {
     cursor: THREE.Vector3
 }
 
-class Event {
+export class Event {
     Emiter: EventEmitter = null
 }
 
-class State {
+export class State {
     global: { online: number };
     current: any;
     menu: any;
     customize: any;
     setting: any;
     ui: any;
+}
+
+export class Local {
+    firstuse: number = 0;
+    lastuse: number = 0;
+    usagecount: number = 0;
 }
 
 class InstClass {
@@ -61,6 +67,7 @@ class InstClass {
     event: Event;
     state: State;
     wild: any;
+    local: Local;
     modules: any;
 }
 
@@ -75,6 +82,7 @@ inst.state = {
         online: 0
     },
     current: {
+        fingerprint: 0,
         isProcessing: false,
         status: '全局状态提示',
         camera: {
