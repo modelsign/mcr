@@ -95,7 +95,8 @@ inst.state = {
          * select.  鼠标交互框选模式, 该模式下鼠标左键框选模型
          */
         interaction: 'orbit',
-        selects: []
+        selects: [],
+        hits: []
     },
     menu: {
         base: [
