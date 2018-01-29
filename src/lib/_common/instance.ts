@@ -12,6 +12,9 @@ import {Sandbox} from "../sandbox/Sandbox";
 import {Vue} from "vue/types/vue";
 import em from '../bus';
 
+const Fingerprint = require('fingerprintjs');
+const fingerprint = new Fingerprint().get();
+
 export class Option {
     mode: number = 0;
     afk: boolean = false;
@@ -82,7 +85,7 @@ inst.state = {
         online: 0
     },
     current: {
-        fingerprint: 0,
+        fingerprint: fingerprint,
         isProcessing: false,
         status: '全局状态提示',
         camera: {

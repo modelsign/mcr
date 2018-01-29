@@ -2,7 +2,7 @@ import _comInst from '../_common/instance'
 
 const io = require('socket.io-client');
 const Fingerprint = require('fingerprintjs');
-const fingerprint = new Fingerprint({canvas: true}).get();
+const fingerprint = _comInst.state.current.fingerprint;
 
 let socket = io('//io.tool.budblack.me');
 socket.on('connect', function () {

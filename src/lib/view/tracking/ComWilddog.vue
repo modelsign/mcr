@@ -8,8 +8,7 @@
 
 </style>
 <script>
-  const Fingerprint = require('fingerprintjs');
-  const fingerprint = new Fingerprint({ canvas: true }).get();
+  const fingerprint = _comInst.state.current.fingerprint;
   const UA          = require('ua-device');
 
   let ua        = new UA(navigator && navigator.userAgent);
