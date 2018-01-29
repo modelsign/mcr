@@ -2,7 +2,7 @@ const THREE = require('../../../../../../vender/three');
 import em from '../../../../bus'
 import {Tween, Easing} from '@tweenjs/tween.js';
 import {start} from "repl";
-import {EventDispatcher, Quaternion, Vector2} from "three";
+import {EventDispatcher, Object3D, Quaternion, Vector2} from "three";
 
 function log(txt) {
     em.emit('event/log/trace', {step: txt});
@@ -28,6 +28,7 @@ export default class MouseControls extends EventDispatcher {
     public enable: boolean = true;
     public target: THREE.Vector3 = new THREE.Vector3();
     public cursor: THREE.Vector3;
+    public hits: THREE.Intersection[];
 
     // 移动时候允许相机和目标点的最大最小距离;
     // 对于圆锥投影类型的相机有效
@@ -119,13 +120,15 @@ export default class MouseControls extends EventDispatcher {
     constructor(scene: THREE.Scene,
                 camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
                 domElement: Element,
-                cursor: THREE.Vector3) {
+                cursor: THREE.Vector3,
+                hits: THREE.Intersection[] = []) {
         super();
 
         this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
         this.cursor = cursor;
+        this.hits = hits;
         // console.log(cursor)
 
         this.target0 = this.target.clone();
@@ -786,6 +789,8 @@ export default class MouseControls extends EventDispatcher {
                     ;
             });
         let intersects = raycaster.intersectObjects(meshs);
+        this.hits.length = 0;
+        this.hits.push(...intersects);
         if (intersects.length > 0) {
             let cursor = intersects[0].point;
             this.cursor = cursor;

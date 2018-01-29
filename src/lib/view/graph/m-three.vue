@@ -51,7 +51,8 @@
 
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
   let cursor     = new THREE.Vector3(0, 0, 0);
-  const controls = new MouseControls(scene, camera, renderer.domElement, cursor);
+  let hits       = _comInst.state.current.hits;
+  const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
   
@@ -210,14 +211,15 @@
     );
     tGrid.stop();
     tGrid.easing(TWEEN.Easing.Linear.None)
-         .to(pGrid1, 20)
+         .to(pGrid1, 50)
          .onUpdate(() => {
-           groundPlane.position.x     = pGrid1.x;
-           groundPlane.position.z     = pGrid1.z;
+           groundPlane.position.x = pGrid0.x;
+           groundPlane.position.z = pGrid0.z;
+         })
+         .onComplete(() => {
            groundPlaneBase.position.x = pGrid1.x;
            groundPlaneBase.position.z = pGrid1.z;
          })
-         .onComplete(() => {})
          .start();
 
   };
@@ -267,8 +269,8 @@
   /** **************
    * 世界坐标
    *****************/
-  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
-  scene.add(axisHelper);
+  //  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
+  //  scene.add(axisHelper);
   /** **************
    * 地面网格
    *****************/
@@ -423,10 +425,10 @@
           await this.updareModels(models, []);
         }
       },
-      async add2Scene (mesh, name = '') {
+      async add2Scene (mesh, name = '', isHitable = false) {
         mesh.castShadow = true;
         //        mesh.receiveShadow = true;
-        mesh.name       = name;
+        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}`;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
         });
@@ -557,7 +559,7 @@
             await meshs.forEach(async (mesh) => {
               //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
               let name = mesh.name || mesh.id || mesh.uuid || Math.random();
-              await this.add2Scene(mesh, 'model_' + name);
+              await this.add2Scene(mesh, 'model_' + name, true);
             });
           }
         });
