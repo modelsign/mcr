@@ -13,12 +13,12 @@ class LocalManager {
     local: Local;
 
     load(): Local {
-        this.local = JSON.parse(localStorage.getItem('msign-local'));
+        this.local = JSON.parse(localStorage.getItem('msign:local'));
         return this.local;
     }
 
     save(): Local {
-        localStorage.setItem('msign-local', JSON.stringify(this.local));
+        localStorage.setItem('msign:local', JSON.stringify(this.local));
         return this.local;
     }
 
@@ -34,7 +34,7 @@ class LocalManager {
             local.usagecount = 1;
             local.firstuse = Date.now();
             local.lastuse = Date.now();
-            localStorage.setItem('msign-local', JSON.stringify(local));
+            localStorage.setItem('msign:local', JSON.stringify(local));
         }
 
         let e = new EventStartup();
