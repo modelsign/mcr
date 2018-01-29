@@ -52,7 +52,7 @@
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
   let cursor     = new THREE.Vector3(0, 0, 0);
   let hits       = _comInst.state.current.hits;
-//  const controls = new THREE.OrbitControls( camera, renderer.domElement);
+  //  const controls = new THREE.OrbitControls( camera, renderer.domElement);
   const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
@@ -202,9 +202,9 @@
      ************************************************************/
     helperGridBase.position.x = Math.floor(controls.target.x / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
     helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
-    if(controls.cursor){
-      let pGrid0                = helperGrid.position,
-          pGrid1                = {
+    if (controls.cursor) {
+      let pGrid0 = helperGrid.position,
+          pGrid1 = {
             x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
             z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
           };
@@ -350,7 +350,8 @@
       };
     },
     stores  : {
-      stateCurrentIsProcessing: 'state.current.isProcessing'
+      stateCurrentIsProcessing: 'state.current.isProcessing',
+      stateCurrentPoint       : 'state.current.point'
     },
     watch   : {
       option: {

@@ -4,6 +4,8 @@
             <com-progress></com-progress>
             <div class="col-md-2">
                 <div>
+                    <com-icon-svg v-if="stateSettingIsDebug" icon="msign-console" class=""></com-icon-svg>
+                    <com-icon-svg v-if="!stateSettingIsDebug" icon="msign-lightning" class=""></com-icon-svg>
                     {{stateCurrentStatus}}
                 </div>
             </div>
@@ -11,17 +13,28 @@
                 <div>
                     <span>
                         <small>
-                        C({{`${stateCurrentCamera.position.x.toFixed(0)},
-                        \t${stateCurrentCamera.position.y.toFixed(0)},
-                        \t${stateCurrentCamera.position.z.toFixed(0)}\t`}})&nbsp;
+                            <com-icon-svg icon="msign-eye" class=""></com-icon-svg>
+                        {{`${stateCurrentCamera.position.x.toFixed(0)},
+                         \t${stateCurrentCamera.position.y.toFixed(0)},
+                         \t${stateCurrentCamera.position.z.toFixed(0)}\t`}}&nbsp;
+                        </small>
+                        <small>
+                            <com-icon-svg icon="msign-location" class=""></com-icon-svg>
+                        {{`${computeCursor.x.toFixed(0)},
+                         \t${computeCursor.y.toFixed(0)},
+                         \t${computeCursor.z.toFixed(0)}\t`}}&nbsp;
                         </small>
                     </span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
-                    <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
 
+                    <span style="opacity: 0.4">
+                        <com-icon-svg icon="msign-users" class=""></com-icon-svg>
+                        {{stateGlobalOnline}}
+                    </span>
+                    &nbsp; &nbsp;
                     <a href="//mcr.msign.tech/" target="_blank">
                         <com-icon-svg icon="msign-documentation" class=""></com-icon-svg>
                         帮助
@@ -133,6 +146,7 @@
 </style>
 <script>
   import em from '../../bus';
+  import _comInst from '../../_common/instance';
 
   import ComProgress from '../util/ComProgress.vue';
   import ComWilddog from './ComWilddog.vue';
@@ -142,10 +156,14 @@
     data () {
       return {};
     },
+    computed  : {
+      computeCursor () {
+        return _comInst.graph.cursor;
+      }
+    },
     stores    : {
       stateCurrentStatus     : 'state.current.status',
       stateCurrentCamera     : 'state.current.camera',
-      stateCurrentPoint      : 'state.current.point',
       stateCurrentFingerprint: 'state.current.fingerprint',
       stateGlobalOnline      : 'state.global.online',
       stateSettingIsDebug    : 'state.setting.isDebug'

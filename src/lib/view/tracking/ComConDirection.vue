@@ -99,7 +99,6 @@
     stores    : {
       stateCurrentStatus : 'state.current.status',
       stateCurrentCamera : 'state.current.camera',
-      stateCurrentPoint  : 'state.current.point',
       stateSettingIsDebug: 'state.setting.isDebug'
     },
     methods   : {
