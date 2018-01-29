@@ -4,9 +4,10 @@
  *
  *****************************************/
 
-import _comInst, {Local} from '../../_common/instance'
+import _comInst from '../../_common/instance'
 import em from '../../bus'
 import {EventStartup} from "./event/startup";
+import Local from "../../_common/Local";
 
 class LocalManager {
     local: Local;
