@@ -4,20 +4,21 @@
  *
  *****************************************/
 
-import _comInst, {Local} from '../../_common/instance'
+import _comInst from '../../_common/instance'
 import em from '../../bus'
 import {EventStartup} from "./event/startup";
+import Local from "../../_common/Local";
 
 class LocalManager {
     local: Local;
 
     load(): Local {
-        this.local = JSON.parse(localStorage.getItem('msign-local'));
+        this.local = JSON.parse(localStorage.getItem('msign:local'));
         return this.local;
     }
 
     save(): Local {
-        localStorage.setItem('msign-local', JSON.stringify(this.local));
+        localStorage.setItem('msign:local', JSON.stringify(this.local));
         return this.local;
     }
 
@@ -33,7 +34,7 @@ class LocalManager {
             local.usagecount = 1;
             local.firstuse = Date.now();
             local.lastuse = Date.now();
-            localStorage.setItem('msign-local', JSON.stringify(local));
+            localStorage.setItem('msign:local', JSON.stringify(local));
         }
 
         let e = new EventStartup();

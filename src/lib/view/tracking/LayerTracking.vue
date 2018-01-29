@@ -147,7 +147,7 @@
     },
     methods   : {},
     mounted   : function () {
-      console.log('');
-    }
+//      console.log('');
+    }/**/
   };
 </script>

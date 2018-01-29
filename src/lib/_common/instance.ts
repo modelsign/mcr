@@ -1,62 +1,15 @@
-import {FaceElement} from "../sandbox/FaceElement";
-import {LineElement} from "../sandbox/LineElement";
-import {LabelElement} from "../sandbox/LabelElement";
-import {ModelElement} from "../sandbox/ModelElement";
-import {CameraController} from "../controller/CameraController";
-import {DownloadController} from "../controller/DownloadController";
-import {SceneController} from "../controller/SceneController";
-import {EventEmitter} from "events";
-import {PlatformController} from "../controller/PlatformController";
-import {ToolController} from "../controller/ToolController";
 import {Sandbox} from "../sandbox/Sandbox";
 import {Vue} from "vue/types/vue";
 import em from '../bus';
+import Option from "./Option";
+import Controller from "./Controller";
+import Graph from "./Graph";
+import Event from "./Event";
+import State from "./State";
+import Local from "./Local";
 
-export class Option {
-    mode: number = 0;
-    afk: boolean = false;
-    isWireframe: false;
-}
-
-export class Controller {
-    CameraController: CameraController = null;
-    DownloadController: DownloadController = null;
-    SceneController: SceneController = null;
-    AnimaController: any = null;
-    PlatformController: PlatformController = null;
-    ToolController: ToolController = null;
-
-    constructor() {
-        this.PlatformController = new PlatformController();
-    }
-}
-
-export class Graph {
-    scene: THREE.Scene;
-    camera: THREE.PerspectiveCamera;
-    renderer: THREE.Renderer;
-    control: THREE.OrbitControls;
-    cursor: THREE.Vector3
-}
-
-export class Event {
-    Emiter: EventEmitter = null
-}
-
-export class State {
-    global: { online: number };
-    current: any;
-    menu: any;
-    customize: any;
-    setting: any;
-    ui: any;
-}
-
-export class Local {
-    firstuse: number = 0;
-    lastuse: number = 0;
-    usagecount: number = 0;
-}
+const Fingerprint = require('fingerprintjs');
+const fingerprint = new Fingerprint().get();
 
 class InstClass {
     app: Vue;
@@ -82,7 +35,7 @@ inst.state = {
         online: 0
     },
     current: {
-        fingerprint: 0,
+        fingerprint: fingerprint,
         isProcessing: false,
         status: '全局状态提示',
         camera: {
