@@ -1,4 +1,4 @@
-![logo](_media/icon.svg)
+![logo](_media/favicon.svg)
 
 # mSign-mcr <small>0.1.0</small>
 
@@ -10,4 +10,4 @@
 
 
 [GitHub](https://github.com/modelsign/mcr)
-[Get Started](#quick-start)
+[Get Started](quick_start)
