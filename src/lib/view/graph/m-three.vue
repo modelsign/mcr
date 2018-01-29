@@ -52,6 +52,7 @@
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
   let cursor     = new THREE.Vector3(0, 0, 0);
   let hits       = _comInst.state.current.hits;
+//  const controls = new THREE.OrbitControls( camera, renderer.domElement);
   const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
@@ -201,27 +202,28 @@
      ************************************************************/
     helperGridBase.position.x = Math.floor(controls.target.x / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
     helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
-    let pGrid0                = helperGrid.position,
-        pGrid1                = {
-          x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
-          z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
-        };
-    tGrid || (
-        tGrid = new TWEEN.Tween(pGrid0)
-    );
-    tGrid.stop();
-    tGrid.easing(TWEEN.Easing.Linear.None)
-         .to(pGrid1, 50)
-         .onUpdate(() => {
-           groundPlane.position.x = pGrid0.x;
-           groundPlane.position.z = pGrid0.z;
-         })
-         .onComplete(() => {
-           groundPlaneBase.position.x = pGrid1.x;
-           groundPlaneBase.position.z = pGrid1.z;
-         })
-         .start();
-
+    if(controls.cursor){
+      let pGrid0                = helperGrid.position,
+          pGrid1                = {
+            x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
+            z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
+          };
+      tGrid || (
+          tGrid = new TWEEN.Tween(pGrid0)
+      );
+      tGrid.stop();
+      tGrid.easing(TWEEN.Easing.Linear.None)
+           .to(pGrid1, 50)
+           .onUpdate(() => {
+             groundPlane.position.x = pGrid0.x;
+             groundPlane.position.z = pGrid0.z;
+           })
+           .onComplete(() => {
+             groundPlaneBase.position.x = pGrid1.x;
+             groundPlaneBase.position.z = pGrid1.z;
+           })
+           .start();
+    }
   };
   const resetRenderSize = () => {
     let container = document.getElementById('mcr-graph-three');
