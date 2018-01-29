@@ -48,18 +48,18 @@
         position: absolute;
         width: 4px;
         height: 4px;
-        background-color: red;
+        background-color: #ff0000;
     }
 
     .select-rectangle {
         pointer-events: none;
         position: absolute;
-        background-color: #aae8fa54;
+        background-color: rgba(170, 232, 250, 0.33);
 
         /*border-radius: 2px;*/
         border-style: double;
         border-width: 1px;
-        border-color: #77777785;
+        border-color: rgba(119, 119, 119, 0.52);
     }
 </style>
 <script>
