@@ -231,7 +231,7 @@ class VisualBoxClipper {
             for (let key in box_max) {
                 scope._box_max.push(box_max[key]);
             }
-            //scope.createClipeBox();
+            scope.createClipeBox();
         }
 
 
@@ -322,22 +322,22 @@ class VisualBoxClipper {
             camera = _comInst.graph.camera,
             renderer = _comInst.graph.renderer;
 
-        // tControl = new THREE.TransformControls(camera, renderer.domElement);
-        // this._scene.add(  tControl);
-        //
-        //
-        //
-        // dControl = new THREE.DragControls( this._clipBoxControl, camera, renderer.domElement ); //
-        // dControl.enabled = false;
-        // dControl.addEventListener( 'hoveron', function ( event ) {
-        //     tControl.attach( event.object );
-        //     //cancelHideTransorm();
-        //
-        // } );
-        //
-        // dControl.addEventListener( 'hoveroff', function ( event ) {
-        //     //tControl.detach( event.object );
-        // } );
+        tControl = new THREE.TransformControls(camera, renderer.domElement);
+        this._scene.add(  tControl);
+
+
+
+        dControl = new THREE.DragControls( this._clipBoxControl, camera, renderer.domElement );
+        dControl.enabled = false;
+        dControl.addEventListener( 'hoveron', function ( event ) {
+            tControl.attach( event.object );
+            //cancelHideTransorm();
+
+        } );
+
+        dControl.addEventListener( 'hoveroff', function ( event ) {
+            //tControl.detach( event.object );
+        } );
     }
 
 
