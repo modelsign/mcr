@@ -1,4 +1,11 @@
 - [首页](/)
 - [快速开始](/quick_start)
-- [详尽的文档](/guide)
+- 手册
+    - [认识配置对象](/manual/knowledge_option)
+    - [认识组件实例](/manual/knowledge_instance)
+    - [认识沙盒对象](/manual/knowledge_sandbox)
+    
+    - [操作镜头](/manual/control_canmera)
+- 参考
+    - [LineElement](/reference/class_line_element)
 - [关于](/about)

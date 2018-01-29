@@ -442,7 +442,7 @@ THREE.OrbitControls = function (object, domElement) {
   
   function handleMouseDownRotate (event) {
     
-    //console.log( 'handleMouseDownRotate' );
+    // console.log( 'handleMouseDownRotate' );
     
     rotateStart.set(event.clientX, event.clientY);
     
@@ -466,7 +466,7 @@ THREE.OrbitControls = function (object, domElement) {
   
   function handleMouseMoveRotate (event) {
     
-    //console.log( 'handleMouseMoveRotate' );
+    // console.log( 'handleMouseMoveRotate' );
     
     rotateEnd.set(event.clientX, event.clientY);
     rotateDelta.subVectors(rotateEnd, rotateStart);
@@ -733,7 +733,7 @@ THREE.OrbitControls = function (object, domElement) {
       state = STATE.PAN;
       
     }
-    
+    console.log(state)
     if (state !== STATE.NONE) {
       
       document.addEventListener('mousemove', onMouseMove, false);
@@ -746,7 +746,7 @@ THREE.OrbitControls = function (object, domElement) {
   }
   
   function onMouseMove (event) {
-    
+    // console.log(event)
     if (scope.enabled === false) {
       return;
     }

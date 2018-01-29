@@ -6,10 +6,7 @@
 在线实例
 ---
 
-```
-http://mcr.tool.budblack.me/
-```
-上述地址运行有一个组件预览的实例, 我们通过它来入门.
+[这里](http://mcr.tool.budblack.me/)运行有一个组件预览的实例, 我们通过它来入门.
 
 
 引入组件
@@ -19,7 +16,7 @@ http://mcr.tool.budblack.me/
 
 现阶段开发期间, 组件不具有稳定版本号. 故而所有部署环境都通过开发版本时间戳发布.
 
-网页中引入指定资源即可
+网页中引入指定资源即可.
 
 ```html
 <script type="text/javascript" src="//mcr.tool.budblack.me/201801282214/msign.js"></script>
@@ -66,7 +63,7 @@ http://mcr.tool.budblack.me/
 
 >在图形实例被创建之前, `msign`对象仅导出成员方法`create()`.
 
-```js
+```javascript
 const TIME_SECONDS=5*1000;
 window.onload = function () {
 if (window.msign) {
@@ -91,7 +88,7 @@ if (window.msign) {
 
 当然, 组件内部是存在各种控制器以及消息传递机制的. 只是, 对于一般项目来说 __简单沙盒模型下的管理能力足够应付大多数业务需求__.
 
-```js
+```javascript
  msign.sandbox
       .models
       .push(

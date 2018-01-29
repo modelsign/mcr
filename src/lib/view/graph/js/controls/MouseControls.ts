@@ -139,7 +139,8 @@ export default class MouseControls extends EventDispatcher {
 
         domElement.addEventListener('dblclick', this._onDblclick, false);
         domElement.addEventListener('mousedown', this._onMouseDown, false);
-        domElement.addEventListener('mousemove', this._onMouseMove, false);
+        // 这个设计挺智障的. 因为另一个控制器(DragControls)也用到了mousemove, 它在里边通过终止冒泡来取消外部拖拽.
+        document.addEventListener('mousemove', this._onMouseMove, false);
         domElement.addEventListener('wheel', this._onMouseWheel, false);
         domElement.addEventListener('touchstart', this._onTouchStart, false);
         domElement.addEventListener('touchend', this._onTouchEnd, false);
@@ -279,7 +280,7 @@ export default class MouseControls extends EventDispatcher {
         this.domElement.removeEventListener('touchend', this._onTouchEnd, false);
         this.domElement.removeEventListener('touchmove', this._onTouchMove, false);
 
-        this.domElement.removeEventListener('mousemove', this._onMouseMove, false);
+        document.removeEventListener('mousemove', this._onMouseMove, false);
         this.domElement.removeEventListener('mouseup', this._onMouseUp, false);
 
         window.removeEventListener('keydown', this._onKeyDown, false);
@@ -623,7 +624,7 @@ export default class MouseControls extends EventDispatcher {
         }
 
         if (this.state !== STATE.NONE) {
-            // this.domElement.addEventListener('mousemove', this._onMouseMove, false);
+            // this.domElement.parentElement.addEventListener('mousemove', this._onMouseMove, false);
             this.domElement.addEventListener('mouseup', this._onMouseUp, false);
             this.dispatchEvent(startEvent);
         }
@@ -646,7 +647,7 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private onMouseUp(event) {
-        // this.domElement.removeEventListener('mousemove', this._onMouseMove, false);
+        // this.domElement.parentElement.removeEventListener('mousemove', this._onMouseMove, false);
         this.domElement.removeEventListener('mouseup', this._onMouseUp, false);
 
         if (!this.enable) return;
