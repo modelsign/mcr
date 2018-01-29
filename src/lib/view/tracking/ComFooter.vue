@@ -21,8 +21,7 @@
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
                     <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
-                    <a :href="`mailto:budblack@qq.com?subject=[feedback]in[mSign-mcr]from[${stateCurrentFingerprint}]&body=来源: mSign-mcr;
-客户识别码: ${stateCurrentFingerprint};`">BUDBLACK@QQ.COM</a>&nbsp;
+                    <a href="//mcr.msign.tech/" target="_blank">帮助</a>&nbsp;
                     <!--<com-icon-svg icon="msign-copyright" class=""></com-icon-svg>&nbsp;-->
                     <!--2018&nbsp;-->
                 </div>
