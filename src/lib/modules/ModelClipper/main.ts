@@ -5,13 +5,8 @@ import {ModelClipper} from "./ModelClipper";
 
 em.emit('event/log/trace', {step: '初始化扩展, module_clipper'});
 
-
 const instClipper = new ModelClipper();
-
-
 _comInst.modules.instClipper = instClipper;
-
-
 export default {};
 
 export let InstClipper = instClipper;
