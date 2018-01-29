@@ -1,13 +1,13 @@
 ![logo](_media/icon.svg)
 
-# docsify <small>1.3.3</small>
+# mSign-mcr <small>0.1.0</small>
 
-> A magical documentation site generator.
+> 一个简单实用的轻量化图形组件.
 
-- Simple and lightweight (~12kb gzipped)
-- Multiple themes
-- Not build static html files
+- 观察者模式
+- 异步组件
+- 简单的API
 
 
-[GitHub](https://github.com/QingWei-Li/docsify/)
+[GitHub](https://github.com/modelsign/mcr)
 [Get Started](#quick-start)
