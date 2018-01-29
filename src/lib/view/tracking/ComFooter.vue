@@ -21,9 +21,11 @@
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
                     <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
-                    <a href="//mcr.msign.tech/" target="_blank">帮助</a>&nbsp;
-                    <!--<com-icon-svg icon="msign-copyright" class=""></com-icon-svg>&nbsp;-->
-                    <!--2018&nbsp;-->
+
+                    <a href="//mcr.msign.tech/" target="_blank">
+                        <com-icon-svg icon="msign-documentation" class=""></com-icon-svg>
+                        帮助
+                    </a>
                 </div>
                 <!--<span>2018</span>-->
             </div>
