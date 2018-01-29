@@ -4,6 +4,7 @@
             @touchstart="onContainerMouseover"
             @mouseleave="onContainerMouseout"
             @touchend="onContainerMouseout"
+            id="mcr-platform"
             class="mcr">
         <transition name="fade">
             <layer-graph></layer-graph>
@@ -17,6 +18,8 @@
 <style type="text/css" scoped="">
     .mcr {
         position: relative;
+        width: 100%;
+        height: 100%;
     }
 
     .fade-enter-active, .fade-leave-active {
@@ -30,6 +33,8 @@
 </style>
 
 <script type="text/javascript">
+  const TIME_SECONDS = 5000;
+  import Vue from 'vue';
   import em from './lib/bus';
   import { mapState } from 'vuex';
 
@@ -49,12 +54,45 @@
    *************************/
 
   /** **********************
+   * 载入组件
    * 统一使用异步组件
+   *
+   * 其中一部分是全局组件
    *************************/
-  const promiseLayerGraph    = import(/* webpackChunkName: "ui" */'./lib/view/graph/m-three.vue'),
-        promiseMEmpty        = import(/* webpackChunkName: "ui" */'./lib/view/util/ComEmpty.vue'),
-        promiseLayerTracking = import(/* webpackChunkName: "ui" */'./lib/view/tracking/LayerTracking.vue')
+  const promiseLayerGraph    = import(/* webpackChunkName: "core" */'./lib/view/graph/m-three.vue'),
+        promiseMEmpty        = import(/* webpackChunkName: "core" */'./lib/view/util/ComEmpty.vue'),
+        promiseLayerTracking = import(/* webpackChunkName: "core" */'./lib/view/tracking/LayerTracking.vue'),
+        promiseComIconSvg    = import(/* webpackChunkName: "core" */'./lib/view/util/ComIconSvg.vue'),
+        promiseComIconFont   = import(/* webpackChunkName: "core" */'./lib/view/util/ComIconFont.vue')
   ;
+
+  Vue.component('ComIconSvg', () => promiseComIconSvg);
+  Vue.component('ComIconFont', () => promiseComIconFont);
+
+  /** ************************************************************
+   *
+   *              提交一部分涉及到三维组件的全局实例引用
+   *
+   *  注意确认好该段代码执行时候目标对象已准备就绪.
+   *
+   ***************************************************************/
+  import _comInst from './lib/_common/instance';
+  import { ToolController } from './lib/controller/ToolController.ts';
+
+  let iP = setInterval(() => {
+    if (_comInst.controller.PlatformController) {
+      let platformController       = _comInst.controller.PlatformController,
+          toolController           = _comInst.controller.ToolController;
+      platformController._platform = document.getElementById('mcr-platform');
+
+      if (toolController === null) {
+        _comInst.controller.ToolController = new ToolController();
+      }
+
+      clearInterval(iP);
+      em.emit('event/log/trace', { step: '初始化PlatformController' });
+    }
+  }, TIME_SECONDS);
 
   export default {
     filters   : {},

@@ -23,6 +23,10 @@
 
 </style>
 <script>
+
+  const CUBE_WIDTH  = 32,
+        TIME_SECOND = 1000;
+
   import em from '../../bus';
   import '../graph/js/controls/TrackballControls';
   import TWEEN from '@tweenjs/tween.js';
@@ -51,14 +55,23 @@
 
     let loaderTexture = new THREE.TextureLoader(),
         textureCube   = loaderTexture.load(require('./ComConDirection/box.jpg')),
-        geometry      = new THREE.BoxBufferGeometry(32, 32, 32),
-        material      = new THREE.MeshBasicMaterial({ color: 0xf1f1f1, map: textureCube });
+        geometry      = new THREE.BoxBufferGeometry(CUBE_WIDTH, CUBE_WIDTH, CUBE_WIDTH),
+        material      = new THREE.MeshBasicMaterial({ color: 0xf1f1f1, map: textureCube }),
+        axisHelper    = new THREE.AxisHelper(CUBE_WIDTH);
 
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
+    scene.add(axisHelper);
 
     // renderer
-    renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, precision: 'highp' });
+    renderer = new THREE.WebGLRenderer(
+        {
+          antialias            : false,
+          alpha                : true,
+          precision            : 'highp',
+          preserveDrawingBuffer: true
+        }
+    );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(128, 128);
     container = document.getElementById('com-con-direction-c');
@@ -114,7 +127,7 @@
                x: 100 * direct.x,
                y: 100 * direct.y,
                z: 100 * direct.z
-             }, 1000)
+             }, TIME_SECOND)
          .start();
       }
     },

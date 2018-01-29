@@ -2,7 +2,7 @@ import {LineElement} from "./LineElement";
 import {FaceElement} from "./FaceElement";
 import {ModelElement} from "./ModelElement";
 
-class MCRSandbox {
+export class Sandbox {
     lines: LineElement[] = [];
     faces: FaceElement[] = [];
     models: ModelElement[] = [];
@@ -14,4 +14,4 @@ class MCRSandbox {
     }
 }
 
-export default new MCRSandbox();
+export default new Sandbox();

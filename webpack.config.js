@@ -1,10 +1,12 @@
-const webpack              = require('webpack');
-const path                 = require('path');
-const HtmlWebpackPlugin    = require('html-webpack-plugin');
-const CleanPlugin          = require('clean-webpack-plugin');
-const CopyPlugin           = require('copy-webpack-plugin');
-const BabiliPlugin         = require('babili-webpack-plugin');
-const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+const webpack                  = require('webpack');
+const path                     = require('path');
+const HtmlWebpackPlugin        = require('html-webpack-plugin');
+const CleanPlugin              = require('clean-webpack-plugin');
+const CopyPlugin               = require('copy-webpack-plugin');
+const BabiliPlugin             = require('babili-webpack-plugin');
+const TypedocWebpackPlugin     = require('typedoc-webpack-plugin');
+const AutoRequireWebpackPlugin = require('auto-require-webpack-plugin');
+const { WebpackClearConsole }  = require('webpack-clear-console');
 
 // 如果预先定义过环境变量，就将其赋值给`ASSET_PATH`变量，否则赋值为根目录
 const ASSET_PATH = process.env.ASSET_PATH || '/';
@@ -41,12 +43,14 @@ module.exports = {
   node     : {
     fs: 'empty'
   },
-  entry    : __dirname + '/src/main.js',
+  entry    : ['babel-polyfill', __dirname + '/src/main.js'],
   output   : {
-    filename     : `${outputname}/mcr.js`,
+    filename     : `${outputname}/msign.js`,
     path         : __dirname + '/dist',
     publicPath   : __webpack_public_path__,
-    chunkFilename: `chunk/[name]/[chunkhash:4].js`
+    chunkFilename: process.env.NODE_ENV === 'prod'
+        ? `chunk/[name]/[chunkhash:8].js`
+        : 'chunk/[chunkhash:8]/[name].js'
   },
   resolve  : {
     extensions: [
@@ -90,10 +94,17 @@ module.exports = {
       },
       {
         test: /\.worker\.js$/,
-        use : {
-          loader : __dirname + '/vender/worker-loader',
-          options: { name: `worker/[hash:6].js` }
-        }
+        use : [
+          {
+            loader : __dirname + '/vender/worker-loader',
+            options: { name: `worker/[hash:8].js` }
+          }, {
+            loader : 'babel-loader',
+            options: {
+              presets: [['es2015', { modules: false }]]
+            }
+          }
+        ]
       },
       {
         test  : /\.ts$/,
@@ -101,7 +112,8 @@ module.exports = {
       },
       {
         test  : /\.css$/,
-        loader: `style-loader!css-loader!css-attr-scope-loader-mcr-fix?scope=${scope}`
+        loader: `style-loader!css-loader?${JSON.stringify(
+            { discardComments: { removeAll: true } })}!css-attr-scope-loader-mcr-fix?scope=${scope}`
       },
       {
         test: /\.less$/,
@@ -128,7 +140,7 @@ module.exports = {
             loader : 'url-loader',
             options: {
               limit: 5120,
-              name : `static/[hash:6].[ext]`
+              name : `static/[hash:8].[ext]`
             }
           }
         ]
@@ -163,10 +175,12 @@ module.exports = {
     ),
     new webpack.ProvidePlugin(
         {
-          THREE: __dirname + '/vender/three'
+          jQuery: 'jquery',
+          THREE : __dirname + '/vender/three'
         }
     ),
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new AutoRequireWebpackPlugin('/src/lib/view/'),
     new CleanPlugin('dist/*'),
     new HtmlWebpackPlugin(
         {
@@ -174,12 +188,19 @@ module.exports = {
           filename: 'index.html',
           template: __dirname + '/src/_static/index.html',
           inject  : true,
-          hash    : true,
+          hash    : false,
           minify  : {
             removeComments    : true,
             collapseWhitespace: true
           }
         }
     )
-  ].concat(process.env.NODE_ENV === 'prod' ? new BabiliPlugin() : [])
+  ].concat(
+      process.env.NODE_ENV === 'prod'
+          ? [
+            new BabiliPlugin({}, { comments: false }),
+            // new WebpackClearConsole()
+          ]
+          : []
+  )
 };

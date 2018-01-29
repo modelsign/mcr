@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
     <style>
-
         body {
             position: fixed;
             width: 100%;
@@ -40,7 +40,6 @@
 </head>
 <body>
 <div class="ext">
-
 </div>
 <div class="fram">
     <div id="mcr"></div>
@@ -48,33 +47,42 @@
 </body>
 
 <script>
-  window.onload = async function () {
-    if (window.MCR) {
-      MCR = await MCR.create('#mcr');
-      setTimeout(drawSth, 4000);
+
+  const TIME_SECONDS = 2000;
+
+  window.onload = function () {
+    if (window.msign) {
+      window.msign
+            .create('#mcr')
+            .then(function (_msign) {
+                    msign = _msign;
+                    setTimeout(drawSth, TIME_SECONDS);
+                  }
+            );
     }
   };
   
-  async function drawSth () {
+  function drawSth () {
     for (let i = 0 ; i < 1 ; i++)
-      setTimeout(() => {
-        MCR.option.mode = 0;
-        MCR.option.afk  = false;
+      setTimeout(function () {
+        msign.option.mode = 0;
+        msign.option.afk  = false;
 
-        MCR.sandbox.models.push(
+        msign.sandbox.models.push(
             {
               type   : 'gltf',
-              urlGltf: '/testModels/gltf/test0804.gltf?_i=' + i,
+              urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
               option : {
                 position: {
                   x: 0,
-                  y: -2000,
-                  z: 1000 * i
+                  y: -2200,
+                  z: 0
                 }
               }
             }
         );
-      }, i * 1000)
+      }, i * TIME_SECONDS)
   }
+
 </script>
 </html>

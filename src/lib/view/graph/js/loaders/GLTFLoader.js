@@ -85,14 +85,14 @@ THREE.GLTFLoader = (
               extensions[EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS] = new GLTFMaterialsPbrSpecularGlossinessExtension();
             }
           }
-          console.time('GLTFLoader');
+          // console.time('GLTFLoader');
           var parser = new GLTFParser(json, extensions, {
             path       : path || this.path || '',
             crossOrigin: this.crossOrigin,
             manager    : this.manager
           });
           parser.parse(function (scene, scenes, cameras, animations) {
-            console.timeEnd('GLTFLoader');
+            // console.timeEnd('GLTFLoader');
             var glTF = {
               scene     : scene,
               scenes    : scenes,

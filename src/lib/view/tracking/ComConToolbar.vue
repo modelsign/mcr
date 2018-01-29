@@ -106,7 +106,7 @@
       }
     },
     mounted   : function () {
-      console.log('icon-copyright');
+      //      console.log('icon-copyright');
     }
   };
 </script>

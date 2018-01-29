@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%;width: 100%">
         <div id="mcr-graph-three">
             加载失败.
         </div>
@@ -10,7 +10,7 @@
   import { CameraController } from '../../../lib/controller/CameraController';
 
   const GROUND_WIDTH = 4000,
-        TIME_SECONDS = 5000;
+        TIME_SECONDS = 2000;
 
   import Vue from 'vue';
   import VueResize from 'vue-resize';
@@ -19,13 +19,13 @@
 
   import 'three';
   import './js/controls/OrbitControls';
+  import MouseControls from './js/controls/MouseControls.ts';
 
   import TWEEN from '@tweenjs/tween.js';
   /** ****************************************
    *    导入自定义类
    *******************************************/
   import Sandbox from '../../sandbox/Sandbox';
-  import Option from './Option';
   import Loader from '../../loader/index';
 
   import { EventResetsize } from '../../bus/events/ui/resetsize';
@@ -41,10 +41,20 @@
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
   const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
-  const renderer  = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
+  const renderer  = new THREE.WebGLRenderer(
+      {
+        antialias            : true,
+        alpha                : true,
+        preserveDrawingBuffer: true
+      }
+  );
 
-  let axisHelper, helperGrid, helperLights = [], helperBoxs = [];
+  //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
+  let cursor     = new THREE.Vector3(0, 0, 0);
+  let hits       = _comInst.state.current.hits;
+  const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+
+  let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
   
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
@@ -58,7 +68,7 @@
    * 使用控制器操控对象初始化
    **************************/
   //  camera.position.set(2500, 2500, 2500);
-  camera.position.set(100, 0, 0);
+  //  camera.position.set(100, 0, 0);
   conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
@@ -115,6 +125,23 @@
   directionalLight.shadow.camera.near    = 0;
   scene.add(directionalLight);
 
+  /** ****************************************
+   * 鼠标指针跟踪点
+   * 并不需要真正画进去, 记录点位即可
+   *******************************************/
+  let meshMouseTrackerGeo = new Geometry();
+  meshMouseTrackerGeo.vertices.push(cursor);
+  //  let meshMouseTrackerMtl = new THREE.PointsMaterial(
+  //      {
+  //        size           : 0,
+  //        sizeAttenuation: false,
+  //        color          : 0xffffff
+  //      }
+  //  );
+  //  let meshMouseTracker    = new Points(meshMouseTrackerGeo, meshMouseTrackerMtl);
+  //  meshMouseTracker.name   = 'h-tracker-mouse';
+  //  scene.add(meshMouseTracker);
+  _comInst.graph.cursor = cursor;
   /** **************************
    * 渲染器渲染函数, 可配置渲染模式
    * oprion.mode 为一个自然数.
@@ -134,11 +161,9 @@
       let frequency = 50 * Math.ceil(option.mode);
       setTimeout(render, frequency);
     }
-
-    /**
+    /** **************************
      * 如果此时出于afk状态, 跳过渲染
-     */
-
+     *****************************/
     if (option.afk) {
       return;
     }
@@ -159,6 +184,44 @@
         em.emit('scene/camera/update', camera);
       }
     }
+
+    /** ********************************************************
+     *
+     *                  更新一系列附加的东西
+     *
+     ***********************************************************/
+
+    /** *********************************************************
+     * 地面
+     *
+     * 地面包含三层可见元素
+     * 1. 大网格
+     * 2. 小网格
+     * 3. 阴影投射面
+     ************************************************************/
+    helperGridBase.position.x = Math.floor(controls.target.x / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
+    helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
+    let pGrid0                = helperGrid.position,
+        pGrid1                = {
+          x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
+          z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
+        };
+    tGrid || (
+        tGrid = new TWEEN.Tween(pGrid0)
+    );
+    tGrid.stop();
+    tGrid.easing(TWEEN.Easing.Linear.None)
+         .to(pGrid1, 50)
+         .onUpdate(() => {
+           groundPlane.position.x = pGrid0.x;
+           groundPlane.position.z = pGrid0.z;
+         })
+         .onComplete(() => {
+           groundPlaneBase.position.x = pGrid1.x;
+           groundPlaneBase.position.z = pGrid1.z;
+         })
+         .start();
+
   };
   const resetRenderSize = () => {
     let container = document.getElementById('mcr-graph-three');
@@ -179,17 +242,24 @@
     render();
   };
   
-  const planeGeometry = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
-        planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 }),
-        groundPlane   = new THREE.Mesh(planeGeometry, planeMaterial);
+  const planeGeometry     = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
+        planeGeometryBase = new THREE.PlaneGeometry(GROUND_WIDTH * 10, GROUND_WIDTH * 10),
+        planeMaterial     = new THREE.ShadowMaterial({ opacity: 0.2 }),
+        groundPlane       = new THREE.Mesh(planeGeometry, planeMaterial),
+        groundPlaneBase   = new THREE.Mesh(planeGeometryBase, new THREE.ShadowMaterial({}));
   planeGeometry.rotateX(-Math.PI / 2);
   planeGeometry.translate(0, 0, 0);
   groundPlane.position.y = 0;
+  planeGeometryBase.rotateX(-Math.PI / 2);
+  planeGeometryBase.translate(0, 0, 0);
+  groundPlaneBase.position.y = -5;
   //  groundPlane.position.x    = GROUND_WIDTH / -2;
   //  groundPlane.position.z    = GROUND_WIDTH / -2;
   groundPlane.receiveShadow = true;
   groundPlane.name          = 'h-mesh-plan';
+  groundPlaneBase.name      = 'h-mesh-plan-base';
   scene.add(groundPlane);
+  scene.add(groundPlaneBase);
 
   /** ******************************************************************************
    *
@@ -199,23 +269,30 @@
   /** **************
    * 世界坐标
    *****************/
-  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
-  scene.add(axisHelper);
+  //  axisHelper = new THREE.AxisHelper(GROUND_WIDTH);
+  //  scene.add(axisHelper);
   /** **************
    * 地面网格
    *****************/
-  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 100);
-  helperGrid.position.y           = -1;
-  helperGrid.material.opacity     = 0.25;
+  helperGrid = new THREE.GridHelper(GROUND_WIDTH, 50);
+  helperGrid.position.y           = -2;
+  helperGrid.material.opacity     = 0.75;
   helperGrid.material.transparent = true;
   helperGrid.name                 = 'h-helper-grid';
+  scene.add(helperGrid);
+
+  helperGridBase                      = new THREE.GridHelper(GROUND_WIDTH * 10, 100);
+  helperGridBase.position.y           = -4;
+  helperGridBase.material.opacity     = 0.5;
+  helperGridBase.material.transparent = true;
+  helperGridBase.name                 = 'h-helper-grid-base';
+  scene.add(helperGridBase);
+
   /** **************
    * 灯光
    *****************/
   //  helperLights.push(new THREE.SpotLightHelper(lightSpot, new THREE.Color(0, 128, 0)));
-  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
-
-  scene.add(helperGrid);
+  //  helperLights.push(new THREE.CameraHelper(directionalLight.shadow.camera));
   helperLights.forEach((light) => {scene.add(light);});
 
   /** ******************************************************************************
@@ -234,8 +311,33 @@
    *
    ***************************************************************/
   let sandbox               = Sandbox;
-  let option                = Option;
   let lastSandboxUpdateTime = 0;
+
+  /** ************************************************************
+   *
+   *              提交一部分涉及到三维组件的全局实例引用
+   *
+   *  注意确认好该段代码执行时候目标对象已准备就绪.
+   *
+   *  需要初始化的对象有
+   *
+   *    camera, scene, renderer
+   *    sandbox
+   *
+   ***************************************************************/
+  import _comInst from '../../../lib/_common/instance';
+  import { ToolController } from '../../../lib/controller/ToolController.ts';
+  import { Geometry, Points } from '../../../../vender/three';
+
+  _comInst.graph.camera   = camera;
+  _comInst.graph.scene    = scene;
+  _comInst.graph.renderer = renderer;
+  _comInst.graph.control  = controls;
+  _comInst.sandbox        = sandbox;
+
+  let option = _comInst.option;
+  let tGrid  = null;
+
   export default {
     data () {
       return {
@@ -244,6 +346,9 @@
         sandbox,
         option
       };
+    },
+    stores  : {
+      stateCurrentIsProcessing: 'state.current.isProcessing'
     },
     watch   : {
       option: {
@@ -291,7 +396,7 @@
          *************************************/
         if (type === 'line') {
           lines.forEach(({ title, vertices }) => {
-            console.log(title);
+            //            console.log(title);
             this.createLine(vertices, { name: title });
           });
         }
@@ -317,13 +422,13 @@
          *  4. 根据geometry生成mesh置入场景
          *************************************/
         if (type === 'model') {
-          this.updareModels(models, []);
+          await this.updareModels(models, []);
         }
       },
-      async add2Scene (mesh, name = '') {
+      async add2Scene (mesh, name = '', isHitable = false) {
         mesh.castShadow = true;
         //        mesh.receiveShadow = true;
-        mesh.name       = name;
+        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}`;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
         });
@@ -350,7 +455,9 @@
           tMesh.easing(TWEEN.Easing.Quartic.Out)
                .to(p, 1200)
                .onUpdate(() => {})
-               .onComplete(() => {})
+               .onComplete(() => {
+                 em.emit('request/camera', { action: 'reset', arg: {} });
+               })
                .start();
 
           scene.add(mesh);
@@ -413,7 +520,7 @@
         wkFBuffergeo.postMessage(faces);
 
       },
-      updareModels (addModels = []) {
+      async updareModels (addModels = []) {
 
         /** *************************************
          * 删除场景中有, 但是沙盒中已经没有的模型.
@@ -446,12 +553,13 @@
               em.emit('event/log/trace', { step: '模型加载, 类型没找到', type });
           }
           if (meshs.length) {
+            this.stateCurrentIsProcessing = false;
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
-            meshs.forEach((mesh) => {
+            await meshs.forEach(async (mesh) => {
               //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
               let name = mesh.name || mesh.id || mesh.uuid || Math.random();
-              this.add2Scene(mesh, 'model_' + name);
+              await this.add2Scene(mesh, 'model_' + name, true);
             });
           }
         });
@@ -527,8 +635,8 @@
           }
       );
       this.$watch(
-          'sandbox.models', function (curVal, oldVal) {
-            this.sceneRefush([], 'model');
+          'sandbox.models', async function (curVal, oldVal) {
+            await  this.sceneRefush([], 'model');
           }
       );
 

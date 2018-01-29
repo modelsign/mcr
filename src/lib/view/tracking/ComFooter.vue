@@ -2,31 +2,36 @@
     <div class="row footer">
         <div class="title full-width">
             <com-progress></com-progress>
-            <div class="col-xs-2">
+            <div class="col-md-2">
                 <div>
                     {{stateCurrentStatus}}
                 </div>
             </div>
-            <div class="col-xs-7">
+            <div class="col-md-7">
                 <div>
-                <span>
-                    <h4>
-                    C({{`${stateCurrentCamera.position.x},\t${stateCurrentCamera.position.y},\t${stateCurrentCamera.position.z}\t`}})&nbsp;
-                    D({{`${stateCurrentCamera.direction.x},\t${stateCurrentCamera.direction.y},\t${stateCurrentCamera.direction.z}\t`}})
-                    </h4>
-                </span>
+                    <span>
+                        <small>
+                        C({{`${stateCurrentCamera.position.x.toFixed(0)},
+                        \t${stateCurrentCamera.position.y.toFixed(0)},
+                        \t${stateCurrentCamera.position.z.toFixed(0)}\t`}})&nbsp;
+                        </small>
+                    </span>
                 </div>
             </div>
-            <div class="col-xs-3">
-                <!--<i class="fa fa-fw fa-copyright"></i>&nbsp;-->
-                <com-icon-font icon="msign-copyright" class="pull-left"></com-icon-font>&nbsp;
-                <span>budblack@qq.com</span>&nbsp;
+            <div class="col-md-3">
+                <div style="white-space:nowrap;text-align: right">
+                    <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
+                    <a :href="`mailto:budblack@qq.com?subject=[feedback]in[mSign-mcr]from[${stateCurrentFingerprint}]&body=来源: mSign-mcr;
+客户识别码: ${stateCurrentFingerprint};`">BUDBLACK@QQ.COM</a>&nbsp;
+                    <!--<com-icon-svg icon="msign-copyright" class=""></com-icon-svg>&nbsp;-->
+                    <!--2018&nbsp;-->
+                </div>
                 <!--<span>2018</span>-->
             </div>
         </div>
         <div class="row ext full-width">
             <div>
-                <table class="table ">
+                <table class="table">
                     <thead>
                     <tr>
                         <td>调试模式</td>
@@ -37,10 +42,12 @@
                     <tr>
                         <td>
                             <button @click="()=>{stateSettingIsDebug=!stateSettingIsDebug}"
-                                    class="btn btn-sm">{{stateSettingIsDebug}}
+                                    class="btn btn-sm btn-warning">{{stateSettingIsDebug}}
                             </button>
                         </td>
-                        <td></td>
+                        <td>
+                            <com-wilddog></com-wilddog>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -102,22 +109,45 @@
         justify-content: flex-start;
         align-items: flex-start;
     }
+
+    a:link {
+        color: #434343;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: #434343;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #537a62;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: #434343;
+        text-decoration: none;
+    }
 </style>
 <script>
   import em from '../../bus';
 
   import ComProgress from '../util/ComProgress.vue';
+  import ComWilddog from './ComWilddog.vue';
 
   export default {
-    components: { ComProgress },
+    components: { ComProgress, ComWilddog },
     data () {
       return {};
     },
     stores    : {
-      stateCurrentStatus : 'state.current.status',
-      stateCurrentCamera : 'state.current.camera',
-      stateCurrentPoint  : 'state.current.point',
-      stateSettingIsDebug: 'state.setting.isDebug'
+      stateCurrentStatus     : 'state.current.status',
+      stateCurrentCamera     : 'state.current.camera',
+      stateCurrentPoint      : 'state.current.point',
+      stateCurrentFingerprint: 'state.current.fingerprint',
+      stateGlobalOnline      : 'state.global.online',
+      stateSettingIsDebug    : 'state.setting.isDebug'
     },
     methods   : {},
     mounted   : function () {
