@@ -2,8 +2,7 @@
     <i class="msign" :class="iconId"></i>
 </template>
 <style scoped="">
-
-
+    
     @font-face {
         font-family: "msign";
         src: url('//at.alicdn.com/t/font_539785_se9x7g4cf3ucjtt9.eot?t=1517222043350'); /* IE9*/

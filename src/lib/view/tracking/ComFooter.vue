@@ -29,8 +29,7 @@
             </div>
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
-
-                    <span style="opacity: 0.4">
+                    <span>
                         <com-icon-svg icon="msign-users" class=""></com-icon-svg>
                         {{stateGlobalOnline}}
                     </span>
@@ -91,7 +90,7 @@
         box-shadow: 0 -2px 0 rgba(0, 0, 0, .3);
         /*color: hsla(0, 0%, 100%, .4);*/
         color: inherit;
-        font-size: 8px;
+        font-size: 12px;
         transition: all 0.1s ease-in-out;
     }
 
@@ -125,12 +124,12 @@
     }
 
     a:link {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 
     a:visited {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 
@@ -140,7 +139,7 @@
     }
 
     a:active {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 </style>
