@@ -805,7 +805,7 @@ export default class MouseControls extends EventDispatcher {
         this.hits.push(...intersects);
         if (intersects.length > 0) {
             let cursor = intersects[0].point;
-            console.log(intersects[0])
+            // console.log(intersects[0])
             // 引用对象, 不能直接对cursor赋值, 那样会丢失引用
             this.cursor.x = cursor.x;
             this.cursor.y = cursor.y;

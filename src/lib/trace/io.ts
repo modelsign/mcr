@@ -4,7 +4,14 @@ const io = require('socket.io-client');
 const Fingerprint = require('fingerprintjs');
 const fingerprint = _comInst.state.current.fingerprint;
 
-let socket = io('//io.tool.budblack.me');
+const ajax = require('eustia-module/ajax');
+let urlIO = '//io.tool.budblack.me';
+let option = {
+        reconnectionDelay: 10 * 1000,
+        reconnectionAttempts: 3,
+    },
+    socket = io(urlIO, option);
+
 socket.on('connect', function () {
     socket.emit('login', fingerprint);
 });
