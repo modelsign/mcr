@@ -29,8 +29,8 @@ const TIME_SECONDS = 2000;
       
       window['msign'] = {
         async create (domElement) {
-          let state      = _comInst.state;
-          _comInst.app   = new Vue(
+          let state    = _comInst.state;
+          _comInst.app = new Vue(
               {
                 el        : domElement,
                 data      : {

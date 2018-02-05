@@ -1,4 +1,5 @@
 import _comInst from '../_common/instance'
+import em from '../bus'
 
 const io = require('socket.io-client');
 const Fingerprint = require('fingerprintjs');
@@ -16,6 +17,7 @@ socket.on('connect', function () {
     socket.emit('login', fingerprint);
 });
 socket.on('new_msg', function (msg) {
+    em.emit('io/msg', msg);
 });
 socket.on('update_online_count', function (online_stat) {
     try {
