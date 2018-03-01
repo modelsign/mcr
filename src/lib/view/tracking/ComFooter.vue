@@ -2,28 +2,42 @@
     <div class="row footer">
         <div class="title full-width">
             <com-progress></com-progress>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div>
+                    <com-icon-svg v-if="stateSettingIsDebug" icon="msign-console" class=""></com-icon-svg>
+                    <com-icon-svg v-if="!stateSettingIsDebug" icon="msign-lightning" class=""></com-icon-svg>
                     {{stateCurrentStatus}}
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div>
                     <span>
                         <small>
-                        C({{`${stateCurrentCamera.position.x.toFixed(0)},
-                        \t${stateCurrentCamera.position.y.toFixed(0)},
-                        \t${stateCurrentCamera.position.z.toFixed(0)}\t`}})&nbsp;
+                            <com-icon-svg icon="msign-eye" class=""></com-icon-svg>
+                        {{`${stateCurrentCamera.position.x.toFixed(0)},
+                         \t${stateCurrentCamera.position.y.toFixed(0)},
+                         \t${stateCurrentCamera.position.z.toFixed(0)}\t`}}&nbsp;
+                        </small>
+                        <small>
+                            <com-icon-svg icon="msign-location" class=""></com-icon-svg>
+                        {{`${computeCursor.x.toFixed(0)},
+                         \t${computeCursor.y.toFixed(0)},
+                         \t${computeCursor.z.toFixed(0)}\t`}}&nbsp;
                         </small>
                     </span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div style="white-space:nowrap;text-align: right">
-                    <span style="opacity: 0.4">{{stateGlobalOnline}}</span>
-                    <a href="//mcr.msign.tech/" target="_blank">帮助</a>&nbsp;
-                    <!--<com-icon-svg icon="msign-copyright" class=""></com-icon-svg>&nbsp;-->
-                    <!--2018&nbsp;-->
+                    <span>
+                        <com-icon-svg icon="msign-users" class=""></com-icon-svg>
+                        {{stateGlobalOnline}}
+                    </span>
+                    &nbsp; &nbsp;
+                    <a href="//mcr.msign.tech/" target="_blank">
+                        <com-icon-svg icon="msign-documentation" class=""></com-icon-svg>
+                        帮助
+                    </a>
                 </div>
                 <!--<span>2018</span>-->
             </div>
@@ -76,7 +90,7 @@
         box-shadow: 0 -2px 0 rgba(0, 0, 0, .3);
         /*color: hsla(0, 0%, 100%, .4);*/
         color: inherit;
-        font-size: 8px;
+        font-size: 12px;
         transition: all 0.1s ease-in-out;
     }
 
@@ -110,12 +124,12 @@
     }
 
     a:link {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 
     a:visited {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 
@@ -125,12 +139,13 @@
     }
 
     a:active {
-        color: #434343;
+        color: #252525;
         text-decoration: none;
     }
 </style>
 <script>
   import em from '../../bus';
+  import _comInst from '../../_common/instance';
 
   import ComProgress from '../util/ComProgress.vue';
   import ComWilddog from './ComWilddog.vue';
@@ -140,10 +155,14 @@
     data () {
       return {};
     },
+    computed  : {
+      computeCursor () {
+        return _comInst.graph.cursor;
+      }
+    },
     stores    : {
       stateCurrentStatus     : 'state.current.status',
       stateCurrentCamera     : 'state.current.camera',
-      stateCurrentPoint      : 'state.current.point',
       stateCurrentFingerprint: 'state.current.fingerprint',
       stateGlobalOnline      : 'state.global.online',
       stateSettingIsDebug    : 'state.setting.isDebug'

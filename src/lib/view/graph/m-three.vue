@@ -7,7 +7,8 @@
     </div>
 </template>
 <script>
-  import { CameraController } from '../../../lib/controller/CameraController';
+  import CameraController from '../../../lib/controller/CameraController';
+  import LayerController from '../../controller/LayerController';
 
   const GROUND_WIDTH = 4000,
         TIME_SECONDS = 2000;
@@ -35,8 +36,8 @@
    *******************************************/
   import em from '../../bus';
 
-  const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
-  const wkFBuffergeo     = new wkFBuffergeoCode();
+  // const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
+  // const wkFBuffergeo     = new wkFBuffergeoCode();
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
@@ -52,7 +53,7 @@
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
   let cursor     = new THREE.Vector3(0, 0, 0);
   let hits       = _comInst.state.current.hits;
-//  const controls = new THREE.OrbitControls( camera, renderer.domElement);
+  //  const controls = new THREE.OrbitControls( camera, renderer.domElement);
   const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
@@ -166,7 +167,10 @@
      * 如果此时出于afk状态, 跳过渲染
      *****************************/
     if (option.afk) {
+      controls.enable = false;
       return;
+    } else {
+      controls.enable = true;
     }
 
     renderer.render(scene, camera);
@@ -202,9 +206,9 @@
      ************************************************************/
     helperGridBase.position.x = Math.floor(controls.target.x / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
     helperGridBase.position.z = Math.floor(controls.target.z / GROUND_WIDTH + 0.5) * GROUND_WIDTH;
-    if(controls.cursor){
-      let pGrid0                = helperGrid.position,
-          pGrid1                = {
+    if (controls.cursor) {
+      let pGrid0 = helperGrid.position,
+          pGrid1 = {
             x: Math.floor(controls.cursor.x / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2,
             z: Math.floor(controls.cursor.z / GROUND_WIDTH * 2 + 0.5) * GROUND_WIDTH / 2
           };
@@ -226,15 +230,16 @@
     }
   };
   const resetRenderSize = () => {
-    let container = document.getElementById('mcr-graph-three');
+    let container = document.getElementById('mcr-platform');
 
     /** *******************************
      * 改变渲染器尺寸 以及相机横纵比
      **********************************/
+    let { width, height } = renderer.getSize();
+
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
-
     em.emit('ui/resetsize', new EventResetsize(container.clientWidth, container.clientHeight));
   };
   const init            = () => {
@@ -340,6 +345,11 @@
   let option = _comInst.option;
   let tGrid  = null;
 
+  /********************
+   * 初始化图层管理器
+   ********************/
+
+
   export default {
     data () {
       return {
@@ -350,7 +360,8 @@
       };
     },
     stores  : {
-      stateCurrentIsProcessing: 'state.current.isProcessing'
+      stateCurrentIsProcessing: 'state.current.isProcessing',
+      stateCurrentPoint       : 'state.current.point'
     },
     watch   : {
       option: {
@@ -496,30 +507,30 @@
 
       },
       updateFaceBuffer (faces = []) {
-        wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
-          /** 该函数用于释放数组 */
-          function disposeArray () { this.array = null; }
-
-          let geometry = new THREE.BufferGeometry();
-          let currt    = Date.now();
-          geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
-          geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
-          geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
-          geometry.computeBoundingSphere();
-          let material = new THREE.MeshToonMaterial(
-              {
-                color       : 0x50b7c1,
-                specular    : 0xffffff,
-                shininess   : 250,
-                side        : THREE.DoubleSide,
-                vertexColors: THREE.VertexColors
-              }
-          );
-
-          let mesh = new THREE.Mesh(geometry, material);
-          this.add2Scene(mesh, 'faces');
-        });
-        wkFBuffergeo.postMessage(faces);
+        // wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
+        //   /** 该函数用于释放数组 */
+        //   function disposeArray () { this.array = null; }
+        //
+        //   let geometry = new THREE.BufferGeometry();
+        //   let currt    = Date.now();
+        //   geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
+        //   geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
+        //   geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
+        //   geometry.computeBoundingSphere();
+        //   let material = new THREE.MeshToonMaterial(
+        //       {
+        //         color       : 0x50b7c1,
+        //         specular    : 0xffffff,
+        //         shininess   : 250,
+        //         side        : THREE.DoubleSide,
+        //         vertexColors: THREE.VertexColors
+        //       }
+        //   );
+        //
+        //   let mesh = new THREE.Mesh(geometry, material);
+        //   this.add2Scene(mesh, 'faces');
+        // });
+        // wkFBuffergeo.postMessage(faces);
 
       },
       async updareModels (addModels = []) {

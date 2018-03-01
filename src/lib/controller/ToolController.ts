@@ -6,7 +6,7 @@ const layer = require('layui-layer');
 require('!style-loader!css-loader!layui-layer/layer.css');
 const html2canvas = require('html2canvas');
 
-export class ToolController {
+export default class ToolController {
 
     _initEventHandlers() {
 

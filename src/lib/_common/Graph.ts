@@ -3,5 +3,5 @@ export default class Graph {
     camera: THREE.PerspectiveCamera;
     renderer: THREE.Renderer;
     control: THREE.OrbitControls;
-    cursor: THREE.Vector3
+    cursor: THREE.Vector3;
 }

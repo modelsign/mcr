@@ -43,9 +43,11 @@
     controls.rotateSpeed          = 0;
     controls.zoomSpeed            = 1.2;
     controls.panSpeed             = 0.8;
-    controls.noZoom               = true;
-    controls.noPan                = true;
-    controls.staticMoving         = true;
+    // todo 原生的TrackballControls有bug, 需要重写并将事件监听从document上移除
+    controls.enabled              = false;
+    controls.noZoom               = false;
+    controls.noPan                = false;
+    controls.staticMoving         = false;
     controls.dynamicDampingFactor = 0.3;
     controls.keys                 = [65, 83, 68];
     controls.addEventListener('change', render);
@@ -99,7 +101,6 @@
     stores    : {
       stateCurrentStatus : 'state.current.status',
       stateCurrentCamera : 'state.current.camera',
-      stateCurrentPoint  : 'state.current.point',
       stateSettingIsDebug: 'state.setting.isDebug'
     },
     methods   : {

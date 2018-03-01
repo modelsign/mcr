@@ -6,7 +6,7 @@ import {setInterval} from "timers";
 /**
  * 平台管理器, 管理整体组件的一些行为.
  */
-export class PlatformController {
+export default class PlatformController {
 
     _exp = document.createElement('a');
     _platform;

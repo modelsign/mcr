@@ -116,6 +116,7 @@ export default class MouseControls extends EventDispatcher {
     private raycaster: THREE.Raycaster = new THREE.Raycaster();
     private tCursor: Tween;
     private isRaying: boolean = false;
+    private timestampIntersect: number = 0;
 
     constructor(scene: THREE.Scene,
                 camera: THREE.OrthographicCamera | THREE.PerspectiveCamera,
@@ -631,8 +632,8 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private onMouseMove(event) {
-        this.updateTraget(event);
         if (!this.enable) return;
+        this.updateTraget(event);
         event.preventDefault();
         if (this.state === STATE.ROTATE) {
             if (!this.enableRotate) return;
@@ -767,7 +768,7 @@ export default class MouseControls extends EventDispatcher {
     private _onTouchEnd = this.onTouchEnd.bind(this);
     private _onContextMenu = this.onContextMenu.bind(this);
 
-    private updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
+    private async updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
         if (this.isRaying) return;
         this.isRaying = true;
         let layerX = 0, layerY = 0,
@@ -783,18 +784,28 @@ export default class MouseControls extends EventDispatcher {
         p2.x = layerX / domElement.clientWidth * 2 - 1;
         p2.y = layerY / domElement.clientHeight * -2 + 1;
         raycaster.setFromCamera(p2, this.camera);
-        let meshs: THREE.Mesh[] = <THREE.Mesh[]>scene.children
-            .filter((object3d: THREE.Object3D) => {
-                return object3d.name.indexOf('h-') > -1
-                    || object3d.name.indexOf('hitable') > -1
-                    ;
-            });
+        let meshs: THREE.Mesh[];
+        let timestamp = Date.now();
+        if (timestamp - this.timestampIntersect > 500) {
+            this.timestampIntersect = timestamp;
+            meshs = await <THREE.Mesh[]>scene.children
+                .filter((object3d: THREE.Object3D) => {
+                    return object3d.name.indexOf('h-') > -1 || object3d.name.indexOf('hitable') > -1;
+                });
+        } else {
+            meshs = await <THREE.Mesh[]>scene.children
+                .filter((object3d: THREE.Object3D) => {
+                    return object3d.name.indexOf('h-') > -1
+                });
+        }
+
         let intersects = raycaster.intersectObjects(meshs);
         this.hits.length = 0;
         this.hits.push(...intersects);
         if (intersects.length > 0) {
             let cursor = intersects[0].point;
-            this.cursor = cursor;
+            // console.log(intersects[0])
+            // 引用对象, 不能直接对cursor赋值, 那样会丢失引用
             this.cursor.x = cursor.x;
             this.cursor.y = cursor.y;
             this.cursor.z = cursor.z;

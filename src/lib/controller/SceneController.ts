@@ -20,7 +20,7 @@ enum SceneEventEnum {
     mouseout = 'scene/element/mouseout',
 }
 
-export class SceneController {
+export default class SceneController {
 
     scene: THREE.Scene;
 
