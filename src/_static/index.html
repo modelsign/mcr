@@ -24,15 +24,13 @@
             right: 0;
             top: 0;
             bottom: 0;
-            /*border-style: dashed;*/
-            /*border-width: 1px;*/
-            /*border-color: #0d8ddb;*/
             box-shadow: 0 0 2px #777;
             min-width: 400px;
             min-height: 300px;
             width: calc(100% - 128px);
             height: calc(100% - 128px);
             background: #f0f0f0;
+            position: absolute;
         }
 
     </style>
@@ -49,40 +47,50 @@
 <script>
 
   const TIME_SECONDS = 2000;
-
-  window.onload = function () {
-    if (window.msign) {
-      window.msign
-            .create('#mcr')
-            .then(function (_msign) {
-                    msign = _msign;
-                    setTimeout(drawSth, TIME_SECONDS);
-                  }
-            );
+  let mcr            = null;
+  window.onload      = function () {
+    if (window.msign && window.msign.mcr) {
+      mcr = msign.mcr;
+      mcr.create('#mcr')
+         .then(function (_mcr) {
+                 mcr = msign.mcr = _mcr;
+                 // console.log(_msign);
+                 setTimeout(drawSth, TIME_SECONDS);
+               }
+         );
     }
   };
   
   function drawSth () {
     for (let i = 0 ; i < 1 ; i++)
-      setTimeout(function () {
-        msign.option.mode = 0;
-        msign.option.afk  = false;
 
-        msign.sandbox.models.push(
+      setTimeout(function () {
+        mcr.option.mode = 0;
+        mcr.option.afk  = false;
+
+        // 绘制线条
+        mcr.sandbox.lines.push(
             {
-              type   : 'gltf',
-              //              urlGltf: 'http://msign.oss.tool.budblack.me/uploads/b447b1ff-3e84-4ed0-8d6c-8fd6e386d0d0.gltf?Expires=1517806509&OSSAccessKeyId=TMP.AQGS8PxOzI0Hjd8z8FcS2AaIkQ7oc0y-6ezgEaTTcxDdmyhvhkwC3vX1EzF-AAAwLAIUNdADI1HuGFOLCHyo2HSn-EsPjrgCFBPwRcHbt0T5lXw3OM-I_utTXVVE&Signature=wLJPpSzWNuE3VEkhQSJLs1TvChc%3D',
-              urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
-              option : {
-                position: {
-                  x: 0,
-                  y: -2200,
-                  z: 0
-                }
-              }
+
             }
         );
-      }, i * TIME_SECONDS)
+
+        // 绘制模型
+        //   mcr.sandbox.models.push(
+        //       {
+        //         type   : 'gltf',
+        //         //              urlGltf: 'http://msign.oss.tool.budblack.me/uploads/b447b1ff-3e84-4ed0-8d6c-8fd6e386d0d0.gltf?Expires=1517806509&OSSAccessKeyId=TMP.AQGS8PxOzI0Hjd8z8FcS2AaIkQ7oc0y-6ezgEaTTcxDdmyhvhkwC3vX1EzF-AAAwLAIUNdADI1HuGFOLCHyo2HSn-EsPjrgCFBPwRcHbt0T5lXw3OM-I_utTXVVE&Signature=wLJPpSzWNuE3VEkhQSJLs1TvChc%3D',
+        //         urlGltf: '//mcr.tool.budblack.me/testModels/gltf_json/test0804.json?_i=' + i,
+        //         option : {
+        //           position: {
+        //             x: 0,
+        //             y: -2200,
+        //             z: 0
+        //           }
+        //         }
+        //       }
+        //   );
+      }, i * TIME_SECONDS);
   }
 
 </script>

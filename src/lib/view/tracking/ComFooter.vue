@@ -2,14 +2,14 @@
     <div class="row footer">
         <div class="title full-width">
             <com-progress></com-progress>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div>
                     <com-icon-svg v-if="stateSettingIsDebug" icon="msign-console" class=""></com-icon-svg>
                     <com-icon-svg v-if="!stateSettingIsDebug" icon="msign-lightning" class=""></com-icon-svg>
                     {{stateCurrentStatus}}
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div>
                     <span>
                         <small>

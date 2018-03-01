@@ -22,7 +22,8 @@
 <script type="text/javascript" src="//mcr.tool.budblack.me/201801282214/msign.js"></script>
 ```
 
-引入脚本后, 组件会自行在`window`节点下挂载名为`msign`的节点实例. 之后的所有API操作均通过该实例进行.
+引入脚本后, 组件会自行在`window`节点下挂载名为`msign`的节点实例. 并将本组件挂载为`msign.mcr`
+之后的所有API操作均通过该实例对象`mcr`进行.
 
 准备容器
 ---
@@ -61,25 +62,25 @@
 
 上述两个步骤准备完全后, 即可通过一个函数初始化图形组件. 
 
->在图形实例被创建之前, `msign`对象仅导出成员方法`create()`.
+>在图形实例被创建之前, `mcr`对象仅导出成员方法`create()`.
 
 ```javascript
 const TIME_SECONDS=5*1000;
 window.onload = function () {
-if (window.msign) {
-  window.msign
-        .create('#mcr')
-        .then(function (_msign) {
-                msign = _msign;
-              }
-        );
+if (window.msign && window.msign.mcr) {
+let mcr = window.msign.mcr;
+  mcr.create('#mcr')
+     .then(function (_mcr) {
+            window.msign.mcr = mcr = _mcr;
+           }
+     );
   }
 };
 ```
 
 注意, 这里的例子中把初始化过程放在了`window.onload`的回调当中. 实际项目中视情况自行选择初始化组件的时机.
 
-`msign.create()`函数返回一个Promise对象. 其回调携带一个引用类型的参数, 指向组件实例. 例子中将实例赋值给全局对象`msign`, 以备后续使用.
+`mcr.create()`函数返回一个Promise对象. 其回调携带一个引用类型的参数, 指向组件实例. 例子中将实例赋值给全局对象`mcr`, 以备后续使用.
 
 首次载入一些东西
 ---
@@ -89,21 +90,21 @@ if (window.msign) {
 当然, 组件内部是存在各种控制器以及消息传递机制的. 只是, 对于一般项目来说 __简单沙盒模型下的管理能力足够应付大多数业务需求__.
 
 ```javascript
- msign.sandbox
-      .models
-      .push(
-            {
-              type   : 'gltf',
-              urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
-              option : {
-                position: {
-                  x: 0,
-                  y: -2200,
-                  z: 0
-                }
+ mcr.sandbox
+    .models
+    .push(
+          {
+            type   : 'gltf',
+            urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
+            option : {
+              position: {
+                x: 0,
+                y: -2200,
+                z: 0
               }
             }
-        );
+          }
+      );
 ```
 
 我们暂时不急着解释`sandbox`这个对象的详细结构. 

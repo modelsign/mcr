@@ -77,7 +77,7 @@
    *
    ***************************************************************/
   import _comInst from './lib/_common/instance';
-  import { ToolController } from './lib/controller/ToolController.ts';
+  import ToolController from './lib/controller/ToolController.ts';
 
   let iP = setInterval(() => {
     if (_comInst.controller.PlatformController) {

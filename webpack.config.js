@@ -43,9 +43,11 @@ module.exports = {
   node     : {
     fs: 'empty'
   },
-  entry    : ['babel-polyfill', __dirname + '/src/main.js'],
+  entry    : __dirname + '/src/main.js',
   output   : {
     filename     : `${outputname}/msign.js`,
+    library      : 'msign',
+    libraryTarget: 'umd',
     path         : __dirname + '/dist',
     publicPath   : __webpack_public_path__,
     chunkFilename: process.env.NODE_ENV === 'prod'
@@ -198,7 +200,7 @@ module.exports = {
   ].concat(
       process.env.NODE_ENV === 'prod'
           ? [
-            new BabiliPlugin({}, { comments: false }),
+            new BabiliPlugin({}, { comments: false })
             // new WebpackClearConsole()
           ]
           : []

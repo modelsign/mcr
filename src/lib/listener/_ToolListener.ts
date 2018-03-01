@@ -1,7 +1,7 @@
 /**
  *
  */
-import {ToolController} from "../controller/ToolController";
+import ToolController from "../controller/ToolController";
 import em from '../bus'
 
 export class _ToolListener {

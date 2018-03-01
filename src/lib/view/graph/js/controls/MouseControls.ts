@@ -632,9 +632,8 @@ export default class MouseControls extends EventDispatcher {
     }
 
     private onMouseMove(event) {
-        this.updateTraget(event);
-
         if (!this.enable) return;
+        this.updateTraget(event);
         event.preventDefault();
         if (this.state === STATE.ROTATE) {
             if (!this.enableRotate) return;

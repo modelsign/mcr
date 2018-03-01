@@ -9,7 +9,7 @@ const TWEEN = require('@tweenjs/tween.js');
 
 const TIME_SECEND = 1000;
 
-export class CameraController {
+export default class CameraController {
     _isMoving: Boolean = false;
     _tCamera: TWEEN.Tween = null;
     _tCameraOpt: any = {};
