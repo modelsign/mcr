@@ -90,21 +90,48 @@ let mcr = window.msign.mcr;
 当然, 组件内部是存在各种控制器以及消息传递机制的. 只是, 对于一般项目来说 __简单沙盒模型下的管理能力足够应付大多数业务需求__.
 
 ```javascript
- mcr.sandbox
-    .models
-    .push(
-          {
-            type   : 'gltf',
-            urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
-            option : {
-              position: {
-                x: 0,
-                y: -2200,
-                z: 0
-              }
-            }
+
+// 绘制线条
+mcr.sandbox.lines.push(
+    {
+      title   : 'line_1',
+      vertices: [
+        { x: 100, z: 200, y: 300 },
+        { x: 100, z: 500, y: 400 },
+        { x: 200, z: 100, y: 500 },
+        { x: 300, z: 100, y: 500 },
+        { x: 400, z: 200, y: 300 },
+        { x: 400, z: 300, y: 100 }
+      ]
+    }
+);
+mcr.sandbox.lines.push(
+    {
+      title   : 'line_2',
+      vertices: [
+        { x: 700, z: 400, y: 100 },
+        { x: 700, z: 600, y: 200 },
+        { x: 700, z: 700, y: 300 },
+        { x: 800, z: 700, y: 300 },
+        { x: 900, z: 600, y: 200 }
+      ]
+    }
+);
+
+
+mcr.sandbox.models.push(
+      {
+        type   : 'gltf',
+        urlGltf: '/testModels/gltf_json/test0804.json?_i=' + i,
+        option : {
+          position: {
+            x: 0,
+            y: -2200,
+            z: 0
           }
-      );
+        }
+      }
+  );
 ```
 
 我们暂时不急着解释`sandbox`这个对象的详细结构. 
