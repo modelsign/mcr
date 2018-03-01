@@ -23,8 +23,9 @@ export class LineElement extends Element {
 
 对象标题
 ---
-- title
+- title:string
 
 顶点序列
 ---
-- vertices:[Vector3](/class/event);
+- vertices:[Vector3](/reference/class_vector3)[]
+
