@@ -161,6 +161,7 @@ export default class CameraController {
 
         let pBoxMax = new Vector3(-Infinity, -Infinity, -Infinity),
             pBoxMin = new Vector3(Infinity, Infinity, Infinity);
+        if (!meshs.length) return;
         let pCenter = meshs
             .map((mesh: THREE.Mesh) => {
                 mesh.geometry.boundingSphere || mesh.geometry.computeBoundingSphere();

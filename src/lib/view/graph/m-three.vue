@@ -482,8 +482,8 @@
       },
       async createLine (
           vertices  = [
-            { x: 0, y: 0, z: 0 },
-            { x: 0, y: 1, z: 0 }
+            { x: 0, y: 0, z: 0, r: 0, g: 255, b: 0 },
+            { x: 0, y: 1, z: 0, r: 0, g: 255, b: 0 }
           ], option = {
             name   : '',
             isClose: false
@@ -493,10 +493,17 @@
           vertices.push(vertices[0]);
         }
 
-        let materialLine = new THREE.LineDashedMaterial({ color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 20 });
+        let materialLine = new THREE.LineBasicMaterial(
+            { vertexColors: THREE.VertexColors });
         let geometryLine = new THREE.Geometry();
-        vertices.forEach((p) => {
+
+        geometryLine.vertices = [];
+        geometryLine.colors   = [];
+        vertices.forEach((p, i) => {
           geometryLine.vertices.push(p);
+
+          let color = vertices[i].r * 0xffff + vertices[i].g * 0xff + vertices[i].b;
+          geometryLine.colors.push(new THREE.Color(color));
         });
 
         let line = new THREE.Line(geometryLine, materialLine);
