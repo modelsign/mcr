@@ -1,8 +1,8 @@
 <template>
     <div
             @mouseover="onContainerMouseover"
-            @touchstart="onContainerMouseover"
             @mouseleave="onContainerMouseout"
+            @touchstart="onContainerMouseover"
             @touchend="onContainerMouseout"
             id="mcr-platform"
             class="mcr">
@@ -46,7 +46,7 @@
   import (/* webpackChunkName: "style" */'normalize.css');
   import (/* webpackChunkName: "style" */'./assets/css/bootstrap.min14ed.css');
   import (/* webpackChunkName: "style" */'./assets/css/animate.min.css');
-  import (/* webpackChunkName: "style" */'./assets/css/style.min862f.css');
+  import (/* webpackChunkName: "style" */'./assets/css/style.css');
   import (/* webpackChunkName: "style" */'./assets/css/style.less');
 
   /** **********************
@@ -111,11 +111,11 @@
     methods   : {
       onContainerMouseout (e) {
         em.emit('request/scene', { action: 'set', arg: { afk: true } });
-        em.emit('event/log/trace', { step: `请求终止渲染` });
+        em.emit('event/log/trace', { step: `终止渲染` });
       },
       onContainerMouseover (e) {
         em.emit('request/scene', { action: 'set', arg: { afk: false } });
-        em.emit('event/log/trace', { step: `请求启动渲染` });
+        em.emit('event/log/trace', { step: `启动渲染` });
       }
     }
   };

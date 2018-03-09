@@ -19,8 +19,12 @@
   Vue.use(VueResize);
 
   import 'three';
-  import './js/controls/OrbitControls';
-  import MouseControls from './js/controls/MouseControls.ts';
+  // import './js/controls/OrbitControls';
+  // import './js/controls/PointerLockControls';
+  // import MouseControls from './js/controls/MouseControls.ts';
+  import LookControls from './js/controls/LookControls.ts';
+  // import './js/controls/FirstPersonControls.js';
+  // import './js/controls/PointerLockControls.js';
 
   import TWEEN from '@tweenjs/tween.js';
   /** ****************************************
@@ -41,7 +45,7 @@
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
+  const camera    = new THREE.PerspectiveCamera(45, 1, 1, Math.max(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer(
       {
         antialias            : true,
@@ -51,13 +55,15 @@
   );
 
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  let cursor     = new THREE.Vector3(0, 0, 0);
-  let hits       = _comInst.state.current.hits;
-  //  const controls = new THREE.OrbitControls( camera, renderer.domElement);
-  const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+  let cursor         = new THREE.Vector3(0, 0, 0);
+  let hits           = _comInst.state.current.hits;
+  // const mouseControls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+  const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits);
+
+  let controls = lookControls;
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
-  
+
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
 
@@ -71,7 +77,7 @@
    **************************/
   //  camera.position.set(2500, 2500, 2500);
   //  camera.position.set(100, 0, 0);
-  conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
+  conCamera.moveTo(new THREE.Vector3(2500, 1600, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -80,11 +86,11 @@
   renderer.gammaInput                  = true;
   renderer.gammaOutput                 = true;
   renderer.sortObjects                 = true;
-  
+
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.localClippingEnabled = true;
   container.appendChild(renderer.domElement);
-  
+
   /** ******************************************************************************
    *
    *                                   灯光配置
@@ -240,6 +246,7 @@
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
+
     em.emit('ui/resetsize', new EventResetsize(container.clientWidth, container.clientHeight));
   };
   const init            = () => {
@@ -248,7 +255,7 @@
     resetRenderSize();
     render();
   };
-  
+
   const planeGeometry     = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
         planeGeometryBase = new THREE.PlaneGeometry(GROUND_WIDTH * 10, GROUND_WIDTH * 10),
         planeMaterial     = new THREE.ShadowMaterial({ opacity: 0.2 }),
@@ -448,8 +455,8 @@
         if (meshInScene) {
           meshInScene.geometry = mesh.geometry;
         } else {
-          //          let meshBox  = new THREE.BoxHelper(mesh);
-          //          meshBox.name = mesh.name + '_box';
+          let meshBox  = new THREE.BoxHelper(mesh);
+          meshBox.name = mesh.name + '_box';
 
           /** ***********************************
            * 模型需要添加载入的动画效果 使之更加美观
@@ -469,12 +476,12 @@
                .to(p, 1200)
                .onUpdate(() => {})
                .onComplete(() => {
-                 em.emit('request/camera', { action: 'reset', arg: {} });
+                 // em.emit('request/camera', { action: 'reset', arg: {} });
                })
                .start();
 
           scene.add(mesh);
-          //          scene.add(meshBox);
+          scene.add(meshBox);
         }
       },
       async createPoint () {
@@ -502,7 +509,8 @@
         vertices.forEach((p, i) => {
           geometryLine.vertices.push(p);
 
-          let color = vertices[i].r * 0xffff + vertices[i].g * 0xff + vertices[i].b;
+          let color = vertices[i].r * 256 * 256 + vertices[i].g * 256 + vertices[i].b;
+          // console.log(color);
           geometryLine.colors.push(new THREE.Color(color));
         });
 
@@ -549,7 +557,7 @@
           return name.indexOf('model') !== 0;
         });
 
-        addModels.forEach(async ({ type, urlGltf, option }) => {
+        addModels.forEach(async ({ type, url, option }) => {
           let meshs = [];
           switch (type) {
             case 'gltf':
@@ -557,7 +565,7 @@
                * 从网络下载gltf文档
                * @type {Promise<any>}
                */
-              meshs = await Loader.loadModelGltf(urlGltf);
+              meshs = await Loader.loadModelGltf(url);
               /**
                * 设置文档中模型的偏移量
                */
@@ -568,11 +576,15 @@
                 mesh.position.z = position.z;
               });
               break;
+            case 'fbx':
+              meshs = await Loader.loadModelFBX(url);
+              console.log('FBX载入完毕', meshs);
+              break;
             default:
               //              console.log('模型加载, 类型没找到', type);
               em.emit('event/log/trace', { step: '模型加载, 类型没找到', type });
           }
-          if (meshs.length) {
+          if (meshs && meshs.length) {
             this.stateCurrentIsProcessing = false;
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
@@ -659,6 +671,15 @@
             await  this.sceneRefush([], 'model');
           }
       );
+      this.$watch(
+          'sandbox.layers', async function (curVal, oldVal) {
+
+            console.log('=====图层改变=====');
+            console.log({ curVal, oldVal });
+            // await  this.sceneRefush([], 'model');
+          }
+      )
+      ;
 
       /** **********************************
        * 这是一个处理`请求消息`的代码

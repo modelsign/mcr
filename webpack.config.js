@@ -45,7 +45,7 @@ module.exports = {
   },
   entry    : __dirname + '/src/main.js',
   output   : {
-    filename     : `${outputname}/msign.js`,
+    filename     : `${outputname}/mcr.js`,
     library      : 'msign',
     libraryTarget: 'umd',
     path         : __dirname + '/dist',

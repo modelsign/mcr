@@ -3,6 +3,7 @@ import Layer from "../core/Layer/Layer";
 
 
 import AutoLayer from '../core/Layer/AutoLayer'
+import {MCloudLoader} from "../loader/MCloudLoader/MCloudLoader";
 
 
 export default class LayerController {
@@ -17,5 +18,10 @@ export default class LayerController {
         this.camera = camera;
 
 
+    }
+
+
+    addLayer(url: string) {
+       let mCloudLoader = new MCloudLoader();
     }
 }

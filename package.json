@@ -17,6 +17,7 @@
     "buckets-js": "^1.98.2",
     "eustia-module": "^0.8.0",
     "events": "^1.1.1",
+    "fastclick": "^1.0.6",
     "fingerprintjs": "^0.5.3",
     "html2canvas": "^1.0.0-alpha.9",
     "immutable": "^3.8.2",

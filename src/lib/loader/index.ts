@@ -1,14 +1,18 @@
 import {EventUIProgress} from "../bus/events/ui/progress";
 
-declare let THREE: { GLTFLoader };
+// const THREE = require('three');
+
+declare let THREE: { GLTFLoader, FBXLoader };
+import  '../view/graph/js/loaders/LoaderUtils.js'
 import '../view/graph/js/loaders/GLTFLoader.js'
+import  '../view/graph/js/loaders/FBXLoader.js'
 import Lang from '../lang'
 
 import em from '../bus';
 
 class Loader {
 
-    private async _onProgress(xhr) {
+    private static async _onProgress(xhr) {
         em.emit('scene/loader/progress', xhr);
 
         let xhrId = xhr.currentTarget.responseURL;
@@ -28,7 +32,7 @@ class Loader {
         }
     }
 
-    private async _onLoadGltf(gltf, url) {
+    private static async _onLoadGltf(gltf, url) {
         em.emit('event/log/trace', {step: `下载完成`});
         setTimeout(() => {
             em.emit('event/ui/progress', new EventUIProgress(url, 1));
@@ -42,7 +46,7 @@ class Loader {
         }
     }
 
-    async loadModelGltf(url) {
+    static async loadModelGltf(url) {
         em.emit('event/log/trace', {step: `Gltf,${Lang.view_start_loading}`});
 
         let loader = new THREE.GLTFLoader();
@@ -51,12 +55,33 @@ class Loader {
             loader.load(
                 url,
                 (gltf) => {
-                    resolve(this._onLoadGltf(gltf, url))
+                    resolve(Loader._onLoadGltf(gltf, url))
                 },
-                this._onProgress
+                Loader._onProgress
             );
         });
     }
+
+    static async loadModelFBX(url) {
+        let loader = new THREE.FBXLoader();
+
+        loader.load(url, function (object) {
+            console.log('FBX 模型', object);
+            object.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
+        });
+
+    }
+
+    static async loadMCloud(url) {
+        em.emit('event/log/trace', {step: `载入自动图层: ${url}`});
+    }
+
 }
 
-export default new Loader();
+export default Loader;

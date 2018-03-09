@@ -41,8 +41,8 @@ export default class MouseControls extends EventDispatcher {
     public maxZoom: number = Infinity;
 
     // polar angle, 极角. 指的是竖直方向相机能绕目标点旋转的角度范围. 单位为弧度
-    public minPolarAngle: number = 0;
-    public maxPolarAngle: number = Math.PI;
+    public minPolarAngle: number = Math.PI / 4;
+    public maxPolarAngle: number = Math.PI * 3 / 4;
 
     // 相机在水平方向的绕行弧度范围. 单位为弧度.
     // 可不限制, 如果设置实数, 则需要满足区间限制. [-Math.PI, Math.PI]
@@ -242,6 +242,8 @@ export default class MouseControls extends EventDispatcher {
         offset.applyQuaternion(quatInverse);
 
         cameraPosition.copy(target).add(offset);
+        // 限制相机位置, y>-0
+        cameraPosition.y = Math.max(0, cameraPosition.y);
         camera.lookAt(target);
 
         // 如果开启平滑功能, theta和phi则按预设的衰减因子衰减
@@ -269,6 +271,7 @@ export default class MouseControls extends EventDispatcher {
             lastQuaternion.copy(camera.quaternion);
             this.zoomChanged = false;
         }
+
         return this;
     }
 
@@ -661,7 +664,7 @@ export default class MouseControls extends EventDispatcher {
         if (
             !this.enable ||
             !this.enableZoom ||
-            ((this.state !== STATE.NONE ) && (this.state !== STATE.ROTATE))
+            ((this.state !== STATE.NONE) && (this.state !== STATE.ROTATE))
         ) return;
 
         event.preventDefault();

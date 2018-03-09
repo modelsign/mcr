@@ -159,16 +159,17 @@ THREE.OrbitControls = function (object, domElement) {
           scope.minDistance, Math.min(scope.maxDistance, spherical.radius));
       
       // move target to panned location
-      scope.target.add(panOffset);
+      // scope.target.add(panOffset);
+      scope.target.copy(scope.object.position)
       
       offset.setFromSpherical(spherical);
       
       // rotate offset back to "camera-up-vector-is-up" space
       offset.applyQuaternion(quatInverse);
       
-      position.copy(scope.target).add(offset);
+      // position.copy(scope.target).add(offset);
       
-      scope.object.lookAt(scope.target);
+      // scope.object.lookAt(scope.target);
       
       if (scope.enableDamping === true) {
         

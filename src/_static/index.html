@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">-->
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="format-detection" content="telphone=no, email=no"/>
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- 适应移动端end -->
     <style>
         body {
             position: fixed;
             width: 100%;
             height: 100%;
+
+            margin: 0;
 
             background: linear-gradient(-45deg, #f1f1f1 0, #f1f1f1 25%, #f8ac59 0, #f8ac59 50%, #f1f1f1 0, #f1f1f1 75%, #f8ac59 0, #f8ac59 100%);
             background-size: 16px 16px;
@@ -19,18 +56,16 @@
         }
 
         .fram {
-            margin: 64px;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
+            margin: 0;
+            padding: 0;
             box-shadow: 0 0 2px #777;
-            min-width: 400px;
-            min-height: 300px;
-            width: calc(100% - 128px);
-            height: calc(100% - 128px);
+            width: 100%;
+            height: 100%;
             background: #f0f0f0;
             position: absolute;
+            /*left: 50%;*/
+            /*top: 50%;*/
+            /*transform: translate(-50%, -50%);*/
         }
 
     </style>
@@ -49,6 +84,7 @@
   const TIME_SECONDS = 2000;
   let mcr            = null;
   window.onload      = function () {
+
     if (window.msign && window.msign.mcr) {
       mcr = msign.mcr;
       mcr.create('#mcr')
@@ -56,6 +92,14 @@
                  mcr = msign.mcr = _mcr;
                  // console.log(_msign);
                  setTimeout(drawSth, TIME_SECONDS);
+                 //
+                 // let fram = document.getElementsByClassName('fram')[0],
+                 //     h    = window.getComputedStyle(fram, null).getPropertyValue('height'),
+                 //     w    = window.getComputedStyle(fram, null).getPropertyValue('width');
+                 //
+                 // fram.style.transform = 'translate(-50%, -50%) rotate(90deg)';
+                 // fram.style.width     = h;
+                 // fram.style.height    = w;
                }
          );
     }
@@ -69,46 +113,57 @@
         mcr.option.afk  = false;
 
         // 绘制模型
+        // mcr.sandbox.models.push(
+        //     {
+        //       type  : 'gltf',
+        //       //              urlGltf: 'http://msign.oss.tool.budblack.me/uploads/b447b1ff-3e84-4ed0-8d6c-8fd6e386d0d0.gltf?Expires=1517806509&OSSAccessKeyId=TMP.AQGS8PxOzI0Hjd8z8FcS2AaIkQ7oc0y-6ezgEaTTcxDdmyhvhkwC3vX1EzF-AAAwLAIUNdADI1HuGFOLCHyo2HSn-EsPjrgCFBPwRcHbt0T5lXw3OM-I_utTXVVE&Signature=wLJPpSzWNuE3VEkhQSJLs1TvChc%3D',
+        //       url   : '//mcr.tool.budblack.me/testModels/gltf_json/test0804.json',
+        //       option: {
+        //         position: {
+        //           x: 0,
+        //           y: -2200,
+        //           z: 0
+        //         }
+        //       }
+        //     }
+        // );
+        //
         mcr.sandbox.models.push(
             {
-              type   : 'gltf',
-              //              urlGltf: 'http://msign.oss.tool.budblack.me/uploads/b447b1ff-3e84-4ed0-8d6c-8fd6e386d0d0.gltf?Expires=1517806509&OSSAccessKeyId=TMP.AQGS8PxOzI0Hjd8z8FcS2AaIkQ7oc0y-6ezgEaTTcxDdmyhvhkwC3vX1EzF-AAAwLAIUNdADI1HuGFOLCHyo2HSn-EsPjrgCFBPwRcHbt0T5lXw3OM-I_utTXVVE&Signature=wLJPpSzWNuE3VEkhQSJLs1TvChc%3D',
-              urlGltf: '//mcr.tool.budblack.me/testModels/gltf_json/test0804.json?_i=' + i,
-              option : {
+              type  : 'gltf',
+              url   : '/testModels/gltf/f1.gltf',
+              option: {
                 position: {
                   x: 0,
-                  y: -2200,
+                  y: 0,
                   z: 0
                 }
               }
             }
         );
-        // 绘制线条
-        mcr.sandbox.lines.push(
-            {
-              title   : 'line_1',
-              vertices: [
-                { x: 100, z: 200, y: 300, r: 255, g: 0, b: 0 },
-                { x: 100, z: 500, y: 400, r: 255, g: 100, b: 0 },
-                { x: 200, z: 100, y: 500, r: 255, g: 200, b: 0 },
-                { x: 300, z: 100, y: 500, r: 255, g: 255, b: 0 },
-                { x: 400, z: 200, y: 300, r: 128, g: 100, b: 255 },
-                { x: 400, z: 300, y: 100, r: 128, g: 128, b: 0 }
-              ]
-            }
-        );
-        mcr.sandbox.lines.push(
-            {
-              title   : 'line_2',
-              vertices: [
-                { x: 700, z: 400, y: 100, r: 0, g: 255, b: 0 },
-                { x: 700, z: 600, y: 200, r: 0, g: 255, b: 0 },
-                { x: 700, z: 700, y: 300, r: 0, g: 255, b: 0 },
-                { x: 800, z: 700, y: 300, r: 0, g: 255, b: 0 },
-                { x: 900, z: 600, y: 200, r: 0, g: 255, b: 0 }
-              ]
-            }
-        );
+        //
+        // let n = 4;
+        // while ( n-- ) {
+        //   let vertices = [];
+        //   for (let i = 0 ; i < 100 ; i += 0.1) {
+        //     let x = Math.sin(i) * 100 + (
+        //             (
+        //                 n - 1.5
+        //             ) * 300
+        //         ),
+        //         y = Math.cos(i) * 100 + 300,
+        //         z = i * 10;
+        //     vertices.push({ x, y, z, r: n / 3, g: n / 2, b: n });
+        //   }
+        //   // 绘制线条
+        //   mcr.sandbox.lines.push(
+        //       {
+        //         title: 'line_' + n,
+        //         vertices
+        //       }
+        //   );
+        // }
+
       }, i * TIME_SECONDS);
   }
 

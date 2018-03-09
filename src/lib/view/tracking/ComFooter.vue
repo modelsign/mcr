@@ -33,10 +33,15 @@
                         <com-icon-svg icon="msign-users" class=""></com-icon-svg>
                         {{stateGlobalOnline}}
                     </span>
-                    &nbsp; &nbsp;
+                    &nbsp;&nbsp;
                     <a href="//mcr.msign.tech/" target="_blank">
                         <com-icon-svg icon="msign-documentation" class=""></com-icon-svg>
-                        帮助
+                        帮助文档
+                    </a>
+                    &nbsp;&nbsp;
+                    <a href="mailto:support@msign.net" target="_blank">
+                        <com-icon-svg icon="msign-mailing" class=""></com-icon-svg>
+                        邮件支持
                     </a>
                 </div>
                 <!--<span>2018</span>-->
@@ -157,7 +162,7 @@
     },
     computed  : {
       computeCursor () {
-        return _comInst.graph.cursor;
+        return _comInst.graph.cursor || { x: 0, y: 0, z: 0 };
       }
     },
     stores    : {
@@ -172,17 +177,20 @@
       em.on('scene/camera/update', (camera) => {
         let position  = camera.position,
             direction = camera.getWorldDirection();
-
-        this.stateCurrentCamera.position  = {
-          x: position.x.toFixed(2) * 1,
-          y: position.y.toFixed(2) * 1,
-          z: position.z.toFixed(2) * 1
-        };
-        this.stateCurrentCamera.direction = {
-          x: direction.x.toFixed(2) * 1,
-          y: direction.y.toFixed(2) * 1,
-          z: direction.z.toFixed(2) * 1
-        };
+        if (position) {
+          this.stateCurrentCamera.position = {
+            x: position.x.toFixed(2) * 1,
+            y: position.y.toFixed(2) * 1,
+            z: position.z.toFixed(2) * 1
+          };
+        }
+        if (direction) {
+          this.stateCurrentCamera.direction = {
+            x: direction.x.toFixed(2) * 1,
+            y: direction.y.toFixed(2) * 1,
+            z: direction.z.toFixed(2) * 1
+          };
+        }
       });
 
       em.on('event/log/trace', ({ step }) => {
