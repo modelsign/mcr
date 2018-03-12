@@ -63,9 +63,9 @@
             height: 100%;
             background: #f0f0f0;
             position: absolute;
-            /*left: 50%;*/
-            /*top: 50%;*/
-            /*transform: translate(-50%, -50%);*/
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
 
     </style>
@@ -92,7 +92,7 @@
                  mcr = msign.mcr = _mcr;
                  // console.log(_msign);
                  setTimeout(drawSth, TIME_SECONDS);
-                 //
+
                  // let fram = document.getElementsByClassName('fram')[0],
                  //     h    = window.getComputedStyle(fram, null).getPropertyValue('height'),
                  //     w    = window.getComputedStyle(fram, null).getPropertyValue('width');
@@ -131,15 +131,26 @@
         mcr.sandbox.models.push(
             {
               type  : 'gltf',
-              url   : '/testModels/gltf/f1.gltf',
+              url   : '/testModels/gltf/keting.gltf',
               option: {
                 position: {
                   x: 0,
-                  y: 0,
+                  y: 1400,
                   z: 0
                 }
               }
             }
+            // {
+            //   type  : 'fbx',
+            //   url   : '/testModels/fbx/keting.fbx',
+            //   option: {
+            //     position: {
+            //       x: 0,
+            //       y: 1400,
+            //       z: 0
+            //     }
+            //   }
+            // }
         );
         //
         // let n = 4;

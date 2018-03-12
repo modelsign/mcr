@@ -10,6 +10,7 @@ export default class LookControls {
     public target: THREE.Vector3 = new THREE.Vector3();
     public cursor: THREE.Vector3;
     public hits: THREE.Intersection[];
+    public isCross: boolean;
 
     private domElement: Element;
 
@@ -18,28 +19,36 @@ export default class LookControls {
     private startY: number;
     private endY: number;
 
+    private rotEndX: number = 0;
+    private rotEndY: number = 0;
+    private rotEndZ: number = 0;
+
     yawObject: THREE.Object3D;
     pitchObject: THREE.Object3D;
 
-    constructor(scene, camera, domElement, cursor, hits) {
+    constructor(scene, camera, domElement, cursor, hits, isCross) {
         FastClick.attach(document.body);
 
         this.scene = scene;
         this.camera = camera;
         this.domElement = domElement;
 
-        this.camera.rotation.set(0, 0, 0);
+        this.isCross = isCross;
+
+        this.rotEndX = this.camera.rotation.x;
+        this.rotEndY = this.camera.rotation.y;
+        this.rotEndZ = this.camera.rotation.z;
+
+        // this.camera.rotation.set(0, 0, 0);
 
         this.domElement.addEventListener('mousedown', this._onMouseDown, false);
         this.domElement.addEventListener('touchstart', this._onMouseDown, false);
-
     }
 
     _onMouseDown = this.onMouseDown.bind(this);
     _onMouseUp = this.onMouseUp.bind(this);
     _onTouchMove = this.onTouchMove.bind(this);
     _onMouseMove = this.onMouseMove.bind(this);
-
 
     dispose() {
         this.domElement.removeEventListener('mousedown', this._onMouseDown, false);
@@ -55,7 +64,7 @@ export default class LookControls {
         } else if (event instanceof TouchEvent) {
             this.domElement.addEventListener('touchmove', this._onTouchMove, false);
             this.domElement.addEventListener('touchend', this._onMouseUp, false)
-            console.log(event)
+            // console.log(event)
             this.startX = event.touches[0].clientX;
             this.startY = event.touches[0].clientY;
         }
@@ -65,33 +74,40 @@ export default class LookControls {
         this.enabled = false;
         this.domElement.removeEventListener('mousemove', this._onMouseMove, false);
         this.domElement.removeEventListener('mouseup', this._onMouseUp, false);
+
+        this.rotEndX = this.camera.rotation.x;
+        this.rotEndY = this.camera.rotation.y;
+        this.rotEndZ = this.camera.rotation.z;
+
+        // console.log(this.rotEndX);
     }
 
     onTouchMove(event) {
-        console.log(event);
-
-
+        // console.log(event);
         if (!this.enabled) return;
 
         let endX = this.endX = event.touches[0].clientX;
         let endY = this.endY = event.touches[0].clientY;
 
+        let PI_2 = Math.PI / 2, {x: rotX, y: rotY, z: rotZ}
+            = this.camera.rotation;
 
-        let PI_2 = Math.PI / 2,
-            {x: rotX, y: rotY, z: rotZ} = this.camera.rotation;
-
-        rotY = (endX - this.startX) / this.domElement.clientWidth * Math.PI;
+        rotY = this.rotEndY + (endX - this.startX) / this.domElement.clientWidth * Math.PI;
         // rotZ += movementY / this.domElement.clientHeight * Math.PI;
-        rotZ = (this.domElement.clientHeight / 2 - endX) / this.domElement.clientHeight * Math.PI;
+        rotX = this.rotEndX + (endY - this.startY) / this.domElement.clientHeight * Math.PI;
 
         // console.log({movementX: (endX - this.startX), movementY: (endY - this.startY), rotX, rotY, rotZ, event});
         em.emit(
             'event/log/trace',
             {step: '手指滑动', event}
         );
-
-        this.camera.rotation.set(0, rotY, 0, 'XYZ');
+        if (this.isCross) {
+            this.camera.rotation.set(-rotY, rotX, 0, 'YZX');
+        } else {
+            this.camera.rotation.set(rotX, rotY, 0, 'YZX');
+        }
         console.log({
+            rotX,
             endX, endY
         })
     }
@@ -115,6 +131,7 @@ export default class LookControls {
         rotZ = (this.domElement.clientHeight / 2 - endX) / this.domElement.clientHeight * Math.PI;
 
         // console.log({movementX: (endX - this.startX), movementY: (endY - this.startY), rotX, rotY, rotZ, event});
+        // console.log(this.camera.rotation);
         em.emit(
             'event/log/trace',
             {step: '鼠标拖动', event}

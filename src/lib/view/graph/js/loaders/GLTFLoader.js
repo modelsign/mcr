@@ -881,15 +881,29 @@ THREE.GLTFLoader = (
        * https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#default-material
        */
       function createDefaultMaterial () {
-        return new THREE.MeshStandardMaterial({
-                                                color      : 0xFFFFFF,
-                                                emissive   : 0x000000,
-                                                metalness  : 1,
-                                                roughness  : 1,
-                                                transparent: false,
-                                                depthTest  : true,
-                                                side       : THREE.FrontSide
-                                              });
+        
+        let defaultMeshMaterial = new THREE.MeshStandardMaterial(
+            {
+              color      : 0xFFFFFF,
+              emissive   : 0x000000,
+              metalness  : 1,
+              roughness  : 1,
+              transparent: true,
+              depthTest  : false,
+              side       : THREE.DoubleSide
+            }
+        );
+        return defaultMeshMaterial;
+        // return new THREE.MeshStandardMaterial(
+        //     {
+        //       color      : 0xFFFFFF,
+        //       emissive   : 0x000000,
+        //       metalness  : 1,
+        //       roughness  : 1,
+        //       transparent: false,
+        //       depthTest  : true,
+        //       side       : THREE.FrontSide
+        //     });
       }
       
       /**
@@ -1282,6 +1296,12 @@ THREE.GLTFLoader = (
           } else {
             materialType = THREE.MeshPhongMaterial;
           }
+          
+          material.doubleSided = true;
+          material.alphaMode   = ALPHA_MODES.MASK;
+          material.depthTest   = false;
+          material.transparent = true;
+          
           if (material.doubleSided === true) {
             materialParams.side = THREE.DoubleSide;
           }

@@ -3,9 +3,9 @@ import {EventUIProgress} from "../bus/events/ui/progress";
 // const THREE = require('three');
 
 declare let THREE: { GLTFLoader, FBXLoader };
-import  '../view/graph/js/loaders/LoaderUtils.js'
+import '../view/graph/js/loaders/LoaderUtils.js'
 import '../view/graph/js/loaders/GLTFLoader.js'
-import  '../view/graph/js/loaders/FBXLoader.js'
+import '../view/graph/js/loaders/FBXLoader.js'
 import Lang from '../lang'
 
 import em from '../bus';
@@ -42,7 +42,7 @@ class Loader {
         let meshs = gltf.scene.children;
 
         if (gltf) {
-            return meshs
+            return scene;
         }
     }
 

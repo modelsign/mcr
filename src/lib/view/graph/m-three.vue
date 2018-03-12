@@ -21,7 +21,7 @@
   import 'three';
   // import './js/controls/OrbitControls';
   // import './js/controls/PointerLockControls';
-  // import MouseControls from './js/controls/MouseControls.ts';
+  import MouseControls from './js/controls/MouseControls.ts';
   import LookControls from './js/controls/LookControls.ts';
   // import './js/controls/FirstPersonControls.js';
   // import './js/controls/PointerLockControls.js';
@@ -45,7 +45,7 @@
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(45, 1, 1, Math.max(GROUND_WIDTH * 10, 100000));
+  const camera    = new THREE.PerspectiveCamera(75, 1, 1, Math.max(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer(
       {
         antialias            : true,
@@ -58,7 +58,7 @@
   let cursor         = new THREE.Vector3(0, 0, 0);
   let hits           = _comInst.state.current.hits;
   // const mouseControls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
-  const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits);
+  const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits, false);
 
   let controls = lookControls;
 
@@ -77,7 +77,7 @@
    **************************/
   //  camera.position.set(2500, 2500, 2500);
   //  camera.position.set(100, 0, 0);
-  conCamera.moveTo(new THREE.Vector3(2500, 1600, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
+  conCamera.moveTo(new THREE.Vector3(2500, 1500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -99,29 +99,37 @@
   /** **************************
    * 环境光
    *****************************/
-  let ambientLight  = new THREE.AmbientLight(0xffffff);
+  let ambientLight  = new THREE.AmbientLight(0xffffff, 1);
   ambientLight.name = 'h-light-ambient';
   scene.add(ambientLight);
 
   /** **************************
+   * 聚光灯光源
+   *****************************/
+  // let lightSpot = new THREE.SpotLight(0xffffff, 0.6);
+  // lightSpot.position.set(0, 1500, 200);
+  // lightSpot.castShadow            = true;
+  // lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
+  // lightSpot.shadow.bias           = -0.000222;
+  // lightSpot.shadow.mapSize.width  = 1024;
+  // lightSpot.shadow.mapSize.height = 1024;
+  // lightSpot.name                  = 'h-light-spot';
+  // scene.add(lightSpot);
+
+  /** **************************
    * 点光源
    *****************************/
-  //  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
-  //  lightSpot.position.set(0, 1500, 200);
-  //  lightSpot.castShadow            = true;
-  //  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
-  //  lightSpot.shadow.bias           = -0.000222;
-  //  lightSpot.shadow.mapSize.width  = 1024;
-  //  lightSpot.shadow.mapSize.height = 1024;
-  //  lightSpot.name                  = 'h-light-spot';
-  //  scene.add(lightSpot);
+  let lightPoint = new THREE.PointLight(0xffffff, 0.6);
+  lightPoint.position.set(0, 1500, 200);
+  lightPoint.name = 'h-light-point';
+  scene.add(lightPoint);
 
   /** **************************
    * 方向光
    *****************************/
-  let directionalLight  = new THREE.DirectionalLight(0xffffff, 1);
+  let directionalLight  = new THREE.DirectionalLight(0xaabbff, 1);
   directionalLight.name = 'h-light-directional';
-  directionalLight.position.set(0, GROUND_WIDTH / 2, 0); 			//default; light shining from top
+  directionalLight.position.set(0.5, 0, 0.866); 			//default; light shining from top
   directionalLight.castShadow            = true;            // default false
   directionalLight.shadow.mapSize.width  = GROUND_WIDTH / 10;  // default
   directionalLight.shadow.mapSize.height = GROUND_WIDTH / 10; // default
@@ -448,7 +456,7 @@
       async add2Scene (mesh, name = '', isHitable = false) {
         mesh.castShadow = true;
         //        mesh.receiveShadow = true;
-        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}`;
+        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}-${Math.random()}`;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
         });
@@ -570,11 +578,18 @@
                * 设置文档中模型的偏移量
                */
               let { position } = option;
-              meshs.forEach((mesh) => {
+              if (meshs.forEach) {
+                meshs.forEach((mesh) => {
+                  mesh.position.x = position.x;
+                  mesh.position.y = position.y;
+                  mesh.position.z = position.z;
+                });
+              } else {
+                let mesh        = meshs;
                 mesh.position.x = position.x;
                 mesh.position.y = position.y;
                 mesh.position.z = position.z;
-              });
+              }
               break;
             case 'fbx':
               meshs = await Loader.loadModelFBX(url);
@@ -589,10 +604,15 @@
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
             await meshs.forEach(async (mesh) => {
-              //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
-              let name = mesh.name || mesh.id || mesh.uuid || Math.random();
+              mesh.material = new THREE.MeshPhongMaterial({});
+              let name      = mesh.name || mesh.id || mesh.uuid || Math.random();
               await this.add2Scene(mesh, 'model_' + name, true);
             });
+          } else {
+            // mesh.material = new THREE.MeshPhongMaterial({});
+            let mesh = meshs;
+            let name = mesh.name || mesh.id || mesh.uuid || Math.random();
+            await this.add2Scene(mesh, 'model_' + name, true);
           }
         });
 

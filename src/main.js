@@ -1,3 +1,7 @@
+import vConsole from 'vconsole';
+
+new vConsole();
+
 import Vue from 'vue';
 import stores from 'vue-stores';
 import './lib';
