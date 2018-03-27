@@ -1,8 +1,8 @@
-import {Element} from "../core/Element";
-import {Vector3} from "../core/Vector3";
-import {IInteration} from "../interface/IInteration";
-import {IPosture} from "../interface/IPosture";
-import {IPosition} from "../interface/IPosition";
+import {Element} from "../../core/Element";
+import {Vector3} from "../../core/Vector3";
+import {IInteration} from "../../interface/IInteration";
+import {IPosture} from "../../interface/IPosture";
+import {IPosition} from "../../interface/IPosition";
 
 export abstract class ModelElement extends Element implements IInteration, IPosition, IPosture {
 

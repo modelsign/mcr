@@ -21,8 +21,9 @@
   import 'three';
   // import './js/controls/OrbitControls';
   // import './js/controls/PointerLockControls';
-  import MouseControls from './js/controls/MouseControls.ts';
-  import LookControls from './js/controls/LookControls.ts';
+  import Control from './js/controls/Control';
+  // import MouseControls from './js/controls/MouseControls.ts';
+  // import LookControls from './js/controls/LookControls.ts';
   // import './js/controls/FirstPersonControls.js';
   // import './js/controls/PointerLockControls.js';
 
@@ -40,8 +41,8 @@
    *******************************************/
   import em from '../../bus';
 
-  // const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
-  // const wkFBuffergeo     = new wkFBuffergeoCode();
+  const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
+  const wkFBuffergeo     = new wkFBuffergeoCode();
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
@@ -55,12 +56,14 @@
   );
 
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  let cursor         = new THREE.Vector3(0, 0, 0);
-  let hits           = _comInst.state.current.hits;
-  // const mouseControls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
-  const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits, false);
+  let cursor = new THREE.Vector3(0, 0, 0);
+  let hits   = _comInst.state.current.hits;
 
-  let controls = lookControls;
+  const control = new Control({ scene, camera, dom: renderer.domElement, cursor, hits });
+  // const mouseControls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+  // const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits, false);
+
+  let controls = control.control;
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
 
@@ -530,30 +533,30 @@
 
       },
       updateFaceBuffer (faces = []) {
-        // wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
-        //   /** 该函数用于释放数组 */
-        //   function disposeArray () { this.array = null; }
-        //
-        //   let geometry = new THREE.BufferGeometry();
-        //   let currt    = Date.now();
-        //   geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
-        //   geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
-        //   geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
-        //   geometry.computeBoundingSphere();
-        //   let material = new THREE.MeshToonMaterial(
-        //       {
-        //         color       : 0x50b7c1,
-        //         specular    : 0xffffff,
-        //         shininess   : 250,
-        //         side        : THREE.DoubleSide,
-        //         vertexColors: THREE.VertexColors
-        //       }
-        //   );
-        //
-        //   let mesh = new THREE.Mesh(geometry, material);
-        //   this.add2Scene(mesh, 'faces');
-        // });
-        // wkFBuffergeo.postMessage(faces);
+        wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
+          /** 该函数用于释放数组 */
+          function disposeArray () { this.array = null; }
+
+          let geometry = new THREE.BufferGeometry();
+          let currt    = Date.now();
+          geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
+          geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
+          geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
+          geometry.computeBoundingSphere();
+          let material = new THREE.MeshToonMaterial(
+              {
+                color       : 0x50b7c1,
+                specular    : 0xffffff,
+                shininess   : 250,
+                side        : THREE.DoubleSide,
+                vertexColors: THREE.VertexColors
+              }
+          );
+
+          let mesh = new THREE.Mesh(geometry, material);
+          this.add2Scene(mesh, 'faces');
+        });
+        wkFBuffergeo.postMessage(faces);
 
       },
       async updareModels (addModels = []) {
@@ -688,6 +691,7 @@
       );
       this.$watch(
           'sandbox.models', async function (curVal, oldVal) {
+            // console.log({ curVal, oldVal });
             await  this.sceneRefush([], 'model');
           }
       );

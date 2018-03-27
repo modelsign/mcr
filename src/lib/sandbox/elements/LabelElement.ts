@@ -1,8 +1,8 @@
-import {Element, ElementConstructOption} from "../core/Element";
-import {Vector3} from "../core/Vector3";
-import {ElementOption} from "../core/ElementOption";
-import {View} from "../core/View";
-import Lang from '../lang'
+import {Element, ElementConstructOption} from "../../core/Element";
+import {Vector3} from "../../core/Vector3";
+import {ElementOption} from "../../core/ElementOption";
+import {View} from "../../core/View";
+import Lang from '../../lang'
 
 class FaceElementConstructOption extends ElementConstructOption {
     constructor() {
