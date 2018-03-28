@@ -57,5 +57,4 @@ let audio = {
     }
 };
 
-window['audio']=audio;
 export default audio;
