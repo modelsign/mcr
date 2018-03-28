@@ -8,7 +8,7 @@
 
 THREE.RaytracingRenderer = function ( parameters ) {
 
-	console.log( 'THREE.RaytracingRenderer', THREE.REVISION );
+	// console.log( 'THREE.RaytracingRenderer', THREE.REVISION );
 
 	parameters = parameters || {};
 

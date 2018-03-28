@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@tweenjs/tween.js": "^17.1.1",
+    "babel-plugin-transform-remove-console": "^6.9.0",
     "better-scroll": "^1.3.1",
     "buckets-js": "^1.98.2",
     "eustia-module": "^0.8.0",
