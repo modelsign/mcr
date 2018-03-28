@@ -28,8 +28,8 @@ class InstClass {
 }
 
 let inst: InstClass = new InstClass();
-
-inst.version = require('../../../package.json').version;
+declare let VERSION;
+inst.version = VERSION;
 inst.sandbox = new Sandbox();
 inst.option = new Option();
 inst.controller = new Controller();

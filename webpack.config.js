@@ -163,6 +163,7 @@ module.exports = {
     ),
     new webpack.DefinePlugin(
         {
+          VERSION                 : require('./package.json').version,
           'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH)
         }
     ),
