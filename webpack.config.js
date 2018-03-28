@@ -127,7 +127,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(gif|jpg|png|woff|woff2|svg|eot|ttf)\??.*$/,
+        test: /\.(gif|jpg|png|woff|woff2|svg|eot|ttf|wav)\??.*$/,
         use : [
           {
             loader : 'url-loader',
@@ -153,6 +153,10 @@ module.exports = {
         [
           {
             from: __dirname + '/src/_static/favicon.svg',
+            to  : '.'
+          },
+          {
+            from: __dirname + '/src/_static/favicon.ico',
             to  : '.'
           },
           {

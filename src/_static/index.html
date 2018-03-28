@@ -109,37 +109,5 @@
         );
       }, i * TIME_SECONDS);
   }
-
-  let deviceMotionHandler = function (eventData) {
-    alert('2');
-    let SHAKE_THRESHOLD = 0;
-    let acceleration    = eventData.accelerationIncludingGravity,
-        curTime         = new Date().getTime();
-
-    if ((
-            curTime - last_update
-        ) > 100) {
-      let diffTime = curTime - last_update;
-      last_update  = curTime;
-      x            = acceleration.x;
-      y            = acceleration.y;
-      z            = acceleration.z;
-      let speed    = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
-
-      if (speed >= SHAKE_THRESHOLD) {
-        alert(JSON.stringify({ speed, SHAKE_THRESHOLD }));
-      }
-      last_x = x;
-      last_y = y;
-      last_z = z;
-    }
-  };
-  last_update             = 0;
-  if (window.DeviceMotionEvent) {
-    window.addEventListener('devicemotion', deviceMotionHandler, false);
-  } else {
-    alert('你的手机太差了，买个新的吧。');
-  }
-
 </script>
 </html>
