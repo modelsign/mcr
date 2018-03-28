@@ -1,6 +1,6 @@
 {
   "name": "msign",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "less": "^2.7.3",
     "mint-ui": "^2.2.9",
     "normalize.css": "^7.0.0",
+    "raven-js": "^3.24.0",
     "socket.io-client": "^2.0.4",
     "three": "^0.88.0",
     "toastr": "^2.1.4",

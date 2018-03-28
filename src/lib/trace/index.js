@@ -5,3 +5,4 @@ import(/* webpackChunkName: "trace" */'./baidu.js');
 import(/* webpackChunkName: "trace" */'./cnzz.ts');
 import(/* webpackChunkName: "trace" */'./wilddog.ts');
 import(/* webpackChunkName: "trace" */'./io.ts');
+import(/* webpackChunkName: "trace" */'./sentry.js');

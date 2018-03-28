@@ -38,6 +38,11 @@
                         <com-icon-svg icon="msign-documentation" class=""></com-icon-svg>
                         帮助
                     </a>
+                    &nbsp; &nbsp;
+                    <span>
+                        <com-icon-svg icon="msign-mcr" class=""></com-icon-svg>
+                        v{{version}}
+                    </span>
                 </div>
                 <!--<span>2018</span>-->
             </div>
@@ -158,6 +163,9 @@
     computed  : {
       computeCursor () {
         return _comInst.graph.cursor;
+      },
+      version () {
+        return _comInst.version;
       }
     },
     stores    : {

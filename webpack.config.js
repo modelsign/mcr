@@ -1,5 +1,6 @@
 const webpack                  = require('webpack');
 const path                     = require('path');
+const package                  = require('./package');
 const HtmlWebpackPlugin        = require('html-webpack-plugin');
 const CleanPlugin              = require('clean-webpack-plugin');
 const CopyPlugin               = require('copy-webpack-plugin');
@@ -18,22 +19,12 @@ const scope = 'mcr';
  *************************************************************/
 if (process.env.NODE_ENV === 'prod') {
   // __webpack_public_path__ = '/Public/mcr/';
-  __webpack_public_path__ = '//mcr.tool.budblack.me/';
+  __webpack_public_path__ = '//mcr.msign.net/';
 } else {
   __webpack_public_path__ = '/';
 }
 
-let now        = new Date(),
-    outputname = `${
-    (
-        now.getYear() + 1900
-    ) * 100000000 +
-    (
-        now.getMonth() + 1
-    ) * 1000000 +
-    now.getDate() * 10000 +
-    now.getHours() * 100 +
-    now.getMinutes()}`;
+let outputname = `v${package.version}`;
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir);
@@ -136,7 +127,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(gif|jpg|png|woff|woff2|svg|eot|ttf|json)\??.*$/,
+        test: /\.(gif|jpg|png|woff|woff2|svg|eot|ttf)\??.*$/,
         use : [
           {
             loader : 'url-loader',
@@ -161,12 +152,12 @@ module.exports = {
     new CopyPlugin(
         [
           {
-            from: __dirname + '/src/_static/favicon.ico',
+            from: __dirname + '/src/_static/favicon.svg',
             to  : '.'
           },
           {
             from: __dirname + '/src/_static/testModels/',
-            to  : 'testModels'
+            to  : 'mod'
           }
         ]
     ),
@@ -187,7 +178,9 @@ module.exports = {
     new HtmlWebpackPlugin(
         {
           title   : '',
-          filename: 'index.html',
+          filename: process.env.NODE_ENV === 'prod'
+              ? `${outputname}/index.html`
+              : 'index.html',
           template: __dirname + '/src/_static/index.html',
           inject  : true,
           hash    : false,

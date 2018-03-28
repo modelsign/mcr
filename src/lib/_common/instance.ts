@@ -1,3 +1,5 @@
+/* use strict */
+
 import {Sandbox} from "../sandbox/Sandbox";
 import {Vue} from "vue/types/vue";
 import em from '../bus';
@@ -22,9 +24,12 @@ class InstClass {
     wild: any;
     local: Local;
     modules: any;
+    version: string;
 }
 
 let inst: InstClass = new InstClass();
+
+inst.version = require('../../../package.json').version;
 inst.sandbox = new Sandbox();
 inst.option = new Option();
 inst.controller = new Controller();
