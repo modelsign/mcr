@@ -20,7 +20,12 @@
 
   import 'three';
   // import './js/controls/OrbitControls';
-  import MouseControls from './js/controls/MouseControls.ts';
+  // import './js/controls/PointerLockControls';
+  import Control from './js/controls/Control';
+  // import MouseControls from './js/controls/MouseControls.ts';
+  // import LookControls from './js/controls/LookControls.ts';
+  // import './js/controls/FirstPersonControls.js';
+  // import './js/controls/PointerLockControls.js';
 
   import TWEEN from '@tweenjs/tween.js';
   /** ****************************************
@@ -36,12 +41,12 @@
    *******************************************/
   import em from '../../bus';
 
-  // const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
-  // const wkFBuffergeo     = new wkFBuffergeoCode();
+  const wkFBuffergeoCode = require('../../worker/cal-factor-mesh.worker');
+  const wkFBuffergeo     = new wkFBuffergeoCode();
 
   const container = document.createElement('div');
   const scene     = new THREE.Scene();
-  const camera    = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
+  const camera    = new THREE.PerspectiveCamera(75, 1, 1, Math.max(GROUND_WIDTH * 10, 100000));
   const renderer  = new THREE.WebGLRenderer(
       {
         antialias            : true,
@@ -51,13 +56,17 @@
   );
 
   //  const controls  = new THREE.OrbitControls(camera, renderer.domElement);
-  let cursor     = new THREE.Vector3(0, 0, 0);
-  let hits       = _comInst.state.current.hits;
-  //  const controls = new THREE.OrbitControls( camera, renderer.domElement);
-  const controls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+  let cursor = new THREE.Vector3(0, 0, 0);
+  let hits   = _comInst.state.current.hits;
+
+  const control = new Control({ scene, camera, dom: renderer.domElement, cursor, hits });
+  // const mouseControls = new MouseControls(scene, camera, renderer.domElement, cursor, hits);
+  // const lookControls = new LookControls(scene, camera, renderer.domElement, cursor, hits, false);
+
+  let controls = control.control;
 
   let axisHelper, helperGrid, helperGridBase, helperLights = [], helperBoxs = [];
-  
+
   //  scene.background = new THREE.Color(0xf0f0f0);
   //  scene.fog = new THREE.Fog(0xfcfcfc, 500, 10000);
 
@@ -71,7 +80,7 @@
    **************************/
   //  camera.position.set(2500, 2500, 2500);
   //  camera.position.set(100, 0, 0);
-  conCamera.moveTo(new THREE.Vector3(2500, 2500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
+  conCamera.moveTo(new THREE.Vector3(2500, 1500, 2500), new THREE.Vector3(0, 0, 0), TIME_SECONDS);
 
   renderer.shadowMap.type              = THREE.PCFSoftShadowMap;
   renderer.shadowMapSoft               = true;
@@ -80,11 +89,11 @@
   renderer.gammaInput                  = true;
   renderer.gammaOutput                 = true;
   renderer.sortObjects                 = true;
-  
+
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.localClippingEnabled = true;
   container.appendChild(renderer.domElement);
-  
+
   /** ******************************************************************************
    *
    *                                   灯光配置
@@ -93,29 +102,37 @@
   /** **************************
    * 环境光
    *****************************/
-  let ambientLight  = new THREE.AmbientLight(0xffffff);
+  let ambientLight  = new THREE.AmbientLight(0xffffff, 1);
   ambientLight.name = 'h-light-ambient';
   scene.add(ambientLight);
 
   /** **************************
+   * 聚光灯光源
+   *****************************/
+  // let lightSpot = new THREE.SpotLight(0xffffff, 0.6);
+  // lightSpot.position.set(0, 1500, 200);
+  // lightSpot.castShadow            = true;
+  // lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
+  // lightSpot.shadow.bias           = -0.000222;
+  // lightSpot.shadow.mapSize.width  = 1024;
+  // lightSpot.shadow.mapSize.height = 1024;
+  // lightSpot.name                  = 'h-light-spot';
+  // scene.add(lightSpot);
+
+  /** **************************
    * 点光源
    *****************************/
-  //  let lightSpot = new THREE.SpotLight(0xffffff, 1.5);
-  //  lightSpot.position.set(0, 1500, 200);
-  //  lightSpot.castShadow            = true;
-  //  lightSpot.shadow                = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000));
-  //  lightSpot.shadow.bias           = -0.000222;
-  //  lightSpot.shadow.mapSize.width  = 1024;
-  //  lightSpot.shadow.mapSize.height = 1024;
-  //  lightSpot.name                  = 'h-light-spot';
-  //  scene.add(lightSpot);
+  let lightPoint = new THREE.PointLight(0xffffff, 0.6);
+  lightPoint.position.set(0, 1500, 200);
+  lightPoint.name = 'h-light-point';
+  scene.add(lightPoint);
 
   /** **************************
    * 方向光
    *****************************/
-  let directionalLight  = new THREE.DirectionalLight(0xffffff, 1);
+  let directionalLight  = new THREE.DirectionalLight(0xaabbff, 1);
   directionalLight.name = 'h-light-directional';
-  directionalLight.position.set(0, GROUND_WIDTH / 2, 0); 			//default; light shining from top
+  directionalLight.position.set(0.5, 0, 0.866); 			//default; light shining from top
   directionalLight.castShadow            = true;            // default false
   directionalLight.shadow.mapSize.width  = GROUND_WIDTH / 10;  // default
   directionalLight.shadow.mapSize.height = GROUND_WIDTH / 10; // default
@@ -240,6 +257,7 @@
     renderer.setSize(container.clientWidth, container.clientHeight);
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
+
     em.emit('ui/resetsize', new EventResetsize(container.clientWidth, container.clientHeight));
   };
   const init            = () => {
@@ -248,7 +266,7 @@
     resetRenderSize();
     render();
   };
-  
+
   const planeGeometry     = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_WIDTH),
         planeGeometryBase = new THREE.PlaneGeometry(GROUND_WIDTH * 10, GROUND_WIDTH * 10),
         planeMaterial     = new THREE.ShadowMaterial({ opacity: 0.2 }),
@@ -441,15 +459,15 @@
       async add2Scene (mesh, name = '', isHitable = false) {
         mesh.castShadow = true;
         //        mesh.receiveShadow = true;
-        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}`;
+        mesh.name       = `${name}${ isHitable ? '-hitable' : ''}-${Math.random()}`;
         let meshInScene = scene.children.find(({ name: _name }) => {
           return _name === name;
         });
         if (meshInScene) {
           meshInScene.geometry = mesh.geometry;
         } else {
-          //          let meshBox  = new THREE.BoxHelper(mesh);
-          //          meshBox.name = mesh.name + '_box';
+          let meshBox  = new THREE.BoxHelper(mesh);
+          meshBox.name = mesh.name + '_box';
 
           /** ***********************************
            * 模型需要添加载入的动画效果 使之更加美观
@@ -469,12 +487,12 @@
                .to(p, 1200)
                .onUpdate(() => {})
                .onComplete(() => {
-                 em.emit('request/camera', { action: 'reset', arg: {} });
+                 // em.emit('request/camera', { action: 'reset', arg: {} });
                })
                .start();
 
           scene.add(mesh);
-          //          scene.add(meshBox);
+          scene.add(meshBox);
         }
       },
       async createPoint () {
@@ -502,7 +520,8 @@
         vertices.forEach((p, i) => {
           geometryLine.vertices.push(p);
 
-          let color = vertices[i].r * 0xffff + vertices[i].g * 0xff + vertices[i].b;
+          let color = vertices[i].r * 256 * 256 + vertices[i].g * 256 + vertices[i].b;
+          // console.log(color);
           geometryLine.colors.push(new THREE.Color(color));
         });
 
@@ -514,30 +533,30 @@
 
       },
       updateFaceBuffer (faces = []) {
-        // wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
-        //   /** 该函数用于释放数组 */
-        //   function disposeArray () { this.array = null; }
-        //
-        //   let geometry = new THREE.BufferGeometry();
-        //   let currt    = Date.now();
-        //   geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
-        //   geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
-        //   geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
-        //   geometry.computeBoundingSphere();
-        //   let material = new THREE.MeshToonMaterial(
-        //       {
-        //         color       : 0x50b7c1,
-        //         specular    : 0xffffff,
-        //         shininess   : 250,
-        //         side        : THREE.DoubleSide,
-        //         vertexColors: THREE.VertexColors
-        //       }
-        //   );
-        //
-        //   let mesh = new THREE.Mesh(geometry, material);
-        //   this.add2Scene(mesh, 'faces');
-        // });
-        // wkFBuffergeo.postMessage(faces);
+        wkFBuffergeo.addEventListener('message', ({ data: { positions, normals, colors } }) => {
+          /** 该函数用于释放数组 */
+          function disposeArray () { this.array = null; }
+
+          let geometry = new THREE.BufferGeometry();
+          let currt    = Date.now();
+          geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3).onUpload(disposeArray));
+          geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3).onUpload(disposeArray));
+          geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3).onUpload(disposeArray));
+          geometry.computeBoundingSphere();
+          let material = new THREE.MeshToonMaterial(
+              {
+                color       : 0x50b7c1,
+                specular    : 0xffffff,
+                shininess   : 250,
+                side        : THREE.DoubleSide,
+                vertexColors: THREE.VertexColors
+              }
+          );
+
+          let mesh = new THREE.Mesh(geometry, material);
+          this.add2Scene(mesh, 'faces');
+        });
+        wkFBuffergeo.postMessage(faces);
 
       },
       async updareModels (addModels = []) {
@@ -549,7 +568,7 @@
           return name.indexOf('model') !== 0;
         });
 
-        addModels.forEach(async ({ type, urlGltf, option }) => {
+        addModels.forEach(async ({ type, url, option }) => {
           let meshs = [];
           switch (type) {
             case 'gltf':
@@ -557,30 +576,46 @@
                * 从网络下载gltf文档
                * @type {Promise<any>}
                */
-              meshs = await Loader.loadModelGltf(urlGltf);
+              meshs = await Loader.loadModelGltf(url);
               /**
                * 设置文档中模型的偏移量
                */
               let { position } = option;
-              meshs.forEach((mesh) => {
+              if (meshs.forEach) {
+                meshs.forEach((mesh) => {
+                  mesh.position.x = position.x;
+                  mesh.position.y = position.y;
+                  mesh.position.z = position.z;
+                });
+              } else {
+                let mesh        = meshs;
                 mesh.position.x = position.x;
                 mesh.position.y = position.y;
                 mesh.position.z = position.z;
-              });
+              }
+              break;
+            case 'fbx':
+              meshs = await Loader.loadModelFBX(url);
+              console.log('FBX载入完毕', meshs);
               break;
             default:
               //              console.log('模型加载, 类型没找到', type);
               em.emit('event/log/trace', { step: '模型加载, 类型没找到', type });
           }
-          if (meshs.length) {
+          if (meshs && meshs.length) {
             this.stateCurrentIsProcessing = false;
             em.emit('event/log/trace', { step: '模型加载完毕' });
             //            console.log('模型加载完毕', meshs);
             await meshs.forEach(async (mesh) => {
-              //              mesh.material=new THREE.MeshPhongMaterial({color:0xf1f1f1})
-              let name = mesh.name || mesh.id || mesh.uuid || Math.random();
+              mesh.material = new THREE.MeshPhongMaterial({});
+              let name      = mesh.name || mesh.id || mesh.uuid || Math.random();
               await this.add2Scene(mesh, 'model_' + name, true);
             });
+          } else {
+            // mesh.material = new THREE.MeshPhongMaterial({});
+            let mesh = meshs;
+            let name = mesh.name || mesh.id || mesh.uuid || Math.random();
+            await this.add2Scene(mesh, 'model_' + name, true);
           }
         });
 
@@ -656,9 +691,19 @@
       );
       this.$watch(
           'sandbox.models', async function (curVal, oldVal) {
+            // console.log({ curVal, oldVal });
             await  this.sceneRefush([], 'model');
           }
       );
+      this.$watch(
+          'sandbox.layers', async function (curVal, oldVal) {
+
+            console.log('=====图层改变=====');
+            console.log({ curVal, oldVal });
+            // await  this.sceneRefush([], 'model');
+          }
+      )
+      ;
 
       /** **********************************
        * 这是一个处理`请求消息`的代码
