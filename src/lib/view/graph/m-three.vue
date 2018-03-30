@@ -19,7 +19,7 @@
   Vue.use(VueResize);
 
   import 'three';
-  import './js/controls/OrbitControls';
+  // import './js/controls/OrbitControls';
   import MouseControls from './js/controls/MouseControls.ts';
 
   import TWEEN from '@tweenjs/tween.js';
