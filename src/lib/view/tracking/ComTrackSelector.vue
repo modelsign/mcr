@@ -91,33 +91,33 @@
     },
     methods   : {
       onMousedown (event) {
-        let { layerX, layerY, button } = event;
+        let { offsetX, offsetY, button } = event;
         if (button !== 0) {
           return;
         }
         this.selectRec.isActive = true;
-        this.hitX               = layerX;
-        this.hitY               = layerY;
-        this.selectRec.top      = layerY;
-        this.selectRec.left     = layerX;
+        this.hitX               = offsetX;
+        this.hitY               = offsetY;
+        this.selectRec.top      = offsetY;
+        this.selectRec.left     = offsetX;
         this.selectRec.width    = 0;
         this.selectRec.height   = 0;
 
       },
       onMousemove (event) {
-        let { layerX, layerY } = event;
+        let { offsetX, offsetY } = event;
 
-        if (layerX > this.hitX) {
-          this.selectRec.width = layerX - this.selectRec.left;
+        if (offsetX > this.hitX) {
+          this.selectRec.width = offsetX - this.selectRec.left;
         } else {
-          this.selectRec.left  = layerX;
-          this.selectRec.width = this.hitX - layerX;
+          this.selectRec.left  = offsetX;
+          this.selectRec.width = this.hitX - offsetX;
         }
-        if (layerY > this.hitY) {
-          this.selectRec.height = layerY - this.selectRec.top;
+        if (offsetY > this.hitY) {
+          this.selectRec.height = offsetY - this.selectRec.top;
         } else {
-          this.selectRec.top    = layerY;
-          this.selectRec.height = this.hitY - layerY;
+          this.selectRec.top    = offsetY;
+          this.selectRec.height = this.hitY - offsetY;
         }
       },
       onMouseup (event) {

@@ -771,18 +771,18 @@ export default class MouseControls extends EventDispatcher {
     private async updateTraget(event: MouseEvent | MouseWheelEvent | TouchEvent) {
         if (this.isRaying) return;
         this.isRaying = true;
-        let layerX = 0, layerY = 0,
+        let offsetX = 0, offsetY = 0,
             raycaster = this.raycaster,
             scene = this.scene,
             domElement = this.domElement;
         if (event instanceof MouseEvent) {
             let eventMouse = <MouseEvent>event;
-            layerX = eventMouse.layerX;
-            layerY = eventMouse.layerY;
+            offsetX = eventMouse.offsetX;
+            offsetY = eventMouse.offsetY;
         }
         let p2 = new Vector2(0, 0);
-        p2.x = layerX / domElement.clientWidth * 2 - 1;
-        p2.y = layerY / domElement.clientHeight * -2 + 1;
+        p2.x = offsetX / domElement.clientWidth * 2 - 1;
+        p2.y = offsetY / domElement.clientHeight * -2 + 1;
         raycaster.setFromCamera(p2, this.camera);
         let meshs: THREE.Mesh[];
         let timestamp = Date.now();
