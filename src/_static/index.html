@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
         body {
             position: fixed;
@@ -55,60 +56,10 @@
       mcr.create('#mcr')
          .then(function (_mcr) {
                  mcr = msign.mcr = _mcr;
-                 setTimeout(drawSth, TIME_SECONDS);
                }
          );
     }
   };
-  
-  function drawSth () {
-    for (let i = 0 ; i < 1 ; i++)
 
-      setTimeout(function () {
-        mcr.option.mode = 0;
-        mcr.option.afk  = false;
-
-        // 绘制模型
-        mcr.sandbox.models.push(
-            {
-              type   : 'gltf',
-              urlGltf: '//mcr.msign.net/mod/gltf/test0804.gltf?_i=' + i,
-              option : {
-                position: {
-                  x: 0,
-                  y: -2200,
-                  z: 0
-                }
-              }
-            }
-        );
-        // 绘制线条
-        mcr.sandbox.lines.push(
-            {
-              title   : 'line_1',
-              vertices: [
-                { x: 100, z: 200, y: 300, r: 255, g: 0, b: 0 },
-                { x: 100, z: 500, y: 400, r: 255, g: 100, b: 0 },
-                { x: 200, z: 100, y: 500, r: 255, g: 200, b: 0 },
-                { x: 300, z: 100, y: 500, r: 255, g: 255, b: 0 },
-                { x: 400, z: 200, y: 300, r: 128, g: 100, b: 255 },
-                { x: 400, z: 300, y: 100, r: 128, g: 128, b: 0 }
-              ]
-            }
-        );
-        mcr.sandbox.lines.push(
-            {
-              title   : 'line_2',
-              vertices: [
-                { x: 700, z: 400, y: 100, r: 0, g: 255, b: 0 },
-                { x: 700, z: 600, y: 200, r: 0, g: 255, b: 0 },
-                { x: 700, z: 700, y: 300, r: 0, g: 255, b: 0 },
-                { x: 800, z: 700, y: 300, r: 0, g: 255, b: 0 },
-                { x: 900, z: 600, y: 200, r: 0, g: 255, b: 0 }
-              ]
-            }
-        );
-      }, i * TIME_SECONDS);
-  }
 </script>
 </html>

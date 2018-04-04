@@ -4,7 +4,7 @@
     "stage-0"
   ],
   "plugins": [
-    "transform-remove-console",
+//    "transform-remove-console",
     "transform-runtime"
   ]
 }

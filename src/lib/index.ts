@@ -1,7 +1,8 @@
-import logger from './logger'
-import bus from './bus'
+import api from './api'
 
-export default {
-    logger,
-    bus
-}
+import './plugins'
+
+
+import './view/style/develop.less'
+
+export {api}
