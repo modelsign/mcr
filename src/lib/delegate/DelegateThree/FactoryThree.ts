@@ -1,7 +1,14 @@
 import * as THREE from "three";
 import MouseControls from "./Controls/MouseControl";
+import CameraManager from "./Managers/CameraManager";
+import {Vector3} from "three";
 
 export default class FactoryThree {
+
+    static async createThreePoint(x, y, z) {
+        return new Vector3(x, y, z);
+    }
+
     static async createThreeRender() {
         const renderer = new THREE.WebGLRenderer(
             {
@@ -33,10 +40,10 @@ export default class FactoryThree {
         let camera = new THREE.PerspectiveCamera(
             30, 1, 1,
             Math.min(GROUND_WIDTH * 10, 100000));
-        camera.position.setX(1000)
-        camera.position.setY(1000)
-        camera.position.setZ(1000)
-        camera.lookAt(new THREE.Vector3(0, 0, 0))
+        camera.position.setX(1000);
+        camera.position.setY(1000);
+        camera.position.setZ(1000);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
         return camera
     }
 
@@ -64,6 +71,11 @@ export default class FactoryThree {
 
         scene.add(helper);
         scene.add(plane);
+    }
+
+
+    static async createManagerCamera(camera: THREE.PerspectiveCamera) {
+        return new CameraManager(camera)
     }
 }
 

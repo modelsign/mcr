@@ -2,10 +2,12 @@ import * as tween from '@tweenjs/tween.js';
 
 import Bus from "./Bus";
 import DelegateThree from "../delegate/DelegateThree";
+import FactoryThree from "../delegate/DelegateThree/FactoryThree";
 
 export default class Global {
     static bus: Bus = new Bus();
     static delegateThree: DelegateThree = null;
+    static factoryThree: FactoryThree = FactoryThree;
 
     static async update(t) {
         tween.update(t);

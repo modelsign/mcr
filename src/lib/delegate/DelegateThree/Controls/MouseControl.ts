@@ -1,8 +1,6 @@
-import {debounce, throttle, bind} from 'lodash'
-
-import Control from "./Control";
-
 const THREE = require('three');
+import {debounce, throttle, bind} from 'lodash'
+import Control from "./Control";
 import {Tween, Easing} from '@tweenjs/tween.js';
 import {start} from "repl";
 import {EventDispatcher, Object3D, Quaternion, Vector2} from "three";
@@ -20,6 +18,8 @@ enum STATE {
 const changeEvent = {type: 'change'},
     startEvent = {type: 'start'},
     endEvent = {type: 'end'};
+
+const TIME_QUICK_MOMENT = 100;
 
 export default class MouseControls extends Control {
     public camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
@@ -773,14 +773,14 @@ export default class MouseControls extends Control {
     private _onContextMenu = this.onContextMenu.bind(this);
     private _dispatchEventStartDebounced = debounce(
         this.dispatchEventStart,
-        100,
+        TIME_QUICK_MOMENT,
         {
             'leading': true,
             'trailing': false
         }).bind(this);
     private _dispatchEventEndDebounced = debounce(
         this.dispatchEventEnd,
-        100,
+        TIME_QUICK_MOMENT,
         {
             'leading': false,
             'trailing': true
