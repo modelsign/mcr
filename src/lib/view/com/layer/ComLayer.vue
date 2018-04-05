@@ -2,7 +2,7 @@
     <div class="layers">
         <div class="layer" v-for="layer in layers">
             <component :is="layer"></component>
-            <com-dev-label :tag="layer.name"></com-dev-label>
+            <!--<com-dev-label :tag="layer.name"></com-dev-label>-->
         </div>
     </div>
 </template>
@@ -35,6 +35,8 @@
     .layers {
         width: 100%;
         height: 100%;
+
+        pointer-events: none;
     }
 
     .layer {
@@ -42,6 +44,5 @@
 
         width: 100%;
         height: 100%;
-
     }
 </style>

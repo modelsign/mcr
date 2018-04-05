@@ -11,16 +11,20 @@
                 </li>
             </transition-group>
         </ul>
+        <!--<com-dev-label tag="log"></com-dev-label>-->
     </div>
 </template>
 
 <script>
+  import { debounce, throttle } from 'lodash';
   import moment from 'moment';
 
   import global from '../../../core/Global';
+  import { ComDevLabel } from '../../msui';
 
   export default {
-    name   : 'com-layer-screen',
+    name      : 'com-layer-screen',
+    components: { ComDevLabel },
     data () {
       return {
         tick_last: 0,
@@ -33,9 +37,21 @@
         ]
       };
     },
-    methods: {
+    methods   : {
       time2str (t) {
         return moment(t).format('LLLL');
+      },
+      log (args) {
+        if (this.logs.length > 20) {
+          this.logs.splice(0, 1);
+        }
+        this.logs.push(
+            {
+              from     : args.event,
+              ctx      : args.txt || args.type,
+              timestamp: Date.now()
+            }
+        );
       }
     },
     mounted () {
@@ -47,18 +63,10 @@
           this.tick_last = t;
         }
       });
-      bus.on('log', ({ event, args }) => {
-        if (this.logs.length > 20) {
-          this.logs.splice(0, 1);
-        }
-        this.logs.push(
-            {
-              from     : '来源模块',
-              ctx      : args,
-              timestamp: Date.now()
-            }
-        );
-      });
+      bus.on(
+          'log',
+          this.log
+      );
     }
   };
 </script>

@@ -1,23 +1,29 @@
 import * as THREE from 'three'
+import FactoryThree from './DelegateThree/FactoryThree'
+import {EventDispatcher} from "three";
+import Control from "./DelegateThree/Controls/Control";
 
-export default class DelegateThree {
+export default class DelegateThree extends EventDispatcher {
 
     private scene: THREE.Scene;
     private container: Element;
-    private camera: THREE.Camera;
+    private camera: THREE.PerspectiveCamera;
     private renderer: THREE.Renderer;
+    private mouseControl: Control;
+
+    public getControl() {
+        return this.mouseControl;
+    }
 
     async create(container) {
-        const GROUND_WIDTH = 10000;
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(30, 1, 1, Math.min(GROUND_WIDTH * 10, 100000));
-        const renderer = new THREE.WebGLRenderer(
-            {
-                antialias: true,
-                alpha: true,
-                preserveDrawingBuffer: true
-            }
+        const scene = await FactoryThree.createThreeScene();
+        const camera = await FactoryThree.createThreeCamera();
+        const renderer = await FactoryThree.createThreeRender();
+        const mouseControl = await FactoryThree.createThreeMouseControl(
+            scene, camera,
+            renderer.domElement,
+            new THREE.Vector3(0, 0, 0), []
         );
 
         this.container = container;
@@ -25,27 +31,27 @@ export default class DelegateThree {
         this.camera = camera;
         this.renderer = renderer;
 
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.shadowMap.renderSingleSided = false;
-        renderer.shadowMap.enabled = true;
-        renderer.gammaInput = true;
-        renderer.gammaOutput = true;
-        renderer.sortObjects = true;
-
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.localClippingEnabled = true;
-
+        this.mouseControl = mouseControl;
 
         container.innerHTML = '';
-        renderer.domElement.style.width = '100%';
-        renderer.domElement.style.height = '100%';
-        container.appendChild(renderer.domElement);
+        await container.appendChild(renderer.domElement);
+        await FactoryThree.createElementGround(scene);
 
+        await this.renderResize();
         return container
     }
 
     async render(time) {
+        this.renderer.render(this.scene, this.camera);
+        this.getControl().update(time);
+    }
 
-
+    private async renderResize() {
+        let renderer = this.renderer,
+            container = this.container,
+            camera = this.camera;
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
     }
 }

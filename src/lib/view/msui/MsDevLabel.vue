@@ -1,8 +1,6 @@
 <template>
-    <div>
-        <ul class="tag-list">
-            <li v-for="tag in _tags">{{tag}}</li>
-        </ul>
+    <div class="tag-list">
+        <span v-for="tag in _tags">{{tag}}</span>
     </div>
 </template>
 
@@ -25,9 +23,9 @@
 </script>
 
 <style scoped>
-    ul.tag-list {
+    div.tag-list {
         list-style: none;
-        position: absolute;
+        /*position: absolute;*/
         top: 100%;
         margin: 0;
         margin-top: -1em;
@@ -39,7 +37,7 @@
         display: flex;
     }
 
-    ul.tag-list li {
+    div.tag-list span {
         align-self: center;
     }
 </style>

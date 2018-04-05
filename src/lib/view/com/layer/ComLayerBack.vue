@@ -30,6 +30,6 @@
         align-items: center;
 
         opacity: .2;
-        filter: blur(10px);
+        filter: blur(512px);
     }
 </style>
