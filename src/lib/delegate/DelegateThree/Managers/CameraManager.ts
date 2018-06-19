@@ -1,5 +1,5 @@
 import {Tween, Easing} from '@tweenjs/tween.js'
-import {ILocation} from "../../../data/ILocation";
+import {Location} from "../../../data/Location";
 import Point from "../../../data/Point";
 import {EventDispatcher, Vector3} from "three";
 import {debounce} from 'lodash';

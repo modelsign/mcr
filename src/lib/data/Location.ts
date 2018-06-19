@@ -1,5 +1,5 @@
 import Point from "./Point";
 
-export interface ILocation {
+export interface Location {
     Location: Point
 }
