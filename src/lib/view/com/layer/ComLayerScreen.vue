@@ -20,11 +20,11 @@
   import moment from 'moment';
 
   import global from '../../../core/Global';
-  import { ComDevLabel } from '../../msui';
+  import { ComDevLabel, ComToolbar } from '../../msui';
 
   export default {
     name      : 'com-layer-screen',
-    components: { ComDevLabel },
+    components: { ComDevLabel, ComToolbar },
     data () {
       return {
         tick_last: 0,

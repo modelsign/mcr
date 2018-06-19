@@ -1,6 +1,6 @@
 <template>
     <div class="bg">
-        <com-util-icon-svg class="bg-icon" icon="msign-mcr"></com-util-icon-svg>
+        <!--<com-util-icon-svg class="bg-icon" icon="msign-mcr"></com-util-icon-svg>-->
     </div>
 </template>
 
@@ -20,16 +20,18 @@
 
         display: flex;
         font-size: 80vmin;
+
+        background: #ffffff;
     }
 
-    .bg-icon {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    /*.bg-icon {*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
 
-        opacity: .2;
-        filter: blur(512px);
-    }
+    /*opacity: .2;*/
+    /*filter: blur(512px);*/
+    /*}*/
 </style>

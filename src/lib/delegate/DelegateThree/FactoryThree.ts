@@ -3,6 +3,11 @@ import MouseControls from "./Controls/MouseControl";
 import CameraManager from "./Managers/CameraManager";
 import {Vector3} from "three";
 
+const CONST_GROUND_SIZE = 10000,
+    CONST_GROUND_DIVISIONS = 100,
+    CONST_GROUND_ELEVATION = 0,
+    CONST_GROUND_OPACITY = 0.75;
+
 export default class FactoryThree {
 
     static async createThreePoint(x, y, z) {
@@ -36,10 +41,9 @@ export default class FactoryThree {
     }
 
     static async createThreeCamera() {
-        const GROUND_WIDTH = 10000;
         let camera = new THREE.PerspectiveCamera(
             30, 1, 1,
-            Math.min(GROUND_WIDTH * 10, 100000));
+            Math.min(CONST_GROUND_SIZE * 10, 100000));
         camera.position.setX(1000);
         camera.position.setY(1000);
         camera.position.setZ(1000);
@@ -56,24 +60,42 @@ export default class FactoryThree {
         return new MouseControls(scene, camera, domElement, cursor, hits);
     }
 
+    /**
+     * 创建地面元素
+     * @param {Scene} scene
+     * @return {Promise<void>}
+     */
     static async createElementGround(scene: THREE.Scene) {
-        let planeGeometry = new THREE.PlaneGeometry(2000, 2000);
+        let planeGeometry = new THREE.PlaneGeometry(CONST_GROUND_SIZE, CONST_GROUND_SIZE);
         planeGeometry.rotateX(-Math.PI / 2);
         let planeMaterial = new THREE.ShadowMaterial({opacity: 0.2});
         let plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        plane.position.y = -200;
+        plane.position.y = CONST_GROUND_ELEVATION;
         plane.receiveShadow = true;
 
-        let helper = new THREE.GridHelper(2000, 100);
-        helper.position.y = -199;
-        helper.material.opacity = 0.25;
+        let helper = new THREE.GridHelper(CONST_GROUND_SIZE, CONST_GROUND_DIVISIONS);
+        helper.position.y = CONST_GROUND_ELEVATION;
+        helper.material.opacity = CONST_GROUND_OPACITY;
         helper.material.transparent = true;
 
         scene.add(helper);
         scene.add(plane);
     }
 
+    /**
+     * 创建文字标记元素
+     * @param {string} text
+     * @return {Promise<void>}
+     */
+    static async createElementText(text: string) {
 
+    }
+
+    /**
+     * 创建相机管理器
+     * @param {PerspectiveCamera} camera
+     * @return {Promise<CameraManager>}
+     */
     static async createManagerCamera(camera: THREE.PerspectiveCamera) {
         return new CameraManager(camera)
     }

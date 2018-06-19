@@ -19,7 +19,7 @@ const changeEvent = {type: 'change'},
     startEvent = {type: 'start'},
     endEvent = {type: 'end'};
 
-const TIME_QUICK_MOMENT = 100;
+const TIME_QUICK_MOMENT = 100, TIME_TICK = 10;
 
 export default class MouseControls extends Control {
     public camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
@@ -137,7 +137,8 @@ export default class MouseControls extends Control {
         domElement.addEventListener('dblclick', this._onDblclick, false);
         domElement.addEventListener('mousedown', this._onMouseDown, false);
         // 这个设计挺智障的. 因为另一个控制器(DragControls)也用到了mousemove, 它在里边通过终止冒泡来取消外部拖拽.
-        document.addEventListener('mousemove', this._onMouseMove, false);
+        document.addEventListener('mousemove', debounce(this._onMouseMove, TIME_TICK), false);
+        // document.addEventListener('mousemove', this._onMouseMove, false);
         domElement.addEventListener('wheel', this._onMouseWheel, false);
         domElement.addEventListener('touchstart', this._onTouchStart, false);
         domElement.addEventListener('touchend', this._onTouchEnd, false);

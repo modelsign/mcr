@@ -101,10 +101,13 @@ export default class CameraManager extends EventDispatcher {
                     // _comInst.graph.control.target = _target;
                 })
                 .onComplete(() => {
-                    global.isRend = false;
+
                     camera.lookAt(target);
                     this.dispatchEvent(MovedEvent);
                     resolve(camera);
+                    requestAnimationFrame(() => {
+                        global.isRend = false;
+                    });
                 })
                 .start();
         });

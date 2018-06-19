@@ -25,7 +25,7 @@
     },
     data () {
       return {
-        delThree: new DelegateThree()
+        delThree: null
       };
     },
     methods   : {
@@ -34,6 +34,7 @@
         let control  = delThree.getControl();
         control.addEventListener(
             'start',
+            // debounce(this.onControlStart, TIME_SECONDS)
             this.onControlStart
         );
         control.addEventListener(
@@ -54,6 +55,7 @@
         // global.bus.emit('log/runtime', event);
       },
       onControlEnd (event) {
+        global.isRend = false;
         global.bus.emit('log/runtime', event);
       },
       onGraphMouseleave (event) {
@@ -63,7 +65,7 @@
       }
     },
     async mounted () {
-      let delThree        = this.delThree;
+      let delThree = this.delThree = new DelegateThree();
       let threeContainer  = await delThree.create(this.$refs.threeContainer);
       this.threeContainer = threeContainer;
 
@@ -73,6 +75,8 @@
       global.bus.on('core/tick', (t) => {
         if (global.isRend) {
           delThree.render(t);
+        } else {
+          delThree.unrender(t);
         }
       });
     }

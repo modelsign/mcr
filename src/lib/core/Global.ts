@@ -14,5 +14,5 @@ export default class Global {
         this.bus.emit('core/tick', t);
     };
 
-    static isRend: boolean = false
+    static isRend: boolean = true
 }
