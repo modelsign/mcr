@@ -41,7 +41,11 @@ export default class MouseControls extends Control {
 
     // polar angle, 极角. 指的是竖直方向相机能绕目标点旋转的角度范围. 单位为弧度
     public minPolarAngle: number = 0;
-    public maxPolarAngle: number = Math.PI;
+    public maxPolarAngle: number = Math.PI * 0.5;
+
+    // 相机边界, 指的是相机在移动过程中能到达的坐标范围
+    public minBox: THREE.Vector3 = new THREE.Vector3(-Infinity, 0, -Infinity);
+    public maxBox: THREE.Vector3 = new THREE.Vector3(Infinity, 10000, Infinity);
 
     // 相机在水平方向的绕行弧度范围. 单位为弧度.
     // 可不限制, 如果设置实数, 则需要满足区间限制. [-Math.PI, Math.PI]
@@ -70,9 +74,9 @@ export default class MouseControls extends Control {
     };
 
     public mouseBottons: { ORBIT: THREE.MOUSE, ZOOM: THREE.MOUSE, PAN: THREE.MOUSE } = {
-        ORBIT: THREE.MOUSE.LEFT,
-        ZOOM: THREE.MOUSE.MIDDLE,
-        PAN: THREE.MOUSE.RIGHT,
+        PAN: THREE.MOUSE.LEFT,
+        ORBIT: THREE.MOUSE.RIGHT,
+        ZOOM: THREE.MOUSE.MIDDLE
     };
 
     private target0: THREE.Vector3;
@@ -238,6 +242,18 @@ export default class MouseControls extends Control {
 
         offset.setFromSpherical(spherical);
         offset.applyQuaternion(quatInverse);
+
+
+        /** ************************************************
+         * 约束相机位置
+         ***************************************************/
+        target.x = Math.min(target.x, this.maxBox.x);
+        target.y = Math.min(target.y, this.maxBox.y);
+        target.z = Math.min(target.z, this.maxBox.z);
+        target.x = Math.max(target.x, this.minBox.x);
+        target.y = Math.max(target.y, this.minBox.y);
+        target.z = Math.max(target.z, this.minBox.z);
+
 
         cameraPosition.copy(target).add(offset);
         camera.lookAt(target);
